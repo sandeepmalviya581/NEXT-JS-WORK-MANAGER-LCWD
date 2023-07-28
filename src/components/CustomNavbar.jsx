@@ -20,7 +20,7 @@ const CustomNavbar = () => {
 
           </li>
           <li>
-          <Link href={'/show-tasks'} className='hover:text-blue-200'>Show Tasks</Link>
+            <Link href={'/show-tasks'} className='hover:text-blue-200'>Show Tasks</Link>
 
           </li>
         </ul>
@@ -29,10 +29,10 @@ const CustomNavbar = () => {
       <div>
         <ul className='flex space-x-3'>
           <li>
-            <a href="#!">Login</a>
+            <Link href={'/login'} >Login</Link>
           </li>
           <li>
-            <a href="#!">Signup</a>
+            <Link href={'/signup'} >Signup</Link>
           </li>
         </ul>
 

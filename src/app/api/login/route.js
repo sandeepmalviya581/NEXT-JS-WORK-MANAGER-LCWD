@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken'
 
 connectDb();
 export async function POST(request) {
+
     const { email, password } = await request.json();
     try {
 
@@ -30,17 +31,19 @@ export async function POST(request) {
 
 
         console.log(authToken);
-        return NextResponse.json(
-            user, {
-            status: 200
-        });
+        user.password = null;
+        const response = NextResponse.json(user);
 
+        response.cookies.set("authToken", authToken, {
+            expiresIn: '1d',
+            httpOnly: true
+        });
+        return response;
     } catch (error) {
         console.log(error)
         return NextResponse.json({
-            message: "Failed to login.",
-            success: false,
-            error
+            message: error.message,
+            success: false
         }
             , { status: 401 }
         );

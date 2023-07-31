@@ -7,3 +7,7 @@ export async function addUser(user) {
 export async function login(user) {
     return await httpAxios.post("/api/login", user).then((response) => response.data);
 }
+
+export async function currentUser() {
+    return await httpAxios.get("/api/current").then((response) => response.data);
+}

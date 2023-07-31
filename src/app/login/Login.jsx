@@ -5,11 +5,13 @@ import loginSvg from '../../assets/login.svg'
 import { toast } from 'react-toastify';
 import { checkEmpty } from '@/helper/utility'
 import { login } from '@/services/userService';
+import { useRouter } from "next/navigation";
 
 
 
 const Login = () => {
 
+    const router=useRouter();
     const [user, setUser] = useState({
         email: "", password: ""
     });
@@ -44,14 +46,15 @@ const Login = () => {
                 return;
             }
             const result = await login(user);
-            toastSuccess(`User "${result.name}" added successfully.`);
+            console.log(result);
+            toastSuccess(`User "${result.name}" logged in successfully.`);
             setUser({
                 email: "", password: ""
-            })
-
+            });
+            router.push("/profile/user");
         } catch (error) {
             console.log(error);
-            toastError(error.response.data.error.message);
+            toastError("Invalid credentials");
         }
 
     }

@@ -6,8 +6,8 @@ export async function GET(request) {
     const authToken = request.cookies.get('authToken')?.value;
     const data = jwt.verify(authToken, 'workmanager');
 
-    // const user = await User.findById(data._id);
+    const user = await User.findById(data._id);
 
-    return NextResponse.json(data);
+    return NextResponse.json(user);
 
 }

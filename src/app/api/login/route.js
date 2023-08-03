@@ -43,7 +43,8 @@ export async function POST(request) {
         console.log(error)
         return NextResponse.json({
             message: error.message,
-            success: false
+            success: false,
+            usera:user
         }
             , { status: 401 }
         );

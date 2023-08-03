@@ -11,3 +11,7 @@ export async function login(user) {
 export async function currentUser() {
     return await httpAxios.get("/api/current").then((response) => response.data);
 }
+
+export async function logout() {
+    return await httpAxios.post("/api/logout").then((response) => response.data);
+}

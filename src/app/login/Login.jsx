@@ -1,17 +1,19 @@
 "use client"
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import loginSvg from '../../assets/login.svg'
 import { toast } from 'react-toastify';
 import { checkEmpty } from '@/helper/utility'
 import { login } from '@/services/userService';
 import { useRouter } from "next/navigation";
+import UserContext from '@/context/userContext';
 
 
 
 const Login = () => {
 
     const router=useRouter();
+    const context = useContext(UserContext);
     const [user, setUser] = useState({
         email: "", password: ""
     });
@@ -47,11 +49,13 @@ const Login = () => {
             }
             const result = await login(user);
             console.log(result);
-            toastSuccess(`User "${result.name}" logged in successfully.`);
             setUser({
                 email: "", password: ""
             });
-            router.push("/profile/user");
+            context.setUser(result.user);
+            router.push("/");
+            toastSuccess(`User "${result.name}" logged in successfully.`);
+
         } catch (error) {
             console.log(error);
             toastError("Invalid credentials");

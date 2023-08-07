@@ -15,3 +15,7 @@ export async function currentUser() {
 export async function logout() {
     return await httpAxios.post("/api/logout").then((response) => response.data);
 }
+
+export async function getTaskOfUser(userId) {
+    return await httpAxios.get(`/api/users/${userId}/tasks`).then((response) => response.data);
+}

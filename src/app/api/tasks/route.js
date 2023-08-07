@@ -1,6 +1,7 @@
 import { connectDb } from "@/helper/db";
 import { Task } from "@/model/task";
 import { NextResponse } from "next/server"
+import jwt from 'jsonwebtoken'
 
 connectDb();
 export async function GET(request) {
@@ -18,9 +19,14 @@ export async function GET(request) {
 
 
 export async function POST(request) {
-    const { title, content, userId } = await request.json();
+    const { title, content ,status} = await request.json();
+
+    const authToken = request.cookies.get('authToken')?.value;
+    const data = jwt.verify(authToken, 'workmanager');
+
+
     const task = new Task({
-        title, content, userId
+        title, content, status,userId: data._id
     });
 
     try {

@@ -13,9 +13,8 @@ const AddTask = () => {
     const [task, setTask] = useState({
         title: "",
         content: "",
-        status: "",
-        userId: "64b911e367bff02e4bb0463d"
-    });
+        status: ""
+        });
 
     const toastWarn = (value) => {
         toast.warn(value, {
@@ -55,9 +54,7 @@ const AddTask = () => {
             setTask({
                 title: "",
                 content: "",
-                status: "",
-                userId: "64b911e367bff02e4bb0463d"
-
+                status: ""
             })
 
         } catch (error) {
@@ -142,11 +139,11 @@ const AddTask = () => {
                             <option value="none" disabled>
                                 --Please select--
                             </option>
-                            <option value="Pending">
+                            <option value="pending">
                                 Pending
                             </option>
 
-                            <option value="Completed">
+                            <option value="completed">
                                 Completed
                             </option>
                         </select>

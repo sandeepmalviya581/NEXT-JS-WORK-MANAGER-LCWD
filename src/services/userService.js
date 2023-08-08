@@ -19,3 +19,7 @@ export async function logout() {
 export async function getTaskOfUser(userId) {
     return await httpAxios.get(`/api/users/${userId}/tasks`).then((response) => response.data);
 }
+
+export async function deleteTaskById(taskId) {
+    return await httpAxios.delete(`/api/tasks/${taskId}`).then((response) => response.data);
+}

@@ -27,3 +27,11 @@ export async function deleteTaskById(taskId) {
 export async function getTaskById(taskId) {
     return await httpAxios.get(`/api/tasks/${taskId}`).then((response) => response.data);
 }
+
+export async function getAllUser() {
+    return await httpAxios.get("/api/users").then((response) => response.data);
+}
+
+export async function deleteUserById(userId) {
+    return await httpAxios.delete(`/api/users/${userId}`).then((response) => response.data);
+}

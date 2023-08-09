@@ -11,6 +11,17 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    addedDate: {
+        type: Date,
+        required: true,
+        default: Date.now()
+
+    },
+    role: {
+        type: String,
+        enum: ['USER_ADMIN', 'SUPER_ADMIN'],
+        default: 'USER_ADMIN'
+    },
     about: String,
     profileUrl: String
 

@@ -9,7 +9,7 @@ export async function GET(request, { params }) {
     try {
         const tasks = await Task.find({
             userId: userId
-        });
+        }).sort({ createdDate: -1, updatedDate: -1 });
         console.log(tasks);
         return NextResponse.json(tasks);
     } catch (error) {

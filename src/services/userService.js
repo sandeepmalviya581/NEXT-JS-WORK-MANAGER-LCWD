@@ -23,3 +23,7 @@ export async function getTaskOfUser(userId) {
 export async function deleteTaskById(taskId) {
     return await httpAxios.delete(`/api/tasks/${taskId}`).then((response) => response.data);
 }
+
+export async function getTaskById(taskId) {
+    return await httpAxios.get(`/api/tasks/${taskId}`).then((response) => response.data);
+}

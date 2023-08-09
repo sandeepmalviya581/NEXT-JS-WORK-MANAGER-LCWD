@@ -42,7 +42,7 @@ export async function DELETE(request, { params }) {
 export async function PUT(request, { params }) {
     const { taskId } = params;
     try {
-        const {  title, content} = await request.json();
+        const {  title, content,status} = await request.json();
         const taskDb = await Task.findById(taskId);
         if(taskDb==null){
             return NextResponse.json({
@@ -51,6 +51,8 @@ export async function PUT(request, { params }) {
         }
         taskDb.title = title;
         taskDb.content = content;
+        taskDb.status = status;
+        taskDb.updatedDate=Date.now();
         const updatedTask = await taskDb.save();
         console.log(updatedTask);
         return NextResponse.json(updatedTask);

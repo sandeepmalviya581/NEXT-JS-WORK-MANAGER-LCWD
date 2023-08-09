@@ -1,20 +1,41 @@
 "use client"
-import { addTask } from '@/services/taskService'
+import { addTask, editTask } from '@/services/taskService'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import loginSvg from '../../assets/login.svg'
 import { toast } from 'react-toastify';
 import { checkEmpty, toastWarn } from '@/helper/utility'
-
+import { useSearchParams, useRouter } from "next/navigation";
+import { getTaskById } from '@/services/userService'
 
 
 const AddTask = () => {
+    const searchparam = useSearchParams();
+    const router = useRouter();
+
+    async function getTask() {
+        try {
+            const taskSpilt = searchparam.toString().split("=");
+            const result = await getTaskById(taskSpilt[1].toString());
+            setTask(result);
+            console.log(result);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        if (searchparam && searchparam.toString()) {
+            getTask();
+        }
+    }, []);
+
 
     const [task, setTask] = useState({
         title: "",
         content: "",
         status: ""
-        });
+    });
 
     const toastWarn = (value) => {
         toast.warn(value, {
@@ -49,8 +70,15 @@ const AddTask = () => {
             //     toastWarn("Status can not be empty.");
             //     return;
             // }
-            const result = await addTask(task);
-            toastSuccess(`Task "${result.title}" added successfully.`);
+            if (searchparam && searchparam.toString()) {
+                const result = await editTask(task);
+                toastSuccess(`Task "${result.title}" edited successfully.`);
+                router.push('/show-tasks');
+            } else {
+                const result = await addTask(task);
+                toastSuccess(`Task "${result.title}" added successfully.`);
+                router.push('/show-tasks');
+            }
             setTask({
                 title: "",
                 content: "",
@@ -151,7 +179,7 @@ const AddTask = () => {
                     </div>
 
                     <div className='mt-4 flex justify-center'>
-                        <button type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Add Task</button>
+                        <button type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>{searchparam && searchparam.toString() ? 'Update Task' : 'Add Task'}</button>
                         <button type='reset' onClick={onClickClear} className='bg-red-600 py-2 px-3 rounded-lg hover:bg-red-800 text-white ms-3'>Clear</button>
 
                     </div>

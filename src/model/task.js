@@ -15,6 +15,12 @@ const TaskSchema = new Schema({
         default: Date.now()
 
     },
+    updatedDate: {
+        type: Date,
+        required: true,
+        default: Date.now()
+
+    },
     status: {
         type: String,
         enum: ['pending', 'completed'],

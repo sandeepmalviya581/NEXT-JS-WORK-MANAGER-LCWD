@@ -15,7 +15,7 @@ const ShowTasks = () => {
     async function loadTask(userId) {
         try {
             const userTask = await getTaskOfUser(userId);
-            setTask([...userTask].reverse());
+            setTask([...userTask]);
             console.log(userTask);
         } catch (error) {
             console.log(error);

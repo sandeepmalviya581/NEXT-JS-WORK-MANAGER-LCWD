@@ -18,22 +18,6 @@ const Task = ({ task, deleteTaskParent }) => {
         deleteTaskParent(taskId);
     }
 
-
-    function editTask(task) {
-
-        // Router.push({
-        //     pathname: '/add-task',
-        //     query: {
-        //         task
-        //     }
-        // })
-
-        // router.push('/add-task', {
-        //     data: task
-        // })
-    }
-
-
     const { user } = useContext(UserContext);
     return (
         <div className={`shadow-lg mt-2 rounded-md ${task.status == 'completed' ? "bg-green-400" : "bg-blue-200"}`}>
@@ -44,11 +28,11 @@ const Task = ({ task, deleteTaskParent }) => {
                         {task.title}
                     </h1>
                     <div>
-                        <div onClick={() => { deleteTask(task._id) }}>
+                        <button onClick={() => { deleteTask(task._id) }}>
                             <AiTwotoneDelete className='hover:bg-grey-100' />
-                        </div>
-                        <div className='mt-5' onClick={() => { editTask(task) }}>
-                           
+                        </button>
+                        <div className='mt-2'>
+
                             <Link href={{
                                 pathname: '/add-task',
                                 query: {
@@ -67,7 +51,12 @@ const Task = ({ task, deleteTaskParent }) => {
                 <p className="font-normal"> <span className="font-medium">Content:-</span> {task.content}</p>
                 <p className="font-normal">
                     <span className="font-medium">Created Date:- </span>
-                    {task.addedDate}</p>
+                    {task.addedDate}
+                </p>
+                <p className="font-normal">
+                    <span className="font-medium">Updated Date:- </span>
+                    {task.updatedDate}
+                </p>
                 <div className='flex justify-between mt-3'>
                     <p >Status: <span className="font-semibold">{task.status}</span> </p>
                     <p className='text-right'>

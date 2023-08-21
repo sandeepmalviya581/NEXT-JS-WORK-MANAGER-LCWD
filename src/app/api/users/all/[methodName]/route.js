@@ -2,25 +2,26 @@ import { connectDb } from "@/helper/db";
 import { User } from "@/model/user";
 import { NextResponse } from "next/server"
 import bcrypt from 'bcryptjs'
+import { getRondomNameAPI } from "@/services/userService";
 
-connectDb();
+// connectDb();
 
 
-export async function GET(request, { params }) {
+// export async function GET(request, { params }) {
 
-    const { methodName, id } = params;
-    console.log(methodName);
-    console.log(id);
+//     const { methodName, id } = params;
+//     console.log(methodName);
+//     console.log(id);
 
-    console.log(request.method);
+//     console.log(request.method);
 
-    return NextResponse.json({
-        message: "testing sandeep",
-        status: true
-    }
+//     return NextResponse.json({
+//         message: "testing sandeep",
+//         status: true
+//     }
 
-    )
-}
+//     )
+// }
 
 
 export async function POST(request, { params }) {
@@ -31,17 +32,15 @@ export async function POST(request, { params }) {
     if (methodName !== null & methodName !== undefined) {
 
         if (methodName === 'getAllUser') {
-            const { pageSize, pageNumber, search } = await request.json();
-            console.log(pageSize, pageNumber);
+            const { pageSize, page, search } = await request.json();
+            console.log(pageSize, page);
 
 
 
-
-            const ITEMS_PER_PAGE = pageSize;
-            const page = pageNumber || 1;;
+            const ITEMS_PER_PAGE = pageSize || 10;
             console.log('ITEMS_PER_PAGE');
             console.log(ITEMS_PER_PAGE)
-            console.log('page');
+            console.log('pageNumber');
             console.log(page)
             const searchQuery = search || '';
             console.log("searchQuery-> ", searchQuery)
@@ -84,7 +83,7 @@ export async function POST(request, { params }) {
                     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
                     return NextResponse.json({
-                        data, totalCount, totalPages, pageSize, pageNumber
+                        data, totalCount, totalPages, pageSize, page
                     });
                 }
 
@@ -158,3 +157,46 @@ export async function POST(request, { params }) {
 
 
 // }
+
+
+
+export async function GET(request, { params }) {
+
+    const { methodName } = params;
+    console.log(methodName);
+
+    if (methodName !== null & methodName !== undefined) {
+        if (methodName === 'getRandomName') {
+            try {
+                // const ranNameResult = await getRondomNameAPI();
+
+                const response = await fetch("https://jsonplaceholder.typicode.com/users");
+                const movies = await response.json();
+                console.log(movies);
+
+                console.log(movies);
+                return NextResponse.json(
+                    movies, {
+                    status: 200
+                });
+
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "failed to get random name.",
+                    success: false,
+                    errorMsg: error
+                });
+
+            }
+
+        }
+    }
+    return NextResponse.json({
+        message: "Not found"
+    }, {
+        status: 404
+    });
+
+
+}

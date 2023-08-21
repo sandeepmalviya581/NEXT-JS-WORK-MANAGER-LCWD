@@ -35,3 +35,11 @@ export async function getAllUser() {
 export async function deleteUserById(userId) {
     return await httpAxios.delete(`/api/users/${userId}`).then((response) => response.data);
 }
+
+export async function getAllUserPagniation(data) {
+    return await httpAxios.post("/api/users/all/getAllUser", data).then((response) => response.data);
+}
+
+export async function getRondomNameAPI() {
+    return await httpAxios.get("https://randomuser.me/api/").then((response) => response.data);
+}

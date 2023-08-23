@@ -124,7 +124,34 @@ export async function POST(request, { params }) {
 
             }
 
+        } else if (methodName === 'getAllUserWithSearch') {
+
+
+            let users = [];
+            try {
+
+                const { searchQuery } = await request.json();
+                console.log(searchQuery);
+
+                users = await User.find({
+                    "$or": [
+                        { "name": { "$regex": searchQuery, "$options": "i" } },
+                        { "email": { "$regex": searchQuery, "$options": "i" } },
+                        { "about": { "$regex": searchQuery, "$options": "i" } }
+
+                    ]
+                }).select('-password');
+
+                console.log(users);
+                return NextResponse.json(users);
+            } catch (error) {
+                return NextResponse.json({
+                    message: "failed to fetch records."
+                });
+            }
+
         }
+
 
 
 

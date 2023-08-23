@@ -8,6 +8,7 @@ export async function GET(request) {
     let users = [];
     try {
         users = await User.find().select('-password');
+
         console.log(users);
         return NextResponse.json(users);
     } catch (error) {

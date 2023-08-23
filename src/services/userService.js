@@ -32,6 +32,10 @@ export async function getAllUser() {
     return await httpAxios.get("/api/users").then((response) => response.data);
 }
 
+export async function getAllUserWithSearch(data) {
+    return await httpAxios.post("/api/users/all/getAllUserWithSearch", data).then((response) => response.data);
+}
+
 export async function deleteUserById(userId) {
     return await httpAxios.delete(`/api/users/${userId}`).then((response) => response.data);
 }

@@ -12,7 +12,7 @@ const CustomNavbar = () => {
 
   const context = useContext(UserContext);
   console.log("Custome nav bar --->>>>>>>>>");
-  console.log(context.user);
+  // console.log(context.user);
 
     async function handleLogout(){
     try {
@@ -46,6 +46,10 @@ const CustomNavbar = () => {
             </li>
             <li>
               <Link href={'/show-tasks'} className='hover:text-blue-200'>Show Tasks</Link>
+
+            </li>
+            <li>
+              <Link href={'/healthchart'} className='hover:text-blue-200'>Health Chart</Link>
 
             </li>
           </ul>

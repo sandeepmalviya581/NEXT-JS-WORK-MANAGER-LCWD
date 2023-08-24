@@ -49,6 +49,9 @@ const HealthChartSchema = new Schema({
         type: mongoose.ObjectId,
         required: true
     },
+    weight: {
+        type: String
+    }
 
 
 })

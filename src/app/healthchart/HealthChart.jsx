@@ -38,7 +38,7 @@ const HealthChart = () => {
                 for (const key in obj) {
                     if (obj.hasOwnProperty(key)) {
                         if (key === e.target.name) {
-                            if (e.target.name === 'chartDate') {
+                            if (e.target.name === 'chartDate' || e.target.name === 'weight') {
                                 obj[key] = e.target.value;
                             } else {
                                 obj[key] = e.target.checked;
@@ -53,6 +53,16 @@ const HealthChart = () => {
         setData(upd_obj);
     }
 
+    // function isFloatOrNumber(str) {
+    //     // Use parseFloat to check if the string can be converted to a float or number
+    //     return !isNaN(parseFloat(str));
+    // }
+
+    function isFloatOrNumber(str) {
+        const floatRegex = /^[-+]?[0-9]*\.?[0-9]+$/;
+        return floatRegex.test(str);
+      }
+      
 
     const submitHealthChart = async (event) => {
         event.preventDefault();
@@ -69,8 +79,18 @@ const HealthChart = () => {
                 return;
             }
             tempList.push(date);
+            if (item.weight !== '' && item.weight !== null && item.weight !== undefined) {
+                if(!isFloatOrNumber(item.weight)){
+                    toast.warn(`${i + 1} No. Weight can not be wrong.`)
+                    return;
+                }
+            }
+
+
 
         }
+        console.log('submitting data');
+        console.log(data);
         try {
             const result = await addHealthChart(data);
             getUserChart(context.user._id);
@@ -84,7 +104,7 @@ const HealthChart = () => {
     const addRow = () => {
         const newRow = {
             anulomVilom: false, kapalBhati: false, exercise: false, hotWater: false, morningWalk: false,
-            eveningWalk: false, nightWalk: false, chartDate: ''
+            eveningWalk: false, nightWalk: false, chartDate: '', weight: ''
         }
         setData([...data, newRow]);
     }
@@ -136,6 +156,9 @@ const HealthChart = () => {
                             </th>
                             <th className="px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Walk After Night Meal
+                            </th>
+                            <th className="px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                                Weight
                             </th>
                             <th className="px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Delete
@@ -266,7 +289,24 @@ const HealthChart = () => {
                                     />
                                 </td>
 
+                                {/* <td className={`px-6 py-4 whitespace-no-wrap border-b`}>
+                                    <input
+                                        type="text"
+                                        className="form-checkbox h-8 w-full text-indigo-600"
 
+                                        name="weight"
+                                        onChange={(e) => onClickOnItem(e, item, index)}
+                                    />
+                                </td> */}
+
+                                <td >
+                                    <input type="text" id='weight'
+                                        name="weight"
+                                        value={item.weight}
+                                        onChange={(e) => onClickOnItem(e, item, index)}
+                                        className='w-20 p-1  bg-gray-100 focus:ring-gray-400 border-gray-800'
+                                    />
+                                </td>
 
 
 

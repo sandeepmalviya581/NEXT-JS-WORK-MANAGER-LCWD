@@ -9,6 +9,7 @@ const HealthChart = () => {
     const [selectedRows, setSelectedRows] = useState([]);
     const context = useContext(UserContext);
     const [submitClick, setSubmitClick] = useState(false);
+    const [selectedDate, setSelectedDate] = useState('');
 
 
 
@@ -33,6 +34,9 @@ const HealthChart = () => {
             setData([...userTask]);
             console.log('Result in use effect-> ');
             console.log(userTask);
+            console.log('get date');
+            console.log(selectedDate);
+
         } catch (error) {
             console.log(error);
         }
@@ -69,7 +73,12 @@ const HealthChart = () => {
                     if (obj.hasOwnProperty(key)) {
                         console.log(`${key}: ${obj[key]}`);
                         if (key === e.target.name) {
-                            obj[key] = e.target.checked;
+                            if (e.target.name === 'chartDate') {
+                                obj[key] = e.target.value;
+                                setSelectedDate(e.target.value);
+                            } else {
+                                obj[key] = e.target.checked;
+                            }
                             return obj;
                         }
                     }
@@ -81,103 +90,43 @@ const HealthChart = () => {
         setData(upd_obj);
     }
 
-    const onClickOnItem1 = (e, item, index) => {
-        // console.log('item clicked.');
-        // console.log(item);
-        // console.log('index is ', index);
-        // console.log(e.target.name);
-        // console.log(e.target.checked);
-
-        if (e.target.name === 'hotWater') {
-            const upd_obj = data.map(obj => {
-
-                if (obj.index == index) {
-                    obj.hotWater = e.target.checked;
-                }
-                return obj;
-            });
-
-            setData(upd_obj);
-        } else if (e.target.name === 'anulomVilom') {
-            const upd_obj = data.map(obj => {
-
-                if (obj.index == index) {
-                    obj.anulomVilom = e.target.checked;
-                }
-                return obj;
-            });
-
-            setData(upd_obj);
-        } else if (e.target.name === 'kapalBhati') {
-            const upd_obj = data.map(obj => {
-
-                if (obj.index == index) {
-                    obj.kapalBhati = e.target.checked;
-                }
-                return obj;
-            });
-
-            setData(upd_obj);
-        } else if (e.target.name === 'exercise') {
-            const upd_obj = data.map(obj => {
-
-                if (obj.index == index) {
-                    obj.exercise = e.target.checked;
-                }
-                return obj;
-            });
-
-            setData(upd_obj);
-        } else if (e.target.name === 'morningWalk') {
-            const upd_obj = data.map(obj => {
-
-                if (obj.index == index) {
-                    obj.morningWalk = e.target.checked;
-                }
-                return obj;
-            });
-
-            setData(upd_obj);
-        } else if (e.target.name === 'eveningWalk') {
-            const upd_obj = data.map(obj => {
-
-                if (obj.index == index) {
-                    obj.eveningWalk = e.target.checked;
-                }
-                return obj;
-            });
-
-            setData(upd_obj);
-        } else if (e.target.name === 'nightWalk') {
-            const upd_obj = data.map(obj => {
-
-                if (obj.index == index) {
-                    obj.nightWalk = e.target.checked;
-                }
-                return obj;
-            });
-
-            setData(upd_obj);
-        }
-
-
-
-        // const found = data.find(element => {
-        //     return element.index === index;
-        // }).hotWater;
-
-        // console.log('what found', found);
-
-
-
-    };
-
-
 
     const submitHealthChart = async (event) => {
         event.preventDefault();
         console.log("before send data");
         console.log(data);
+
+        // if (data.some((item) => item.chartDate === '' || item.chartDate === null || item.chartDate === undefined)) {
+        //     toast.warn("Data can not be empty.")
+        //     return;
+        // }
+
+
+
+        let tempList = [];
+        for (let i = 0; i < data.length; i++) {
+            const item = data[i];
+            if (item.chartDate === '' || item.chartDate === null || item.chartDate === undefined) {
+                toast.warn(`${i + 1} No. Chart Date can not be empty.`)
+                return;
+            }
+            const date = new Date(item.chartDate).toLocaleDateString('en-GB');
+            if (tempList.includes(date)) {
+                toast.warn(`${i + 1} No. Chart Date can not be duplicate.`)
+                return;
+            }
+            tempList.push(date);
+
+        }
+
+
+        // data.forEach((item, i) => {
+        //     if (item.chartDate === '' || item.chartDate === null || item.chartDate === undefined) {
+        //         toast.warn("Data can not be empty.")
+        //         return;
+        //     }
+        // });
+
         try {
             const result = await addHealthChart(data);
             console.log("heath chart added");
@@ -194,7 +143,7 @@ const HealthChart = () => {
         const length = data.length;
         const newRow = {
             index: length, anulomVilom: false, kapalBhati: false, exercise: false, hotWater: false, morningWalk: false,
-            eveningWalk: false, nightWalk: false, chartDate: new Date()
+            eveningWalk: false, nightWalk: false, chartDate: ''
         }
         setData([...data, newRow]);
     }
@@ -228,6 +177,13 @@ const HealthChart = () => {
                             <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 ID
                             </th>
+
+                            <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                                Chart Created Date
+                            </th>
+
+
+
                             <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Anulom Vilom
                             </th>
@@ -262,11 +218,38 @@ const HealthChart = () => {
                                     {index + 1}
                                 </td>
 
-                                <td className="px-6 py-4 whitespace-no-wrap border-b">
-                                    {item?._id}
+                                <td className="px-6 py-4 whitespace-no-wrap border-b text-xs">
+                                    {item._id}
                                 </td>
 
-                                <td className="px-6 py-4 whitespace-no-wrap border-b">
+
+                                <td className='text-sm'>
+
+                                    {
+                                        item.chartDate && new Date(item.chartDate).toLocaleDateString('en-GB')
+                                    }
+                                    <input
+                                        type="date"
+                                        id="date"
+                                        name="chartDate"
+                                        value={item.chartDate}
+                                        // value={selectedDate}
+
+
+
+                                        // onChange={handleDateChange}
+                                        className="form-checkbox  h-4 w-4  text-indigo-600"
+                                        onChange={(e) => onClickOnItem(e, item, index)}
+
+                                    // className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-300 ease-in-out focus:outline-none focus:border-indigo-600"
+
+                                    // className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    />
+                                </td>
+
+
+
+                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.anulomVilom ? 'bg-green-300' : 'bg-orange-400'}  `}>
                                     <input
                                         type="checkbox"
                                         className="form-checkbox h-4 w-4 text-indigo-600"
@@ -279,7 +262,7 @@ const HealthChart = () => {
 
                                     />
                                 </td>
-                                <td className="px-6 py-4 whitespace-no-wrap border-b">
+                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.kapalBhati ? 'bg-green-300' : 'bg-orange-400'}  `}>
                                     <input
                                         type="checkbox"
                                         className="form-checkbox h-4 w-4 text-indigo-600"
@@ -291,7 +274,7 @@ const HealthChart = () => {
 
                                     />
                                 </td>
-                                <td className="px-6 py-4 whitespace-no-wrap border-b">
+                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.exercise ? 'bg-green-300' : 'bg-orange-400'}  `}>
                                     <input
                                         type="checkbox"
                                         className="form-checkbox h-4 w-4 text-indigo-600"
@@ -303,7 +286,7 @@ const HealthChart = () => {
 
                                     />
                                 </td>
-                                <td className="px-6 py-4 whitespace-no-wrap border-b">
+                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.hotWater ? 'bg-green-300' : 'bg-orange-400'}  `}>
                                     <input
                                         type="checkbox"
                                         className="form-checkbox h-4 w-4 text-indigo-600"
@@ -315,7 +298,7 @@ const HealthChart = () => {
 
                                     />
                                 </td>
-                                <td className="px-6 py-4 whitespace-no-wrap border-b">
+                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.morningWalk ? 'bg-green-300' : 'bg-orange-400'}  `}>
                                     <input
                                         type="checkbox"
                                         className="form-checkbox h-4 w-4 text-indigo-600"
@@ -327,7 +310,7 @@ const HealthChart = () => {
 
                                     />
                                 </td>
-                                <td className="px-6 py-4 whitespace-no-wrap border-b">
+                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.eveningWalk ? 'bg-green-300' : 'bg-orange-400'}  `}>
                                     <input
                                         type="checkbox"
                                         className="form-checkbox h-4 w-4 text-indigo-600"
@@ -339,7 +322,7 @@ const HealthChart = () => {
 
                                     />
                                 </td>
-                                <td className="px-6 py-4 whitespace-no-wrap border-b">
+                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.nightWalk ? 'bg-green-300' : 'bg-orange-400'}  `}>
                                     <input
                                         type="checkbox"
                                         className="form-checkbox h-4 w-4 text-indigo-600"
@@ -353,6 +336,9 @@ const HealthChart = () => {
 
 
 
+
+
+
                                 <td className="px-6 py-4 whitespace-no-wrap border-b">
                                     <button type='button' onClick={() => deleteRow(index)} className='bg-red-400 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Delete</button>
                                 </td>
@@ -361,8 +347,8 @@ const HealthChart = () => {
                     </tbody>
                 </table>
                 <div className='mt-4 flex justify-center'>
-                    <button  type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Submit</button>
-                    {/* <button type='reset' onClick={onClickClear} className='bg-red-600 py-2 px-3 rounded-lg hover:bg-red-800 text-white ms-3'>Clear</button> */}
+                    <button type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Submit</button>
+                    {/* <button type='reset' onClick={onClickClear} className='bg-orange-400 py-2 px-3 rounded-lg hover:bg-red-800 text-white ms-3'>Clear</button> */}
                     <button type='button' onClick={addRow} className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Add</button>
 
                 </div>

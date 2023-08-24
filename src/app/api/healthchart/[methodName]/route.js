@@ -24,33 +24,24 @@ export async function POST(request, { params }) {
                 item.userId = data._id
                 return item;
             });
-            console.log('After add user id.');
-            console.log(dataa);
+            // console.log('After add user id.');
+            // console.log(dataa);
 
             try {
 
                 const deletedStatus = await HealthChart.deleteMany({
                     userId: data._id
                 })
+                // console.log('deletedStatus');
                 // console.log(deletedStatus);
 
                 let createdChart = HealthChart.insertMany(dataa);
-                console.log('Result data');
-                console.log(createdChart);
+                // console.log('Result data');
+                // console.log(createdChart);
 
-                // createdChart = await createdChart.map((item, i) => {
-                //     item.index = i;
-                //     // item.kapalBhati = (item.kapalBhati === 'true');
-                //     // item.hotWater = (item.hotWater === 'true');
-                //     // item.exercise = (item.exercise === 'true');
-                //     // item.morningWalk = (item.morningWalk === 'true');
-                //     // item.eveningWalk = (item.eveningWalk === 'true');
-                //     // item.nightWalk = (item.nightWalk === 'true');
-                //     return item;
-
-                // });
-                console.log('after convert to bool');
-                console.log(createdChart);
+               
+                // console.log('after convert to bool');
+                // console.log(createdChart);
                 return NextResponse.json(
                     createdChart, {
                     status: 201

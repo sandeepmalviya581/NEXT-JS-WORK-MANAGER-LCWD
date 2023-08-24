@@ -31,8 +31,7 @@ const HealthChartSchema = new Schema({
     },
     chartDate: {
         type: Date,
-        required: true,
-        default: Date.now()
+        required: true
     },
     createdDate: {
         type: Date,

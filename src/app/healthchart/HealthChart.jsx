@@ -61,8 +61,8 @@ const HealthChart = () => {
     function isFloatOrNumber(str) {
         const floatRegex = /^[-+]?[0-9]*\.?[0-9]+$/;
         return floatRegex.test(str);
-      }
-      
+    }
+
 
     const submitHealthChart = async (event) => {
         event.preventDefault();
@@ -80,8 +80,14 @@ const HealthChart = () => {
             }
             tempList.push(date);
             if (item.weight !== '' && item.weight !== null && item.weight !== undefined) {
-                if(!isFloatOrNumber(item.weight)){
+                if (!isFloatOrNumber(item.weight)) {
                     toast.warn(`${i + 1} No. Weight can not be wrong.`)
+                    return;
+                }
+
+                const floatWeight = parseFloat(item.weight);
+                if (floatWeight > 85) {
+                    toast.warn(`${i + 1} No. Weight can not be greter than 85.`)
                     return;
                 }
             }
@@ -299,12 +305,12 @@ const HealthChart = () => {
                                     />
                                 </td> */}
 
-                                <td >
+                                <td className='px-1 whitespace-no-wrap border-b'>
                                     <input type="text" id='weight'
                                         name="weight"
                                         value={item.weight}
                                         onChange={(e) => onClickOnItem(e, item, index)}
-                                        className='w-20 p-1  bg-gray-100 focus:ring-gray-400 border-gray-800'
+                                        className='w-16 p-1  bg-gray-100 focus:ring-gray-400 border-gray-800'
                                     />
                                 </td>
 

@@ -8,7 +8,6 @@ const HealthChart = () => {
 
     const [selectedRows, setSelectedRows] = useState([]);
     const context = useContext(UserContext);
-    const [selectedDate, setSelectedDate] = useState('');
 
 
 
@@ -20,22 +19,7 @@ const HealthChart = () => {
         }
         try {
             const userTask = await getChartByUserId(obj);
-
-
-            // let list = [];
-            // for (let i = 0; i < userTask.length; i++) {
-            //     let obj = userTask[i];
-            //     obj.index = i;
-            //     list.push(obj)
-            // }
-            // console.log('my list');
-            // console.log(list);
             setData([...userTask]);
-            // console.log('Result in use effect-> ');
-            // console.log(userTask);
-            // console.log('get date');
-            // console.log(selectedDate);
-
         } catch (error) {
             console.log(error);
         }
@@ -47,34 +31,15 @@ const HealthChart = () => {
     }, [context.user]);
     const [data, setData] = useState([]);
 
-
-    const toggleRowSelection = (id) => {
-        if (selectedRows.includes(id)) {
-            setSelectedRows(selectedRows.filter((rowId) => rowId !== id));
-        } else {
-            setSelectedRows([...selectedRows, id]);
-        }
-        // console.log(selectedRows);
-    };
-
     const onClickOnItem = (e, item, index) => {
-        // console.log('item clicked.');
-        // console.log(item);
-        // console.log('index is ', index);
-        // console.log(e.target.name);
-        // console.log(e.target.checked);
 
         const upd_obj = data.map((obj, i) => {
             if (i == index) {
-                console.log("obj for the index ", i, index);
-                console.log(obj);
                 for (const key in obj) {
                     if (obj.hasOwnProperty(key)) {
-                        console.log(`${key}: ${obj[key]}`);
                         if (key === e.target.name) {
                             if (e.target.name === 'chartDate') {
                                 obj[key] = e.target.value;
-                                setSelectedDate(e.target.value);
                             } else {
                                 obj[key] = e.target.checked;
                             }
@@ -85,16 +50,12 @@ const HealthChart = () => {
             }
             return obj;
         });
-        console.log("After updating", upd_obj);
         setData(upd_obj);
     }
 
 
     const submitHealthChart = async (event) => {
         event.preventDefault();
-        console.log("before send data");
-        console.log(data);
-
         let tempList = [];
         for (let i = 0; i < data.length; i++) {
             const item = data[i];
@@ -112,8 +73,6 @@ const HealthChart = () => {
         }
         try {
             const result = await addHealthChart(data);
-            console.log("heath chart added");
-            console.log(result);
             getUserChart(context.user._id);
             toast.success("Chart submitted.");
         } catch (error) {
@@ -123,9 +82,7 @@ const HealthChart = () => {
     }
 
     const addRow = () => {
-        // const length = data.length;
         const newRow = {
-            // index: length, 
             anulomVilom: false, kapalBhati: false, exercise: false, hotWater: false, morningWalk: false,
             eveningWalk: false, nightWalk: false, chartDate: ''
         }
@@ -134,16 +91,7 @@ const HealthChart = () => {
 
     const deleteRow = (index) => {
         console.log("delete clicked", index);
-        // let list = [];
         const list = data.filter((item, i) => i !== index);
-        // let list1 = [];
-        // for (let i = 0; i < list.length; i++) {
-        //     let obj = list[i];
-        //     obj.index = i;
-        //     list1.push(obj)
-        // }
-        // console.log('after filter and reindex');
-        // console.log(list1);
         setData([...list]);
     }
 

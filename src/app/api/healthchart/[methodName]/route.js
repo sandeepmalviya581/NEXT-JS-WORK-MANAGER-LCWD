@@ -68,8 +68,7 @@ export async function POST(request, { params }) {
             try {
                 let result = await HealthChart.find({
                     userId: userId
-                })
-                // .sort({ createdDate: -1, updatedDate: -1 });
+                }).sort({ chartDate: 1 });
 
 
                 // result = result.map((item, i) => {

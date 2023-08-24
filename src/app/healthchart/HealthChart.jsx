@@ -8,7 +8,6 @@ const HealthChart = () => {
 
     const [selectedRows, setSelectedRows] = useState([]);
     const context = useContext(UserContext);
-    const [submitClick, setSubmitClick] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
 
 
@@ -23,19 +22,19 @@ const HealthChart = () => {
             const userTask = await getChartByUserId(obj);
 
 
-            let list = [];
-            for (let i = 0; i < userTask.length; i++) {
-                let obj = userTask[i];
-                obj.index = i;
-                list.push(obj)
-            }
-            console.log('my list');
-            console.log(list);
+            // let list = [];
+            // for (let i = 0; i < userTask.length; i++) {
+            //     let obj = userTask[i];
+            //     obj.index = i;
+            //     list.push(obj)
+            // }
+            // console.log('my list');
+            // console.log(list);
             setData([...userTask]);
-            console.log('Result in use effect-> ');
-            console.log(userTask);
-            console.log('get date');
-            console.log(selectedDate);
+            // console.log('Result in use effect-> ');
+            // console.log(userTask);
+            // console.log('get date');
+            // console.log(selectedDate);
 
         } catch (error) {
             console.log(error);
@@ -96,13 +95,6 @@ const HealthChart = () => {
         console.log("before send data");
         console.log(data);
 
-        // if (data.some((item) => item.chartDate === '' || item.chartDate === null || item.chartDate === undefined)) {
-        //     toast.warn("Data can not be empty.")
-        //     return;
-        // }
-
-
-
         let tempList = [];
         for (let i = 0; i < data.length; i++) {
             const item = data[i];
@@ -118,15 +110,6 @@ const HealthChart = () => {
             tempList.push(date);
 
         }
-
-
-        // data.forEach((item, i) => {
-        //     if (item.chartDate === '' || item.chartDate === null || item.chartDate === undefined) {
-        //         toast.warn("Data can not be empty.")
-        //         return;
-        //     }
-        // });
-
         try {
             const result = await addHealthChart(data);
             console.log("heath chart added");
@@ -140,9 +123,10 @@ const HealthChart = () => {
     }
 
     const addRow = () => {
-        const length = data.length;
+        // const length = data.length;
         const newRow = {
-            index: length, anulomVilom: false, kapalBhati: false, exercise: false, hotWater: false, morningWalk: false,
+            // index: length, 
+            anulomVilom: false, kapalBhati: false, exercise: false, hotWater: false, morningWalk: false,
             eveningWalk: false, nightWalk: false, chartDate: ''
         }
         setData([...data, newRow]);
@@ -150,17 +134,17 @@ const HealthChart = () => {
 
     const deleteRow = (index) => {
         console.log("delete clicked", index);
-        let list = [];
-        list = data.filter((item) => item.index !== index);
-        let list1 = [];
-        for (let i = 0; i < list.length; i++) {
-            let obj = list[i];
-            obj.index = i;
-            list1.push(obj)
-        }
-        console.log('after filter and reindex');
-        console.log(list1);
-        setData([...list1]);
+        // let list = [];
+        const list = data.filter((item, i) => i !== index);
+        // let list1 = [];
+        // for (let i = 0; i < list.length; i++) {
+        //     let obj = list[i];
+        //     obj.index = i;
+        //     list1.push(obj)
+        // }
+        // console.log('after filter and reindex');
+        // console.log(list1);
+        setData([...list]);
     }
 
     return (

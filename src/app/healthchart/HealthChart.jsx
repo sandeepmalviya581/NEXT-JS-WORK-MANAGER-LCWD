@@ -132,9 +132,9 @@ const HealthChart = () => {
                                 S.No.
                             </th>
 
-                            <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                            {/* <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 ID
-                            </th>
+                            </th> */}
 
                             <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Chart Created Date
@@ -176,12 +176,12 @@ const HealthChart = () => {
                             <tr key={item._id}>
 
                                 <td className="px-6 py-4 whitespace-no-wrap border-b" >
-                                    {index + 1}
+                                    [{index + 1}]{item._id}
                                 </td>
 
-                                <td className="px-6 py-4 whitespace-no-wrap border-b text-xs">
+                                {/* <td className="px-6 py-4 whitespace-no-wrap border-b text-xs">
                                     {item._id}
-                                </td>
+                                </td> */}
 
 
                                 <td className='text-sm'>

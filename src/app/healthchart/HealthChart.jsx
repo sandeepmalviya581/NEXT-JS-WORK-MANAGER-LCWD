@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 
 const HealthChart = () => {
 
-    const [selectedRows, setSelectedRows] = useState([]);
     const context = useContext(UserContext);
 
 
@@ -26,6 +25,9 @@ const HealthChart = () => {
     }
     useEffect(() => {
         if (context.user) {
+            console.log('Called use effect');
+            console.log(context);
+            console.log(context.user);
             getUserChart(context.user._id);
         }
     }, [context.user]);

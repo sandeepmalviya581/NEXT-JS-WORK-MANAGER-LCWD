@@ -55,6 +55,7 @@ const Login = () => {
             context.setUser(result.user);
             router.push("/");
             toastSuccess(`User "${result.name}" logged in successfully.`);
+            
 
         } catch (error) {
             console.log(error);

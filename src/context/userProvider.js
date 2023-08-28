@@ -12,7 +12,7 @@ const UserProvider = ({ children }) => {
         try {
             const loadUser = await currentUser();
             console.log("calling from user provider=>>>>>>");
-            // console.log(loadUser);
+            console.log(loadUser);
             setUser({ ...loadUser });
             // console.log(loadUser);
         } catch (error) {

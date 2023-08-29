@@ -47,3 +47,8 @@ export async function getAllUserPagniation(data) {
 export async function getRondomNameAPI() {
     return await httpAxios.get("https://randomuser.me/api/").then((response) => response.data);
 }
+
+export async function getAllCount() {
+    return await httpAxios.post("/api/users/all/getAllCount").then((response) => response.data);
+}
+

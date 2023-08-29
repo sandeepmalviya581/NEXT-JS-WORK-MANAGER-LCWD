@@ -2,27 +2,10 @@ import { connectDb } from "@/helper/db";
 import { User } from "@/model/user";
 import { NextResponse } from "next/server"
 import bcrypt from 'bcryptjs'
-import { getRondomNameAPI } from "@/services/userService";
+import { Task } from "@/model/task";
+import jwt from 'jsonwebtoken'
 
-// connectDb();
-
-
-// export async function GET(request, { params }) {
-
-//     const { methodName, id } = params;
-//     console.log(methodName);
-//     console.log(id);
-
-//     console.log(request.method);
-
-//     return NextResponse.json({
-//         message: "testing sandeep",
-//         status: true
-//     }
-
-//     )
-// }
-
+connectDb();
 
 export async function POST(request, { params }) {
 
@@ -150,6 +133,65 @@ export async function POST(request, { params }) {
                 });
             }
 
+        } else if (methodName === 'getAllCount') {
+            const countMap = {
+                totalUser: 0,
+                totalUserTask: 0
+            };
+
+            try {
+
+                const authToken = request.cookies.get('authToken')?.value;
+                const data = jwt.verify(authToken, 'workmanager');
+
+                const totalUser = await User.count();
+                const totalUserTask = await Task.find({
+                    userId: data._id
+                }).count();
+                countMap.totalUser = totalUser;
+                countMap.totalUserTask = totalUserTask;
+                console.log('countMap', countMap);
+
+
+
+                //  const agg=   Task.aggregate([
+                //         {
+                //           $match: {
+                //             quantity: { $userId: userId } // Apply your "where" condition here
+                //           }
+                //         },
+                //         {
+                //           $group: {
+                //             _id: "$status",
+                //             totalQuantity: { $sum: "$status" }
+                //           }
+                //         }
+                //       ]);
+
+                // const agg = await Task.aggregate([
+                //     {
+                //         "$match": { userId: data._id }
+                //      },
+                  
+                //     { "$group": { _id: "$status", count: { $sum: 1 } } }
+                // ])
+
+                // console.log('aggree');
+                // console.log(agg);
+
+
+
+
+
+
+
+                return NextResponse.json(countMap);
+            } catch (error) {
+                return NextResponse.json({
+                    message: "failed to fetch records."
+                });
+            }
+
         }
 
 
@@ -164,27 +206,6 @@ export async function POST(request, { params }) {
 
 
 }
-
-
-
-
-// if (methodName === 'getAllUser') {
-//     const { pageSize, pageNumber } = await request.json();
-//     console.log(pageSize, pageNumber);
-//     let users = [];
-//     try {
-//         users = await User.find().select('-password');
-//         console.log(users);
-//         return NextResponse.json(users);
-//     } catch (error) {
-//         return NextResponse.json({
-//             message: "failed to fetch records."
-//         });
-//     }
-
-
-// }
-
 
 
 export async function GET(request, { params }) {

@@ -18,6 +18,8 @@ const Login = () => {
         email: "", password: ""
     });
 
+    const [loginDisable, setLoginDisable] = useState(false)
+
     const toastWarn = (value) => {
         toast.warn(value, {
             position: 'top-right'
@@ -47,6 +49,7 @@ const Login = () => {
                 toastWarn("Password can not be empty.");
                 return;
             }
+            setLoginDisable(true);
             const result = await login(user);
             console.log('user login',result);
             setUser({
@@ -55,10 +58,12 @@ const Login = () => {
             context.setUser(result);
             router.push("/");
             toastSuccess(`User "${result.name}" logged in successfully.`);
-            
+            setLoginDisable(false);
+
 
         } catch (error) {
             console.log(error);
+            setLoginDisable(false);
             toastError("Invalid credentials");
         }
 
@@ -115,7 +120,7 @@ const Login = () => {
                         />
                     </div>
                     <div className='mt-4 flex justify-center'>
-                        <button type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Login</button>
+                        <button  disabled={loginDisable} type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Login</button>
                         <button type='reset' onClick={onClickClear} className='bg-red-600 py-2 px-3 rounded-lg hover:bg-red-800 text-white ms-3'>Clear</button>
 
                     </div>

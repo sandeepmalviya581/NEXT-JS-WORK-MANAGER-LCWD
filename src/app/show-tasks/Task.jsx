@@ -60,7 +60,7 @@ const Task = ({ task, deleteTaskParent }) => {
                 <div className='flex justify-between mt-3'>
                     <p >Status: <span className="font-semibold">{task.status}</span> </p>
                     <p className='text-right'>
-                        Author: <span className='font-semibold'> {user.name}</span>
+                        Author: <span className='font-semibold'> {user?.name}</span>
                     </p>
                 </div>
 

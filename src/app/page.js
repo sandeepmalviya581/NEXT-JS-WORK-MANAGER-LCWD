@@ -7,9 +7,9 @@ import Link from 'next/link'
 import { getAllCount, login } from '@/services/userService';
 
 
-export const metadata = {
-  title: "Home: Work Manager"
-}
+// export const metadata = {
+//   title: "Home: Work Manager"
+// }
 
 export default function Home() {
 

@@ -8,22 +8,36 @@ const UserProvider = ({ children }) => {
 
     const [user, setUser] = useState(undefined);
 
-    async function load() {
-        try {
-            const loadUser = await currentUser();
-            console.log("calling from user provider=>>>>>>");
-            console.log(loadUser);
-            setUser({ ...loadUser });
-            // console.log(loadUser);
-        } catch (error) {
-            console.log("error in loading current user");
-            console.log(error);
-            // toast.error("error in loading current user");
-            setUser(undefined);
-        }
-    }
+    // async function load() {
+    //     try {
+    //         const loadUser = await currentUser();
+    //         console.log("calling from user provider=>>>>>>");
+    //         console.log(loadUser);
+    //         setUser({ ...loadUser });
+    //         // console.log(loadUser);
+    //     } catch (error) {
+    //         console.log("error in loading current user");
+    //         console.log(error);
+    //         // toast.error("error in loading current user");
+    //         setUser(undefined);
+    //     }
+    // }
 
     useEffect(() => {
+        async function load() {
+            try {
+                const loadUser = await currentUser();
+                console.log("calling from user provider=>>>>>>");
+                console.log(loadUser);
+                setUser({ ...loadUser });
+                // console.log(loadUser);
+            } catch (error) {
+                console.log("error in loading current user");
+                console.log(error);
+                // toast.error("error in loading current user");
+                setUser(undefined);
+            }
+        }
         load();
     }, []);
 

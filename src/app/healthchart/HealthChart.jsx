@@ -178,7 +178,7 @@ const HealthChart = () => {
                             <tr key={item._id}>
 
                                 <td className="px-6 py-4 whitespace-no-wrap border-b" >
-                                    [{index + 1}]{item._id}
+                                    [{index + 1}]{item?._id && item._id.substring(0, 13)}
                                 </td>
 
                                 {/* <td className="px-6 py-4 whitespace-no-wrap border-b text-xs">

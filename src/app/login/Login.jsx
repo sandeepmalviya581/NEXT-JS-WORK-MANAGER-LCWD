@@ -48,11 +48,11 @@ const Login = () => {
                 return;
             }
             const result = await login(user);
-            console.log(result);
+            console.log('user login',result);
             setUser({
                 email: "", password: ""
             });
-            context.setUser(result.user);
+            context.setUser(result);
             router.push("/");
             toastSuccess(`User "${result.name}" logged in successfully.`);
             

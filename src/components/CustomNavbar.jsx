@@ -11,7 +11,7 @@ const CustomNavbar = () => {
   const router=useRouter();
 
   const context = useContext(UserContext);
-  console.log("Custome nav bar --->>>>>>>>>");
+  // console.log("Custome nav bar --->>>>>>>>>");
   // console.log(context.user);
 
     async function handleLogout(){
@@ -19,7 +19,7 @@ const CustomNavbar = () => {
       const lout = await logout();
       console.log(lout);
       context.setUser(undefined);
-      router.push("/")
+      router.push("/login")
     } catch (error) {
       console.log("Failed in logout");
       toast.error("Failed to logout")

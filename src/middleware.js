@@ -17,7 +17,7 @@ export function middleware(request) {
         console.log("middleware :: Trying to access pages-: login and signup");
         if (authToken) {
             console.log("middleware :: AuthToken have value and went to Home page.");
-            return NextResponse.redirect(new URL('/profile/user', request.url))
+            return NextResponse.redirect(new URL('/', request.url))
         }
     } else {
         if (!authToken) {

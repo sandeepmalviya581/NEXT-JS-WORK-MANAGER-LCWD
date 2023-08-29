@@ -1,5 +1,6 @@
 "use client"
-import { currentUser } from '@/services/userService';
+import { mySelfUser } from '@/services/userService';
+// import { currentUser } from '@/services/userService';
 import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify';
 import UserContext from './userContext'
@@ -26,7 +27,9 @@ const UserProvider = ({ children }) => {
     useEffect(() => {
         async function load() {
             try {
-                const loadUser = await currentUser();
+                // const loadUser = await currentUser();
+                const loadUser = await mySelfUser();
+
                 console.log("calling from user provider=>>>>>>");
                 console.log(loadUser);
                 setUser({ ...loadUser });

@@ -52,3 +52,7 @@ export async function getAllCount() {
     return await httpAxios.post("/api/users/all/getAllCount").then((response) => response.data);
 }
 
+
+export async function mySelfUser() {
+    return await httpAxios.get("/api/myself").then((response) => response.data);
+}

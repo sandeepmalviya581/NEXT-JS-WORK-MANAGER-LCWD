@@ -3,6 +3,7 @@ import UserContext from '@/context/userContext';
 import { deleteTaskById, getTaskOfUser } from '@/services/userService';
 import React, { useContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
+import Loader from '../customLoader';
 import Task from './Task';
 
 const ShowTasks = () => {
@@ -10,6 +11,8 @@ const ShowTasks = () => {
 
 
     const context = useContext(UserContext);
+    const [isLoading, setIsLoading] = useState(true);
+
 
     const [task, setTask] = useState([]);
     async function loadTask(userId) {
@@ -26,6 +29,7 @@ const ShowTasks = () => {
         if (context.user) {
             loadTask(context.user._id);
         }
+        setIsLoading(false);
     }, [context.user]);
 
     async function deleteTaskParent(taskId) {
@@ -47,7 +51,7 @@ const ShowTasks = () => {
 
     return (
         <div className="grid grid-cols-12 mt-3">
-            <div className='col-span-6 col-start-4'>
+            {isLoading ? <Loader /> : <div className='col-span-6 col-start-4'>
                 <h1 className='text-2xl mb-3'>  Your Tasks ({task.length})</h1>
                 {
                     task.map((t) => (
@@ -55,7 +59,7 @@ const ShowTasks = () => {
                     ))
                 }
             </div>
-
+            }
 
         </div>
     )

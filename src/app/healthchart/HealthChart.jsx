@@ -3,11 +3,13 @@ import UserContext from '@/context/userContext';
 import { addHealthChart, getChartByUserId } from '@/services/healthChartService';
 import React, { useState, useEffect, useContext } from 'react';
 import { toast } from 'react-toastify';
+import Loader from '../customLoader';
 
 const HealthChart = () => {
 
     const context = useContext(UserContext);
 
+    const [isLoading, setIsLoading] = useState(true);
 
 
 
@@ -30,6 +32,8 @@ const HealthChart = () => {
             console.log(context.user);
             getUserChart(context.user._id);
         }
+        setIsLoading(false);
+
     }, [context.user]);
     const [data, setData] = useState([]);
 
@@ -125,7 +129,7 @@ const HealthChart = () => {
 
     return (
         <div className="flex justify-center mt-10">
-            <form action='#!' onSubmit={submitHealthChart}>
+            {isLoading ? <Loader /> : <form action='#!' onSubmit={submitHealthChart}>
 
                 <table className="min-w-full border border-gray-300">
                     <thead>
@@ -332,8 +336,9 @@ const HealthChart = () => {
                     <button type='button' onClick={addRow} className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Add</button>
 
                 </div>
-            </form>
+            </form>}
         </div>
+
     );
 };
 

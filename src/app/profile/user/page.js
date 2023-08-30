@@ -15,15 +15,15 @@ const ProfilePage = () => {
           <tbody>
             <tr className="bg-blue-100">
               <td className="py-3 pr-6 font-semibold text-gray-600">Name:</td>
-              <td className="py-3">{context?.name}</td>
+              <td className="py-3">{context?.user?.name}</td>
             </tr>
             <tr className="bg-green-100">
               <td className="py-3 pr-6 font-semibold text-gray-600">Email:</td>
-              <td className="py-3">{context?.email}</td>
+              <td className="py-3">{context?.user?.email}</td>
             </tr>
             <tr className="bg-yellow-100">
-              <td className="py-3 pr-6 font-semibold text-gray-600">Role:</td>
-              <td className="py-3">{context?.about}</td>
+              <td className="py-3 pr-6 font-semibold text-gray-600">About:</td>
+              <td className="py-3">{context?.user?.about}</td>
             </tr>
           </tbody>
         </table>

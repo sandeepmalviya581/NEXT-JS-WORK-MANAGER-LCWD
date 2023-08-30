@@ -4,6 +4,8 @@ import { NextResponse } from "next/server"
 import bcrypt from 'bcryptjs'
 import { Task } from "@/model/task";
 import jwt from 'jsonwebtoken'
+import mongoose from "mongoose";
+const ObjectId = mongoose.Types.ObjectId;
 
 connectDb();
 
@@ -150,35 +152,17 @@ export async function POST(request, { params }) {
                 }).count();
                 countMap.totalUser = totalUser;
                 countMap.totalUserTask = totalUserTask;
-                console.log('countMap', countMap);
 
-
-
-                //  const agg=   Task.aggregate([
-                //         {
-                //           $match: {
-                //             quantity: { $userId: userId } // Apply your "where" condition here
-                //           }
-                //         },
-                //         {
-                //           $group: {
-                //             _id: "$status",
-                //             totalQuantity: { $sum: "$status" }
-                //           }
-                //         }
-                //       ]);
-
-                // const agg = await Task.aggregate([
-                //     {
-                //         "$match": { userId: data._id }
-                //      },
+                const userTaskGroup = await Task.aggregate([
+                    {
+                        "$match": { userId: new ObjectId(data._id) }
+                     },
                   
-                //     { "$group": { _id: "$status", count: { $sum: 1 } } }
-                // ])
+                    { "$group": { _id: "$status", count: { $sum: 1 } } }
+                ]);
+                countMap.userTaskGroup=userTaskGroup;
 
-                // console.log('aggree');
-                // console.log(agg);
-
+                console.log('countMap', countMap);
 
 
 

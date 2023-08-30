@@ -66,10 +66,10 @@ const AddTask = () => {
                 toastWarn("Content can not be empty.");
                 return;
             }
-            //  else if (checkEmpty(task.status)) {
-            //     toastWarn("Status can not be empty.");
-            //     return;
-            // }
+             else if (checkEmpty(task.status)) {
+                toastWarn("Status can not be empty.");
+                return;
+            }
             if (searchparam && searchparam.toString()) {
                 const result = await editTask(task);
                 toastSuccess(`Task "${result.title}" edited successfully.`);
@@ -164,7 +164,7 @@ const AddTask = () => {
                             className='w-full p-3 rounded-3xl bg-gray-100 focus:ring-gray-400 border-gray-800'
                         >
 
-                            <option value="none" disabled>
+                            <option value="" >
                                 --Please select--
                             </option>
                             <option value="pending">

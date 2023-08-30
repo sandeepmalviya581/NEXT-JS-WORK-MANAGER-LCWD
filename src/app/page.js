@@ -29,6 +29,21 @@ export default function Home() {
             item.count = result.totalUser;
           } else if (item.id === 2) {
             item.count = result.totalUserTask;
+          } else if (item.id === 6) {
+
+
+            //  const firstOjb=  result.userTaskGroup[0];
+            //  let custRes='';
+            //  if(firstOjb._id==='pending'){
+            //   custRes=`Pending ${count} `
+            //  } if(firstOjb._id==='completed'){
+            //   custRes+=custRes`Completed ${count} `
+            //  }
+
+            item.count = `${result.userTaskGroup[0]._id} : ${result.userTaskGroup[0].count}  ${result.userTaskGroup[1]._id} : ${result.userTaskGroup[1].count}`
+
+
+            // item.count= JSON.stringify(result.userTaskGroup);
           }
         }
 

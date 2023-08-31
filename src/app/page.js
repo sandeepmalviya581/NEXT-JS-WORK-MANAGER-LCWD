@@ -40,7 +40,11 @@ export default function Home() {
             //   custRes+=custRes`Completed ${count} `
             //  }
 
-            item.count = `${result.userTaskGroup[0]._id} : ${result.userTaskGroup[0].count}  ${result.userTaskGroup[1]._id} : ${result.userTaskGroup[1].count}`
+            if(result.userTaskGroup.length===1){
+              item.count = `${result.userTaskGroup[0]._id} : ${result.userTaskGroup[0].count}`
+            }else{
+              item.count = `${result.userTaskGroup[0]._id} : ${result.userTaskGroup[0].count}  ${result.userTaskGroup[1]._id} : ${result.userTaskGroup[1].count}`
+            }
 
 
             // item.count= JSON.stringify(result.userTaskGroup);
@@ -50,10 +54,10 @@ export default function Home() {
         return item;
 
       });
+      console.log('updated count list',updateList);
       setList(updateList);
-      console.log(result);
     } catch (error) {
-
+      console.log(error);
     }
 
   }

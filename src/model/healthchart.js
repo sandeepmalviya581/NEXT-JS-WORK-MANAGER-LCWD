@@ -51,6 +51,10 @@ const HealthChartSchema = new Schema({
     },
     weight: {
         type: String
+    },
+    amritvela: {
+        type: Boolean,
+        default: false
     }
 
 

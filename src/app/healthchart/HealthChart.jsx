@@ -116,7 +116,7 @@ const HealthChart = () => {
     const addRow = () => {
         const newRow = {
             anulomVilom: false, kapalBhati: false, exercise: false, hotWater: false, morningWalk: false,
-            eveningWalk: false, nightWalk: false, chartDate: '', weight: ''
+            eveningWalk: false, nightWalk: false, chartDate: '', weight: '',anulomVilom: false
         }
         setData([...data, newRow]);
     }
@@ -134,9 +134,7 @@ const HealthChart = () => {
                 <table className="min-w-full border border-gray-300">
                     <thead>
                         <tr >
-                            <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
-                                S.No.
-                            </th>
+                         
 
                             {/* <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 ID
@@ -146,7 +144,9 @@ const HealthChart = () => {
                                 Chart Created Date
                             </th>
 
-
+                            <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                            Amritvela
+                            </th>
 
                             <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Anulom Vilom
@@ -169,11 +169,17 @@ const HealthChart = () => {
                             <th className="px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Walk After Night Meal
                             </th>
-                            <th className="px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
-                                Weight
-                            </th>
+                           
                             <th className="px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Delete
+                            </th>
+
+                            {/* <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                                S.No.
+                            </th> */}
+
+                            <th className="px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                                Weight
                             </th>
                         </tr>
                     </thead>
@@ -181,9 +187,7 @@ const HealthChart = () => {
                         {data.map((item, index) => (
                             <tr key={item._id}>
 
-                                <td className="px-6 py-4 whitespace-no-wrap border-b" >
-                                    [{index + 1}]{item?._id && item._id.substring(0, 13)}
-                                </td>
+                             
 
                                 {/* <td className="px-6 py-4 whitespace-no-wrap border-b text-xs">
                                     {item._id}
@@ -214,7 +218,19 @@ const HealthChart = () => {
                                     />
                                 </td>
 
+                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.amritvela ? 'bg-green-300' : 'bg-orange-400'}  `}>
+                                    <input
+                                        type="checkbox"
+                                        className="form-checkbox h-4 w-4 text-indigo-600"
 
+
+                                        checked={item.amritvela}
+
+                                        name="amritvela"
+                                        onChange={(e) => onClickOnItem(e, item, index)}
+
+                                    />
+                                </td>
 
                                 <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.anulomVilom ? 'bg-green-300' : 'bg-orange-400'}  `}>
                                     <input
@@ -311,6 +327,18 @@ const HealthChart = () => {
                                     />
                                 </td> */}
 
+                             
+
+
+
+                                <td className="px-6 py-4 whitespace-no-wrap border-b">
+                                    <button type='button' onClick={() => deleteRow(index)} className='bg-red-400 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Delete</button>
+                                </td>
+
+                                {/* <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                    [{index + 1}]{item?._id && item._id.substring(0, 5)}
+                                </td> */}
+
                                 <td className='px-1 whitespace-no-wrap border-b'>
                                     <input type="text" id='weight'
                                         name="weight"
@@ -320,18 +348,12 @@ const HealthChart = () => {
                                     />
                                 </td>
 
-
-
-
-                                <td className="px-6 py-4 whitespace-no-wrap border-b">
-                                    <button type='button' onClick={() => deleteRow(index)} className='bg-red-400 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Delete</button>
-                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                <div className='mt-4 flex justify-center'>
-                    <button type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Submit</button>
+                <div className='mt-4 flex justify-center space-x-3 mb-2'>
+                    <button type='submit'  className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Submit</button>
                     {/* <button type='reset' onClick={onClickClear} className='bg-orange-400 py-2 px-3 rounded-lg hover:bg-red-800 text-white ms-3'>Clear</button> */}
                     <button type='button' onClick={addRow} className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Add</button>
 

@@ -1,6 +1,6 @@
 "use client"
 import Image from 'next/image'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import loginSvg from '../../assets/login.svg'
 import { toast } from 'react-toastify';
 import { checkEmpty } from '@/helper/utility'
@@ -12,8 +12,19 @@ import UserContext from '@/context/userContext';
 
 const Login = () => {
 
-    const router=useRouter();
+    const router = useRouter();
     const context = useContext(UserContext);
+
+
+    useEffect(() => {
+        console.log('context undefined now.');
+        if (context.user !== undefined && context.user !== null) {
+            toast.error("Session has been expired.");
+            context.setUser(undefined);
+        }
+    }, [])
+
+
     const [user, setUser] = useState({
         email: "", password: ""
     });
@@ -51,7 +62,7 @@ const Login = () => {
             }
             setLoginDisable(true);
             const result = await login(user);
-            console.log('user login',result);
+            console.log('user login', result);
             setUser({
                 email: "", password: ""
             });
@@ -120,7 +131,7 @@ const Login = () => {
                         />
                     </div>
                     <div className='mt-4 flex justify-center'>
-                        <button  disabled={loginDisable} type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Login</button>
+                        <button disabled={loginDisable} type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Login</button>
                         <button type='reset' onClick={onClickClear} className='bg-red-600 py-2 px-3 rounded-lg hover:bg-red-800 text-white ms-3'>Clear</button>
 
                     </div>

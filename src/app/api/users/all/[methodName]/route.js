@@ -76,7 +76,7 @@ export async function POST(request, { params }) {
             } catch (error) {
                 return NextResponse.json({
                     message: "failed to fetch records."
-                });
+                },{status: 500});
             }
 
 
@@ -105,7 +105,7 @@ export async function POST(request, { params }) {
                     message: "Failed to create user.",
                     success: false,
                     errorMsg: error
-                });
+                },{status: 500});
 
             }
 
@@ -132,7 +132,7 @@ export async function POST(request, { params }) {
             } catch (error) {
                 return NextResponse.json({
                     message: "failed to fetch records."
-                });
+                },{status: 500});
             }
 
         } else if (methodName === 'getAllCount') {
@@ -173,7 +173,7 @@ export async function POST(request, { params }) {
             } catch (error) {
                 return NextResponse.json({
                     message: "failed to fetch records."
-                });
+                },{status: 500});
             }
 
         }

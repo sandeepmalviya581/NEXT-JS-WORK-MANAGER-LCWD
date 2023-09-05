@@ -27,7 +27,7 @@ export async function GET(request) {
         return NextResponse.json({
             message: "failed to fetch records.",
             error
-        });
+        },{status: 500});
     }
 }
 

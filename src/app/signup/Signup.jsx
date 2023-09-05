@@ -49,6 +49,7 @@ const Signup = () => {
         toastWarn("About can not be empty.");
         return;
       }
+      user.email=user.email.toLowerCase();
       const result = await addUser(user);
       toastSuccess(`User "${result.name}" added successfully.`);
       setUser({
@@ -56,8 +57,13 @@ const Signup = () => {
       })
 
     } catch (error) {
+      console.log('error in signup');
       console.log(error);
-      toastError(error.response.data.error.message);
+      if(error.response.data.error.code===11000){
+        toastError(`Email ${error.response.data.error.keyValue.email} is already exist.`);
+      }else{
+        toastError(error.response.data.message);
+      }
     }
 
   }

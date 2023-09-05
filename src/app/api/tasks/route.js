@@ -13,7 +13,7 @@ export async function GET(request) {
     } catch (error) {
         return NextResponse.json({
             message: "failed to fetch records."
-        });
+        },{status: 500});
     }
 }
 

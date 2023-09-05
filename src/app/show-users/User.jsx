@@ -27,13 +27,13 @@ const User = ({ user, deleteUserParent }) => {
                     <h1 className='text-2xl font-medium'>
                         {user.name}
                     </h1>
-                    <div>
+                    {/* <div>
                         <button onClick={() => { deleteUser(user._id) }}>
                             <AiTwotoneDelete className='hover:bg-grey-100' />
                         </button>
 
 
-                    </div>
+                    </div> */}
 
 
                 </div>

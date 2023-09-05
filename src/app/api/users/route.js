@@ -14,7 +14,7 @@ export async function GET(request) {
     } catch (error) {
         return NextResponse.json({
             message: "failed to fetch records."
-        });
+        },{status: 500});
     }
 }
 
@@ -39,8 +39,8 @@ export async function POST(request) {
         return NextResponse.json({
             message: "Failed to create user.",
             success: false,
-            errorMsg: error
-        });
+            error
+        },{status: 500});
 
     }
 }

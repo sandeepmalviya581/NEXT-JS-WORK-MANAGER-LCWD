@@ -128,10 +128,10 @@ const HealthChart = () => {
     }
 
     return (
-        <div className="flex justify-center mt-10">
+        <div className="justify-center mt-10 grid grid-cols-12 ">
             {isLoading ? <Loader /> : <form action='#!' onSubmit={submitHealthChart}>
 
-                <table className="min-w-full border border-gray-300">
+                <table className="w-full border border-gray-300 col-span-10 col-start-3">
                     <thead>
                         <tr >
                          
@@ -174,9 +174,9 @@ const HealthChart = () => {
                                 Delete
                             </th>
 
-                            {/* <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                            <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 S.No.
-                            </th> */}
+                            </th>
 
                             <th className="px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Weight
@@ -335,9 +335,9 @@ const HealthChart = () => {
                                     <button type='button' onClick={() => deleteRow(index)} className='bg-red-400 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Delete</button>
                                 </td>
 
-                                {/* <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                <td className="px-6 py-4 whitespace-no-wrap border-b" >
                                     [{index + 1}]{item?._id && item._id.substring(0, 5)}
-                                </td> */}
+                                </td>
 
                                 <td className='px-1 whitespace-no-wrap border-b'>
                                     <input type="text" id='weight'

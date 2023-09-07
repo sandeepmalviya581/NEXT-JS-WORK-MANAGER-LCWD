@@ -116,7 +116,7 @@ const HealthChart = () => {
     const addRow = () => {
         const newRow = {
             anulomVilom: false, kapalBhati: false, exercise: false, hotWater: false, morningWalk: false,
-            eveningWalk: false, nightWalk: false, chartDate: '', weight: '',anulomVilom: false
+            eveningWalk: false, nightWalk: false, chartDate: '', weight: '', anulomVilom: false
         }
         setData([...data, newRow]);
     }
@@ -134,18 +134,18 @@ const HealthChart = () => {
                 <table className="w-full border border-gray-300 col-span-10 col-start-3">
                     <thead>
                         <tr >
-                         
 
-                            {/* <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
+
+                            <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 ID
-                            </th> */}
+                            </th>
 
                             <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Chart Created Date
                             </th>
 
                             <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
-                            Amritvela
+                                Amritvela
                             </th>
 
                             <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
@@ -169,14 +169,12 @@ const HealthChart = () => {
                             <th className="px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Walk After Night Meal
                             </th>
-                           
+
                             <th className="px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Delete
                             </th>
 
-                            <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
-                                S.No.
-                            </th>
+
 
                             <th className="px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Weight
@@ -187,11 +185,13 @@ const HealthChart = () => {
                         {data.map((item, index) => (
                             <tr key={item._id}>
 
-                             
 
-                                {/* <td className="px-6 py-4 whitespace-no-wrap border-b text-xs">
-                                    {item._id}
-                                </td> */}
+
+
+
+                                <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                    [{index + 1}]{item?._id && item._id.substring(0, 5)}
+                                </td>
 
 
                                 <td className='text-sm'>
@@ -317,17 +317,8 @@ const HealthChart = () => {
                                     />
                                 </td>
 
-                                {/* <td className={`px-6 py-4 whitespace-no-wrap border-b`}>
-                                    <input
-                                        type="text"
-                                        className="form-checkbox h-8 w-full text-indigo-600"
 
-                                        name="weight"
-                                        onChange={(e) => onClickOnItem(e, item, index)}
-                                    />
-                                </td> */}
 
-                             
 
 
 
@@ -335,9 +326,7 @@ const HealthChart = () => {
                                     <button type='button' onClick={() => deleteRow(index)} className='bg-red-400 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Delete</button>
                                 </td>
 
-                                <td className="px-6 py-4 whitespace-no-wrap border-b" >
-                                    [{index + 1}]{item?._id && item._id.substring(0, 5)}
-                                </td>
+
 
                                 <td className='px-1 whitespace-no-wrap border-b'>
                                     <input type="text" id='weight'
@@ -352,13 +341,14 @@ const HealthChart = () => {
                         ))}
                     </tbody>
                 </table>
-                <div className='mt-4 flex justify-center space-x-3 mb-2'>
-                    <button type='submit'  className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Submit</button>
-                    {/* <button type='reset' onClick={onClickClear} className='bg-orange-400 py-2 px-3 rounded-lg hover:bg-red-800 text-white ms-3'>Clear</button> */}
+                <div className='mt-4 flex justify-evenly space-x-3 mb-2'>
+                    <button type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Submit</button>
                     <button type='button' onClick={addRow} className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Add</button>
-
                 </div>
+
+                
             </form>}
+            
         </div>
 
     );

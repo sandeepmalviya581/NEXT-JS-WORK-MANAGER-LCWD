@@ -55,7 +55,7 @@ export async function POST(request) {
 
 
        const secret = new TextEncoder().encode(
-        'cc7e0d44fd473002f1c42167459001140ec6389b7353f8088f4d9a95f2f596f2',
+        'workmanager',
       )
       const alg = 'HS256'
       
@@ -67,25 +67,6 @@ export async function POST(request) {
         .setExpirationTime('1h')
         .sign(secret);
 
-
-        console.log('jose nweeeeeeee');
-        console.log(newJwt);
-
-
-        
-
-    //     const {payload} = await jwtVerify(newJwt, new TextEncoder().encode('cc7e0d44fd473002f1c42167459001140ec6389b7353f8088f4d9a95f2f596f2'));
-    //    console.log('payload->>>>>>>>>>>');
-    //    console.log(payload);
-
-
-
-
-
-
-
-
-        
 
         const authToken = jwt.sign({
             _id: user._id,

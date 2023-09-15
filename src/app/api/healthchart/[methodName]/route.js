@@ -2,6 +2,7 @@ import { connectDb } from "@/helper/db";
 import { NextResponse } from "next/server"
 import { HealthChart } from "@/model/healthchart";
 import jwt from 'jsonwebtoken'
+import {SignJWT, jwtVerify} from 'jose';
 
 connectDb();
 
@@ -17,11 +18,14 @@ export async function POST(request, { params }) {
             console.log('Will send this data.');
             console.log(dataa);
 
-            const authToken = request.cookies.get('authToken')?.value;
-            const data = jwt.verify(authToken, 'workmanager');
+            const joseToken = request.cookies.get('joseToken')?.value;
+            // const data = jwt.verify(joseToken, 'workmanager');
+
+                const {payload} = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
+              const data=payload;
 
             dataa = dataa.map(item => {
-                item.userId = data._id
+                item.userId = data._doc._id
                 return item;
             });
             // console.log('After add user id.');
@@ -30,7 +34,7 @@ export async function POST(request, { params }) {
             try {
 
                 const deletedStatus = await HealthChart.deleteMany({
-                    userId: data._id
+                    userId: data._doc._id
                 })
                 // console.log('deletedStatus');
                 // console.log(deletedStatus);

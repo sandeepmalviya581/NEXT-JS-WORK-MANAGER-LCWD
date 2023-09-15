@@ -2,6 +2,7 @@ import { connectDb } from "@/helper/db";
 import { Task } from "@/model/task";
 import { NextResponse } from "next/server"
 import jwt from 'jsonwebtoken'
+import { jwtVerify } from 'jose';
 
 connectDb();
 export async function GET(request) {
@@ -21,12 +22,13 @@ export async function GET(request) {
 export async function POST(request) {
     const { title, content ,status} = await request.json();
 
-    const authToken = request.cookies.get('authToken')?.value;
-    const data = jwt.verify(authToken, 'workmanager');
+    const joseToken = request.cookies.get('joseToken')?.value;
+    // const data = jwt.verify(joseToken, 'workmanager');
+    const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
 
 
     const task = new Task({
-        title, content, status,userId: data._id
+        title, content, status,userId: payload._doc._id
     });
 
     try {

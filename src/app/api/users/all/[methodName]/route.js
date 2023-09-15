@@ -6,6 +6,7 @@ import { Task } from "@/model/task";
 import jwt from 'jsonwebtoken'
 import mongoose from "mongoose";
 const ObjectId = mongoose.Types.ObjectId;
+import { jwtVerify } from 'jose';
 
 connectDb();
 
@@ -143,19 +144,22 @@ export async function POST(request, { params }) {
 
             try {
 
-                const authToken = request.cookies.get('authToken')?.value;
-                const data = jwt.verify(authToken, 'workmanager');
+                const joseToken = request.cookies.get('joseToken')?.value;
+                // const data = jwt.verify(authToken, 'workmanager');
+
+                const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
+
 
                 const totalUser = await User.count();
                 const totalUserTask = await Task.find({
-                    userId: data._id
+                    userId: payload._doc._id
                 }).count();
                 countMap.totalUser = totalUser;
                 countMap.totalUserTask = totalUserTask;
 
                 const userTaskGroup = await Task.aggregate([
                     {
-                        "$match": { userId: new ObjectId(data._id) }
+                        "$match": { userId: new ObjectId(payload._doc._id) }
                      },
                   
                     { "$group": { _id: "$status", count: { $sum: 1 } } }

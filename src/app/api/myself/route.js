@@ -2,38 +2,32 @@ import { connectDb } from "@/helper/db";
 import { NextResponse } from "next/server"
 import jwt from 'jsonwebtoken'
 import { User } from "@/model/user";
+import { jwtVerify } from 'jose';
 
 connectDb();
 export async function GET(request) {
     // try {
-        console.log("local storage");
-        const authToken = request.cookies.get('authToken')?.value;
+    console.log("local storage");
+    const joseToken = request.cookies.get('joseToken')?.value;
 
-        if(!authToken){
-            return NextResponse.json({
-                message: 'User is not logged in.'
-            });
-        }
-        const data = jwt.verify(authToken, 'workmanager');
-        const user = await User.findById(data._id).select('-password');
-        console.log('data in user api called agined api');
-        console.log(user);
 
-    // const user={
-    //     _id: '64ec2f51be2d8397def321ca',
-    //     name: 'Sandeep Malviya',
-    //     email:'sandeep.malviya581@gmail.com',
-    //     about:'I am a simple person.'
-    // }
 
-    // return NextResponse.json(user);
+    if (!joseToken) {
+        return NextResponse.json({
+            message: 'User is not logged in.'
+        });
+    }
+    // const data = jwt.verify(joseToken, 'workmanager');
+    const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
+    console.log(payload);
+    const data = payload._doc;
+    // const user = await User.findById(data._id).select('-password');
+    console.log('data in user api called agined api');
+    // console.log(user);
 
-        return NextResponse.json(user);
-    // } catch (error) {
-    //     return NextResponse.json({
-    //         message: "failed to fetch records.",
-    //         error
-    //     },{status: 500});
-    // }
+
+
+    return NextResponse.json(data);
+
 }
 

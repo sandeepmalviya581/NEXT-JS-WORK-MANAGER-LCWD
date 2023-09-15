@@ -7,7 +7,7 @@ export async function POST(request) {
         success: true
     });
 
-    response.cookies.set("authToken", "", {
+    response.cookies.set("joseToken", "", {
         expiresIn: new Date(0),
     });
 

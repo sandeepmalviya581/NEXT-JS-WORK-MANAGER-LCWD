@@ -4,11 +4,11 @@ import { jwtVerify } from 'jose';
 // This function can be marked `async` if using `await` inside
 export async function middleware(request) {
     console.log("========middleware start.========");
-    const authToken = request.cookies.get('authToken')?.value;
+    // const authToken = request.cookies.get('authToken')?.value;
     const joseToken = request.cookies.get('joseToken')?.value;
 
-    console.log("middleware :: AuthToken.");
-    console.log(authToken);
+    // console.log("middleware :: AuthToken.");
+    // console.log(authToken);
     console.log("middleware :: Tring to call page.", request.nextUrl.pathname);
     const loginUserNotAccess = request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup';
 
@@ -36,9 +36,9 @@ export async function middleware(request) {
                     expiresIn: new Date(0),
                 });
 
-                response.cookies.set("authToken", "", {
-                    expiresIn: new Date(0),
-                });
+                // response.cookies.set("authToken", "", {
+                //     expiresIn: new Date(0),
+                // });
                 console.log('payload->>>>>>>>>>>end');
                 return response;
             }
@@ -49,7 +49,7 @@ export async function middleware(request) {
         }
 
     } else {
-        if (!authToken) {
+        if (!joseToken) {
             console.log("middleware :: Dont have login token rediect to Login page.");
 
             if (request.nextUrl.pathname.startsWith('/api')) {
@@ -76,9 +76,9 @@ export async function middleware(request) {
                     expiresIn: new Date(0),
                 });
 
-                response.cookies.set("authToken", "", {
-                    expiresIn: new Date(0),
-                });
+                // response.cookies.set("authToken", "", {
+                //     expiresIn: new Date(0),
+                // });
             
                 return response;
 

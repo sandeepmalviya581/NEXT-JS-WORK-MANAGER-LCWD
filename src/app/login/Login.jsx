@@ -61,6 +61,7 @@ const Login = () => {
                 return;
             }
             setLoginDisable(true);
+            user.email=user.email.toLowerCase();
             const result = await login(user);
             console.log('user login', result);
             setUser({

@@ -77,7 +77,7 @@ export async function POST(request, { params }) {
             } catch (error) {
                 return NextResponse.json({
                     message: "failed to fetch records."
-                },{status: 500});
+                }, { status: 500 });
             }
 
 
@@ -106,7 +106,7 @@ export async function POST(request, { params }) {
                     message: "Failed to create user.",
                     success: false,
                     errorMsg: error
-                },{status: 500});
+                }, { status: 500 });
 
             }
 
@@ -133,7 +133,7 @@ export async function POST(request, { params }) {
             } catch (error) {
                 return NextResponse.json({
                     message: "failed to fetch records."
-                },{status: 500});
+                }, { status: 500 });
             }
 
         } else if (methodName === 'getAllCount') {
@@ -160,11 +160,11 @@ export async function POST(request, { params }) {
                 const userTaskGroup = await Task.aggregate([
                     {
                         "$match": { userId: new ObjectId(payload._doc._id) }
-                     },
-                  
+                    },
+
                     { "$group": { _id: "$status", count: { $sum: 1 } } }
                 ]);
-                countMap.userTaskGroup=userTaskGroup;
+                countMap.userTaskGroup = userTaskGroup;
 
                 console.log('countMap', countMap);
 
@@ -176,11 +176,34 @@ export async function POST(request, { params }) {
                 return NextResponse.json(countMap);
             } catch (error) {
                 return NextResponse.json({
-                    message: "failed to fetch records."
-                },{status: 500});
+                    message: "failed to fetch records.",
+                    error
+                }, { status: 500 });
             }
 
         }
+
+        else if (methodName === 'updateTaskStatus') {
+            try {
+                const { taskId, status } = await request.json();
+                if (taskId === null || taskId === '') {
+                    throw "Task id can not be empty.";
+                } else if (status === null || status === '') {
+                    throw "Status can not be empty.";
+                } else if (status !== 'pending' && status !== 'completed') {
+                    throw "Status should be pending or completed.";
+                }
+                const res = await Task.updateOne({ _id: taskId }, { status: status,updatedDate: Date.now() });
+                return NextResponse.json(res);
+            } catch (error) {
+                return NextResponse.json({
+                    message: "failed to update task status",
+                    error
+                }, { status: 500 });
+            }
+
+        }
+
 
 
 

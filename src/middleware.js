@@ -9,7 +9,7 @@ export async function middleware(request) {
 
     // console.log("middleware :: AuthToken.");
     // console.log(authToken);
-    console.log("middleware :: Tring to call page.", request.nextUrl.pathname);
+    console.log("middleware :: Trying to call page.", request.nextUrl.pathname);
     const loginUserNotAccess = request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup';
 
     if (request.nextUrl.pathname === '/api/login' || request.nextUrl.pathname === '/api/users') {
@@ -39,7 +39,7 @@ export async function middleware(request) {
                 // response.cookies.set("authToken", "", {
                 //     expiresIn: new Date(0),
                 // });
-                console.log('payload->>>>>>>>>>>end');
+                console.log('payload->>>>>>>>>>>end',response);
                 return response;
             }
 
@@ -79,7 +79,7 @@ export async function middleware(request) {
                 // response.cookies.set("authToken", "", {
                 //     expiresIn: new Date(0),
                 // });
-            
+                console.log('Response',response);
                 return response;
 
             }

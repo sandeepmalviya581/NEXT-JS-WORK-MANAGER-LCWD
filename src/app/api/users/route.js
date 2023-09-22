@@ -20,9 +20,9 @@ export async function GET(request) {
 
 
 export async function POST(request) {
-    const { name, email, password, about, profileUrl } = await request.json();
+    const { name, email, password, about, profileUrl,config } = await request.json();
     const user = new User({
-        name, email, password, about, profileUrl
+        name, email, password, about, profileUrl,config:{color:'test'}
     });
 
     try {

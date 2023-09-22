@@ -342,13 +342,14 @@ const HealthChart = () => {
                     </tbody>
                 </table>
                 <div className='mt-4 flex justify-evenly space-x-3 mb-2'>
+                    <button type='button' onClick={() => getUserChart(context.user._id)} className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Refresh</button>
                     <button type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Submit</button>
                     <button type='button' onClick={addRow} className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Add</button>
                 </div>
 
-                
+
             </form>}
-            
+
         </div>
 
     );

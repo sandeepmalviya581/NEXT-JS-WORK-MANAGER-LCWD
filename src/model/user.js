@@ -22,6 +22,7 @@ const UserSchema = new Schema({
         enum: ['USER_ADMIN', 'SUPER_ADMIN'],
         default: 'USER_ADMIN'
     },
+    config:  mongoose.Schema.Types.Mixed,
     about: String,
     profileUrl: String
 

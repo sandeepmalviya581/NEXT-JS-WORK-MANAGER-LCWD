@@ -193,7 +193,7 @@ export async function POST(request, { params }) {
                 } else if (status !== 'pending' && status !== 'completed') {
                     throw "Status should be pending or completed.";
                 }
-                const res = await Task.updateOne({ _id: taskId }, { status: status,updatedDate: Date.now() });
+                const res = await Task.updateOne({ _id: taskId }, { status: status, updatedDate: Date.now() });
                 return NextResponse.json(res);
             } catch (error) {
                 return NextResponse.json({
@@ -204,10 +204,23 @@ export async function POST(request, { params }) {
 
         }
 
+        else if (methodName === 'updateUserConfig') {
+            // console.log(config);
+            // console.log(userId);
+            try {
+                const { config, userId } = await request.json();
+                console.log(config);
+                console.log(userId);
+                const res = await User.updateOne({ _id: userId }, { config: config, updatedDate: Date.now() });
+                return NextResponse.json(res);
+            } catch (error) {
+                return NextResponse.json({
+                    message: "failed to update user config",
+                    error
+                }, { status: 500 });
+            }
 
-
-
-
+        }
     }
     return NextResponse.json({
         message: "Not found"

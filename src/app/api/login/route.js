@@ -43,7 +43,7 @@ export async function POST(request) {
             throw "Password can not be empty.";
         }
         const user = await User.findOne({
-            email: email
+            email: email.toLowerCase()
         });
 
         if (user == null) {

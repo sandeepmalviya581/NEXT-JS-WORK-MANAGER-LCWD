@@ -16,7 +16,8 @@ export async function GET(request, { params }) {
     } catch (error) {
         console.log(error);
         return NextResponse.json({
-            message: "failed to fetch records."
+            message: "failed to fetch records.",
+            error
         },{status: 500});
     }
 }
@@ -33,7 +34,8 @@ export async function DELETE(request, { params }) {
     } catch (error) {
         console.log(error);
         return NextResponse.json({
-            message: "failed to delete task."
+            message: "failed to delete task.",
+            error
         },{status: 500});
     }
 }
@@ -59,7 +61,8 @@ export async function PUT(request, { params }) {
     } catch (error) {
         console.log(error);
         return NextResponse.json({
-            message: "Unable to update task"
+            message: "Unable to update task",
+            error
         },{status: 500});
     }
 }

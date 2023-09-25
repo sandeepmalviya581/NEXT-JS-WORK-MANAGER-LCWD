@@ -15,7 +15,8 @@ export async function GET(request, { params }) {
     } catch (error) {
         console.log(error);
         return NextResponse.json({
-            message: "failed to fetch records."
+            message: "failed to fetch records.",
+            error
         },{status: 500});
     }
 }

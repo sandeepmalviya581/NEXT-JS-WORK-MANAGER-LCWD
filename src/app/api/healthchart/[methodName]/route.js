@@ -2,7 +2,7 @@ import { connectDb } from "@/helper/db";
 import { NextResponse } from "next/server"
 import { HealthChart } from "@/model/healthchart";
 import jwt from 'jsonwebtoken'
-import {SignJWT, jwtVerify} from 'jose';
+import { SignJWT, jwtVerify } from 'jose';
 
 connectDb();
 
@@ -21,8 +21,8 @@ export async function POST(request, { params }) {
             const joseToken = request.cookies.get('joseToken')?.value;
             // const data = jwt.verify(joseToken, 'workmanager');
 
-                const {payload} = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
-              const data=payload;
+            const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
+            const data = payload;
 
             dataa = dataa.map(item => {
                 item.userId = data._doc._id
@@ -43,7 +43,7 @@ export async function POST(request, { params }) {
                 // console.log('Result data');
                 // console.log(createdChart);
 
-               
+
                 // console.log('after convert to bool');
                 // console.log(createdChart);
                 return NextResponse.json(
@@ -67,8 +67,13 @@ export async function POST(request, { params }) {
 
 
         } else if (methodName === 'getHealthChartByUserId') {
-            let { userId } = await request.json();
-            console.log(userId);
+            // let { userId } = await request.json();
+            // console.log(userId);
+
+            const joseToken = request.cookies.get('joseToken')?.value;
+            const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
+            const userId = payload._doc._id;
+
             try {
                 let result = await HealthChart.find({
                     userId: userId
@@ -80,15 +85,16 @@ export async function POST(request, { params }) {
                 //     return item;
                 // });
 
-               
+
                 console.log('modified list.');
                 console.log(result);
                 return NextResponse.json(result);
             } catch (error) {
                 console.log(error);
                 return NextResponse.json({
-                    message: "failed to fetch records."
-                },{status: 500});
+                    message: "failed to fetch records.",
+                    error
+                }, { status: 500 });
             }
 
         }

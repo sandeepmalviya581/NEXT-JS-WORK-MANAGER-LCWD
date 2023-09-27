@@ -6,6 +6,11 @@ connectDb();
 export async function GET(request, { params }) {
     const { userId } = params;
     console.log(userId);
+
+    // const joseToken = request.cookies.get('joseToken')?.value;
+    // const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
+    // const userId = payload._doc._id;
+
     try {
         const tasks = await Task.find({
             userId: userId

@@ -13,6 +13,8 @@ const AddTask = () => {
     const searchparam = useSearchParams();
     const router = useRouter();
 
+    const [contextCheck, setContentCheck] = useState(false);
+
     async function getTask() {
         try {
             const taskSpilt = searchparam.toString().split("=");
@@ -66,7 +68,7 @@ const AddTask = () => {
                 toastWarn("Content can not be empty.");
                 return;
             }
-             else if (checkEmpty(task.status)) {
+            else if (checkEmpty(task.status)) {
                 toastWarn("Status can not be empty.");
                 return;
             }
@@ -100,6 +102,11 @@ const AddTask = () => {
             userId: "64b911e367bff02e4bb0463d"
 
         })
+    }
+
+    const onClickCheckBox = (e) => {
+        setTask({ ...task, content: e.target.checked ? task.title : '' });
+        setContentCheck(e.target.checked);
     }
 
 
@@ -145,6 +152,17 @@ const AddTask = () => {
                             className='w-full p-3 rounded-3xl bg-gray-100 focus:ring-gray-400 border-gray-800'
                         />
 
+                    </div>
+
+                    <div className='mt-4'>
+                        <lable htmlFor='task_checkbox' className="block text-sm font-medium mb-2">Fill content</lable>
+                        <input
+                            type="checkbox"
+                            className="form-checkbox h-4 w-4 text-indigo-600"
+                            checked={contextCheck}
+                            name="contextCheck"
+                            onChange={(e) => onClickCheckBox(e)}
+                        />
                     </div>
 
 

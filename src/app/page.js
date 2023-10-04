@@ -5,6 +5,7 @@ import Loader from './customLoader';
 import data from './utility/dashboard';
 import Link from 'next/link'
 import { getAllCount, login } from '@/services/userService';
+import { takeAllTableBk } from '@/services/healthChartService';
 
 
 // export const metadata = {
@@ -17,6 +18,23 @@ export default function Home() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [list, setList] = useState(data);
+  const [backupRes, setBackupRes] = useState({
+    userCount: 0,
+    taskCount: 0,
+    healthChartCount: 0
+  });
+
+
+  const takeBackupFunc = async () => {
+
+    try {
+      const result = await takeAllTableBk();
+      setBackupRes(result.result);
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
 
   const getCount = async () => {
     try {
@@ -40,9 +58,9 @@ export default function Home() {
             //   custRes+=custRes`Completed ${count} `
             //  }
 
-            if(result.userTaskGroup.length===1){
+            if (result.userTaskGroup.length === 1) {
               item.count = `${result.userTaskGroup[0]._id} : ${result.userTaskGroup[0].count}`
-            }else{
+            } else {
               item.count = `${result.userTaskGroup[0]._id} : ${result.userTaskGroup[0].count}  ${result.userTaskGroup[1]._id} : ${result.userTaskGroup[1].count}`
             }
 
@@ -54,7 +72,7 @@ export default function Home() {
         return item;
 
       });
-      console.log('updated count list',updateList);
+      console.log('updated count list', updateList);
       setList(updateList);
     } catch (error) {
       console.log(error);
@@ -91,14 +109,28 @@ export default function Home() {
                 <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {item.type === 'link' ? <Link href={item.link} className='hover:text-blue-200' >{item.name}</Link>
-                    : item.count
+                    : item.type === 'button' ?
+                      <button type="button" onClick={() => takeBackupFunc()} className='ml-2 bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' >Take Bacup</button>
+
+                      : item.count
                   }
 
                 </td>
+
+                {/* <td className="px-6 py-4 whitespace-nowrap">
+                  {item.type === 'button' ? <button >Test</button>
+                    : ''
+                  }
+
+                </td> */}
               </tr>
             ))}
           </tbody>
         </table>}
+
+      </div>
+      <div>
+        {JSON.stringify(backupRes)}
       </div>
 
     </div>

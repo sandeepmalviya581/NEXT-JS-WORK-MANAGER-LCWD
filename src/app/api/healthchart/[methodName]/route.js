@@ -3,6 +3,11 @@ import { NextResponse } from "next/server"
 import { HealthChart } from "@/model/healthchart";
 import jwt from 'jsonwebtoken'
 import { SignJWT, jwtVerify } from 'jose';
+import { HealthChartBackup } from "@/model/healthchart_backup";
+import { User } from "@/model/user";
+import { UserBackup } from "@/model/user_backup";
+import { Task } from "@/model/task";
+import { TaskBackup } from "@/model/task_backup";
 
 connectDb();
 
@@ -93,6 +98,49 @@ export async function POST(request, { params }) {
                 console.log(error);
                 return NextResponse.json({
                     message: "failed to fetch records.",
+                    error
+                }, { status: 500 });
+            }
+
+        }
+
+        else if (methodName === 'backuptable') {
+            console.log('healthchartbackup api called');
+            try {
+                let healthChartTable = await HealthChart.find();
+                console.log('All data fetched.');
+                const deletedStatus1 = await HealthChartBackup.deleteMany();
+                let savedBackupTable = HealthChartBackup.insertMany(healthChartTable);
+                const healthCount = healthChartTable.length;
+                console.log(healthCount);
+
+                let userTable = await User.find();
+                console.log('All data fetched.');
+                const deletedStatus2 = await UserBackup.deleteMany();
+                let savedBackupTable1 = UserBackup.insertMany(userTable);
+                const userCount = userTable.length;
+                console.log(userCount);
+
+                let taskTable = await Task.find();
+                console.log('All data fetched.');
+                const deletedStatus3 = await TaskBackup.deleteMany();
+                let savedBackupTable2 = TaskBackup.insertMany(taskTable);
+                const taskCount = taskTable.length;
+                console.log(taskCount);
+                console.log('All data inserted into health chart backup table.');
+                return NextResponse.json({
+                    message: "Backup completed",
+                    status: true,
+                    result: {
+                        'userCount': userCount,
+                        'taskCount': taskCount,
+                        'healthChartCount': healthCount
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+                return NextResponse.json({
+                    message: "Failed to backup",
                     error
                 }, { status: 500 });
             }

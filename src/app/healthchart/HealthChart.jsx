@@ -115,7 +115,7 @@ const HealthChart = () => {
 
     const addRow = () => {
         const newRow = {
-            anulomVilom: false, kapalBhati: false, exercise: false, hotWater: false, morningWalk: false,
+            anulomVilom: false,running: false, kapalBhati: false, exercise: false, hotWater: false, morningWalk: false,
             eveningWalk: false, nightWalk: false, chartDate: '', weight: '', anulomVilom: false
         }
         setData([...data, newRow]);
@@ -146,6 +146,10 @@ const HealthChart = () => {
 
                             <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
                                 Amritvela
+                            </th>
+
+                            <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
+                                Morning Running
                             </th>
 
                             <th className=" px-6 py-3 border-b bg-gray-100 text-left text-xs leading-4 font-bold text-gray-500 uppercase tracking-wider">
@@ -229,6 +233,17 @@ const HealthChart = () => {
                                         name="amritvela"
                                         onChange={(e) => onClickOnItem(e, item, index)}
 
+                                    />
+                                </td>
+
+                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.running ? 'bg-green-300' : 'bg-orange-400'}  `}>
+                                    <input
+                                        type="checkbox"
+                                        className="form-checkbox h-4 w-4 text-indigo-600"
+                                        checked={item.running}
+
+                                        name="running"
+                                        onChange={(e) => onClickOnItem(e, item, index)}
                                     />
                                 </td>
 

@@ -55,6 +55,10 @@ const HealthChartSchema = new Schema({
     amritvela: {
         type: Boolean,
         default: false
+    },
+    running: {
+        type: Boolean,
+        default: false
     }
 
 

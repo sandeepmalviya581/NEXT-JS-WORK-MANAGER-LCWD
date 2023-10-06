@@ -5,7 +5,7 @@ import Loader from './customLoader';
 import data from './utility/dashboard';
 import Link from 'next/link'
 import { getAllCount, login } from '@/services/userService';
-import { takeAllTableBk } from '@/services/healthChartService';
+import { bktblcntAPI, takeAllTableBk } from '@/services/healthChartService';
 
 
 // export const metadata = {
@@ -24,12 +24,28 @@ export default function Home() {
     healthChartCount: 0
   });
 
+  const [cList, setcList] = useState([]);
+
+
 
   const takeBackupFunc = async () => {
 
     try {
       const result = await takeAllTableBk();
-      setBackupRes(result.result);
+      // setBackupRes(result.result);
+      callCountAPI();
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
+  const callCountAPI = async () => {
+
+    try {
+      const bkCountRes = await bktblcntAPI();
+      setcList(bkCountRes);
     } catch (error) {
       console.log(error);
     }
@@ -39,6 +55,11 @@ export default function Home() {
   const getCount = async () => {
     try {
       const result = await getAllCount();
+
+      // const bkCountRes = await bktblcntAPI();
+      // setcList(bkCountRes);
+
+      callCountAPI();
 
       const updateList = list.map((item) => {
         if (item.type === 'other') {
@@ -130,10 +151,37 @@ export default function Home() {
 
       </div>
       <div>
-        {JSON.stringify(backupRes)}
+        {/* {JSON.stringify(backupRes)} */}
+
+
+        <table className="min-w-full divide-y divide-gray-300">
+          <thead>
+            <tr>
+              <th className="px-6 py-3 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase">Table Name</th>
+              <th className="px-6 py-3 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase">Orignal Table</th>
+              <th className="px-6 py-3 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase">Backup Table</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-300">
+
+
+            {cList.map(item => (
+              <tr key={item.tableName}>
+                <td className={`px-6 py-4 whitespace-nowrap ${item.current === item.bk ? 'bg-green-200' : 'bg-red-200'}`}>{item.tableName}</td>
+                <td className={`px-6 py-4 whitespace-nowrap ${item.current === item.bk ? 'bg-green-200' : 'bg-red-200'}`}>{item.current}</td>
+                <td className={`px-6 py-4 whitespace-nowrap ${item.current === item.bk ? 'bg-green-200' : 'bg-red-200'}`}>{item.bk}</td>
+              </tr>
+            ))}
+
+
+
+
+          </tbody>
+        </table>
+
       </div>
 
-    </div>
+    </div >
   );
 };
 

@@ -11,3 +11,9 @@ export async function getChartByUserId(data) {
 export async function takeAllTableBk() {
     return await httpAxios.post("/api/healthchart/backuptable", {}).then((response) => response.data);
 }
+
+
+export async function bktblcntAPI() {
+    return await httpAxios.post("/api/healthchart/bktblcnt", {}).then((response) => response.data);
+}
+

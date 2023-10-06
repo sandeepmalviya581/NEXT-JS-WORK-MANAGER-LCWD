@@ -149,6 +149,50 @@ export async function POST(request, { params }) {
 
 
 
+        else if (methodName === 'bktblcnt') {
+            console.log('healthchartbackup api called');
+            try {
+                let hcCount = await HealthChart.count();
+                let hcBkCount = await HealthChartBackup.count();
+                let userCount = await User.count();
+                const userBkCount = await UserBackup.count();
+                let tCount = await Task.count();
+                const tBkCount = await TaskBackup.count();
+
+                let list = [];
+                let hbObj = {
+                    tableName: 'user',
+                    current: userCount,
+                    bk: userBkCount
+                }
+                list.push(hbObj);
+
+                let uObj = {
+                    tableName: 'Health Chart',
+                    current: hcCount,
+                    bk: hcBkCount
+                }
+                list.push(uObj);
+
+                let tObj = {
+                    tableName: 'Task',
+                    current: tCount,
+                    bk: tBkCount
+                }
+                list.push(tObj);
+                return NextResponse.json(list);
+            } catch (error) {
+                console.log(error);
+                return NextResponse.json({
+                    message: "Failed to fetch records",
+                    error
+                }, { status: 500 });
+            }
+
+        }
+
+
+
 
     }
     return NextResponse.json({

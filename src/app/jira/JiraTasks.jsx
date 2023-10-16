@@ -93,14 +93,6 @@ const JiraTasks = () => {
       errors.summary = 'Summary is required';
     }
 
-    // if (!formData.description.trim()) {
-    //   errors.description = 'Description is required';
-    // }
-
-    // if (!formData.message.trim()) {
-    //   errors.message = 'Message is required';
-    // }
-
     if (Object.keys(errors).length === 0) {
       setIsLoading(true);
 
@@ -115,16 +107,6 @@ const JiraTasks = () => {
       }
       setIsLoading(false);
 
-
-      // Simulate an API request or any other async operation
-      // setTimeout(() => {
-      //   setIsLoading(false);
-
-      //   // Submit the form or take further action
-      //   console.log('Form submitted:', formData);
-      //   closeModal();
-      // }, 2000); // Replace with actual API request
-
       setValidationErrors({});
     } else {
       setValidationErrors(errors);
@@ -137,7 +119,7 @@ const JiraTasks = () => {
         onClick={openModal}
         className="bg-blue-500 text-white py-2 px-4 rounded-lg hover-bg-blue-600 transition duration-300"
       >
-        Open Form
+       Create
       </button>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div className="p-6">

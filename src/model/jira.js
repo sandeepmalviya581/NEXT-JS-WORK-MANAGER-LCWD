@@ -23,7 +23,7 @@ const JiraSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['backlog', 'testing', 'in progress', 'blocked', 'code review'],
+        enum: ['backlog','blocked','testing', 'inProgress', 'done', 'codeReview'],
         default: 'backlog'
     },
     type: {

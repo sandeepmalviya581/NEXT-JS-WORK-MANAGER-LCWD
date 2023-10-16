@@ -52,6 +52,9 @@ const CustomNavbar = () => {
               <Link href={'/healthchart'} className='hover:text-blue-200'>Health Chart</Link>
 
             </li>
+            <li>
+              <Link href={'/jira'} className='hover:text-blue-200'>Jira</Link>
+            </li>
           </ul>
         </div>)
       }

@@ -57,4 +57,8 @@ export async function mySelfUser() {
     return await httpAxios.get("/api/myself").then((response) => response.data);
 }
 
+export async function getUserInfo() {
+    return await httpAxios.get("/api/users/all/findUsers").then((response) => response.data);
+}
+
 

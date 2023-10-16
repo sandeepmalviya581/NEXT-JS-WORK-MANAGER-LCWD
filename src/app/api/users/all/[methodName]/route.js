@@ -241,7 +241,25 @@ export async function GET(request, { params }) {
     console.log(methodName);
 
     if (methodName !== null & methodName !== undefined) {
-        if (methodName === 'getRandomName') {
+        if (methodName === 'findUsers') {
+            try {
+                const users = await User.find({}, { name: 1, email: 1 }).sort({ name: 1 });
+                // console.log(users);
+                return NextResponse.json(
+                    users, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "failed to get random name.",
+                    success: false,
+                    error
+                }, { status: 500 });
+
+            }
+
+        } else if (methodName === 'getRandomName') {
             try {
                 // const ranNameResult = await getRondomNameAPI();
 

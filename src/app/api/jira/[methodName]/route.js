@@ -260,6 +260,23 @@ export async function POST(request, { params }) {
                 }, { status: 500 });
             }
 
+        }  else if (methodName === 'updateJiraStatus') {
+            try {
+                const { jiraId, status } = await request.json();
+                if (jiraId === null || jiraId === '') {
+                    throw "Jira id can not be empty.";
+                } else if (status === null || status === '') {
+                    throw "Status can not be empty.";
+                }
+                const res = await Jira.updateOne({ _id: jiraId }, { status: status, updatedDate: Date.now() });
+                return NextResponse.json(res);
+            } catch (error) {
+                return NextResponse.json({
+                    message: "failed to update task status",
+                    error
+                }, { status: 500 });
+            }
+
         }
 
 
@@ -332,8 +349,72 @@ export async function GET(request, { params }) {
         else if (methodName === 'getAllJiraTask') {
             try {
                 const jiraResp = await Jira.find();
+
+                const taskStatus = {
+                    backlog: {
+                        name: "Backlog",
+                        items: [],
+                    },
+                    blocked: {
+                        name: "Blocked",
+                        items: [],
+                    },
+                    inProgress: {
+                        name: "In Progress",
+                        items: [],
+                    },
+                    codeReview: {
+                        name: "Code Review",
+                        items: [],
+                    },
+                    testing: {
+                        name: "Testing",
+                        items: [],
+                    },
+                    done: {
+                        name: "Done",
+                        items: [],
+                    },
+                };
+
+
+                if (jiraResp != null && jiraResp.length > 0) {
+
+                    jiraResp.forEach((element) => {
+                        for (const key in taskStatus) {
+                            if (element.status === key) {
+                                const obj = {
+                                    id: element._id,
+                                    content: element.summary,
+                                };
+                                if (key === "backlog") {
+                                    taskStatus.backlog.items.push(obj);
+                                } else if (key === "blocked") {
+                                    taskStatus.blocked.items.push(obj);
+
+                                } else if (key === "inProgress") {
+                                    taskStatus.inProgress.items.push(obj);
+
+                                } else if (key === "codeReview") {
+                                    taskStatus.codeReview.items.push(obj);
+
+                                } else if (key === "testing") {
+                                    taskStatus.testing.items.push(obj);
+
+                                } else if (key === "done") {
+                                    taskStatus.done.items.push(obj);
+                                }
+
+                            }
+                        }
+                    });
+
+                }
+
+                console.log(taskStatus);
+
                 return NextResponse.json(
-                    jiraResp, {
+                    taskStatus, {
                     status: 200
                 });
             } catch (error) {

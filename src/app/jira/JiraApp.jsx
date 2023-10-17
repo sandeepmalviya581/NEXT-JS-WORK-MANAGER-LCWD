@@ -227,7 +227,8 @@
 import React, { useState, useEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import JiraTasks from "./JiraTasks";
-import { getAllJiraTaskAPI } from "@/services/jiraService";
+import { getAllJiraTaskAPI, updateJiraStatusAPI } from "@/services/jiraService";
+import { toast } from 'react-toastify';
 
 const tasks = [
     { id: "1", content: "First task" },
@@ -264,6 +265,18 @@ const taskStatus = {
     },
 };
 
+const updateTaskStatusById = async (data) => {
+    try {
+        const result = await updateJiraStatusAPI(data);
+        console.log(result);
+        toast.success(`Task status updated to "${data.status}"`);
+    } catch (error) {
+        console.log(error);
+        toast.success(`Failed to update task status`);
+    }
+
+}
+
 const onDragEnd = (result, columns, setColumns) => {
     if (!result.destination) return;
     const { source, destination } = result;
@@ -286,6 +299,11 @@ const onDragEnd = (result, columns, setColumns) => {
                 items: destItems,
             },
         });
+        const obj = {
+            jiraId: removed.id,
+            status: destination.droppableId
+        }
+        updateTaskStatusById(obj);
     } else {
         const column = columns[source.droppableId];
         const copiedItems = [...column.items];
@@ -307,38 +325,44 @@ const JiraApp = () => {
     const getAllJiraTasks = async () => {
         try {
             const result = await getAllJiraTaskAPI();
-            result.forEach((element) => {
-                for (const key in taskStatus) {
-                    if (element.status === key) {
-                        const obj = {
-                            id: element._id,
-                            content: element.summary,
-                        };
+            // result.forEach((element) => {
+            //     for (const key in taskStatus) {
+            //         if (element.status === key) {
+            //             const obj = {
+            //                 id: element._id,
+            //                 content: element.summary,
+            //             };
 
 
-                        if (key === "backlog") {
-                            taskStatus.backlog.items.push(obj);
-                        } else if (key === "blocked") {
-                            taskStatus.blocked.items.push(obj);
-                        } else if (key === "inProgress") {
-                            taskStatus.inProgress.items.push(obj);
-                        } else if (key === "codeReview") {
-                            taskStatus.codeReview.items.push(obj);
-                        } else if (key === "testing") {
-                            taskStatus.testing.items.push(obj);
-                        } else if (key === "done") {
-                            taskStatus.done.items.push(obj);
-                        }
-                    }
-                }
-            });
-            setColumns(taskStatus);
+            //             if (key === "backlog") {
+            //                 taskStatus.backlog.items.push(obj);
+            //             } else if (key === "blocked") {
+            //                 taskStatus.blocked.items.push(obj);
+            //             } else if (key === "inProgress") {
+            //                 taskStatus.inProgress.items.push(obj);
+            //             } else if (key === "codeReview") {
+            //                 taskStatus.codeReview.items.push(obj);
+            //             } else if (key === "testing") {
+            //                 taskStatus.testing.items.push(obj);
+            //             } else if (key === "done") {
+            //                 taskStatus.done.items.push(obj);
+            //             }
+            //         }
+            //     }
+            // });
+            // setColumns(taskStatus);
+            setColumns(result);
+
         } catch (error) { }
     };
 
     useEffect(() => {
         getAllJiraTasks();
     }, []);
+
+    const isJiraCreated = () => {
+        getAllJiraTasks();
+    }
 
     return (
         <div className="min-h-screen bg-gray-200 flex flex-col">
@@ -347,9 +371,11 @@ const JiraApp = () => {
 
 
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded">
-                    <JiraTasks  />
+                    <JiraTasks isJiraCreated={isJiraCreated} />
                 </button>
-
+                <button onClick={getAllJiraTasks} className="bg-blue-500 hover:bg-blue-700 text-white font-bold   rounded">
+                    Refresh
+                </button>
 
             </header>
             <main className="flex-1 p-8">

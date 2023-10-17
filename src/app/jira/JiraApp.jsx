@@ -415,7 +415,9 @@ const JiraApp = () => {
                                                                 className={`${snapshot.isDragging ? "bg-blue-500" : "bg-blue-700"
                                                                     } text-white p-4 mb-4 rounded-lg`}
                                                             >
-                                                                {item.content}
+
+                                                                <h3>{item.jiraNo}</h3>
+                                                                <p> {item.content}</p>
                                                             </div>
                                                         )}
                                                     </Draggable>

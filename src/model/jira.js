@@ -23,7 +23,7 @@ const JiraSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['backlog','blocked','testing', 'inProgress', 'done', 'codeReview'],
+        enum: ['backlog', 'blocked', 'testing', 'inProgress', 'done', 'codeReview'],
         default: 'backlog'
     },
     type: {
@@ -39,6 +39,11 @@ const JiraSchema = new Schema({
         type: mongoose.ObjectId,
         required: false
     },
+    jiraNo: {
+        type: String,
+        required: true,
+        unique: true
+    }
 
 
 })

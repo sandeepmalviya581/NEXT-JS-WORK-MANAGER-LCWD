@@ -23,7 +23,7 @@ const Modal = ({ isOpen, onClose, children }) => {
 
 
 
-const JiraTasks = ({isJiraCreated}) => {
+const JiraTasks = ({ isJiraCreated }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [users, setUsers] = useState([{}]);
@@ -74,10 +74,12 @@ const JiraTasks = ({isJiraCreated}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const openModal = () => {
+    resetData();
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
+    resetData();
     setIsModalOpen(false);
   };
 
@@ -85,6 +87,14 @@ const JiraTasks = ({isJiraCreated}) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+  const resetData = () => {
+    setFormData({
+      summary: '',
+      description: '',
+      status: 'backlog', // Default priority
+    });
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -120,7 +130,7 @@ const JiraTasks = ({isJiraCreated}) => {
         onClick={openModal}
         className="bg-blue-500 text-white py-2 px-4 rounded-lg hover-bg-blue-600 transition duration-300"
       >
-       Create
+        Create
       </button>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div className="p-6">
@@ -177,7 +187,7 @@ const JiraTasks = ({isJiraCreated}) => {
                 {statusList.map((item) =>
                   <option value={item.value}> {item.title}</option>
                 )}
-        
+
               </select>
             </div>
 
@@ -194,12 +204,12 @@ const JiraTasks = ({isJiraCreated}) => {
                 onChange={handleInputChange}
 
               >
-                <option  value=''>--Select option--</option>
+                <option value=''>--Select option--</option>
 
                 {users.map((item) =>
                   <option value={item._id}> {item.name}</option>
                 )}
-     
+
 
               </select>
             </div>

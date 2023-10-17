@@ -47,9 +47,30 @@ export async function POST(request, { params }) {
                 // console.log('deletedStatus');
                 // console.log(deletedStatus);
 
+                const lastResult = await Jira.findOne().sort('-_id');
+                if (lastResult == null) {
+                    dataa.jiraNo = 'JIRA-1'
+                    console.log('Fist 1-----------');
+
+                } else {
+                    const jNo = lastResult.jiraNo;
+                    const no = jNo.split("-")[1];
+                    let x = Number(no) +1;
+                    dataa.jiraNo = 'JIRA-' + x;
+                    console.log('else-------------');
+
+                }
+
                 const jira = new Jira(
                     dataa
                 );
+
+
+                console.log('input', dataa);
+                console.log('iiiiiiiiiiiiiiiiiiiiiiiii', lastResult);
+                console.log('jira nooooooooo', dataa.jiraNo);
+                console.log('input', dataa);
+
 
                 let createdChart = await jira.save(dataa);
                 // console.log('Result data');
@@ -260,7 +281,7 @@ export async function POST(request, { params }) {
                 }, { status: 500 });
             }
 
-        }  else if (methodName === 'updateJiraStatus') {
+        } else if (methodName === 'updateJiraStatus') {
             try {
                 const { jiraId, status } = await request.json();
                 if (jiraId === null || jiraId === '') {
@@ -386,6 +407,7 @@ export async function GET(request, { params }) {
                                 const obj = {
                                     id: element._id,
                                     content: element.summary,
+                                    jiraNo: element.jiraNo
                                 };
                                 if (key === "backlog") {
                                     taskStatus.backlog.items.push(obj);

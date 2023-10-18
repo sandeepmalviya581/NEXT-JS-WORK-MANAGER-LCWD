@@ -9,7 +9,7 @@ export async function GET(request) {
     // try {
     console.log("my self api=>>>>>>.");
     const joseToken = request.cookies.get('joseToken')?.value;
-    console.log('request->>>>',request);
+    // console.log('request->>>>',request);
 
 
 

@@ -55,7 +55,7 @@ export async function POST(request, { params }) {
                 } else {
                     const jNo = lastResult.jiraNo;
                     const no = jNo.split("-")[1];
-                    let x = Number(no) +1;
+                    let x = Number(no) + 1;
                     dataa.jiraNo = 'JIRA-' + x;
                     console.log('else-------------');
 
@@ -300,6 +300,56 @@ export async function POST(request, { params }) {
 
         }
 
+        else if (methodName === 'getJiraByJiraNo') {
+            console.log('getJiraByJiraNo api called.');
+            let inputData = await request.json();
+            try {
+                const jiraResp = await Jira.findOne({
+                    jiraNo: inputData.jiraNo
+                })
+                console.log(jiraResp);
+                return NextResponse.json(
+                    jiraResp, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to fetch jira task.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                });
+            }
+        }
+
+        else if (methodName === 'updatJiraTask') {
+            let inputData = await request.json();
+            console.log('my input',inputData);
+            try {
+                let res = '';
+                if (inputData.fieldName === 'summary') {
+                    res = await Jira.updateOne({ _id: inputData._id }, { summary: inputData.summary, updatedDate: Date.now() });
+                }
+                // console.log(res);
+                return NextResponse.json(
+                    res, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to update jira task.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                });
+            }
+        }
+
+
 
 
 
@@ -337,7 +387,7 @@ export async function POST(request, { params }) {
 
 export async function GET(request, { params }) {
 
-    const { methodName } = params;
+    const { methodName, jiraNo } = params;
     console.log(methodName);
 
     if (methodName !== null & methodName !== undefined) {
@@ -366,6 +416,11 @@ export async function GET(request, { params }) {
             }
 
         }
+
+        // const totalUserTask = await Task.find({
+        //     userId: payload._doc._id
+        // })
+
 
         else if (methodName === 'getAllJiraTask') {
             try {

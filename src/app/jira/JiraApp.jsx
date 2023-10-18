@@ -223,7 +223,7 @@
 
 
 
-
+import Link from 'next/link'
 import React, { useState, useEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import JiraTasks from "./JiraTasks";
@@ -415,6 +415,20 @@ const JiraApp = () => {
                                                                 className={`${snapshot.isDragging ? "bg-blue-500" : "bg-blue-700"
                                                                     } text-white p-4 mb-4 rounded-lg`}
                                                             >
+
+
+                                                                <div className='mt-2'>
+
+                                                                    <Link href={{
+                                                                        pathname: 'jira/edit-jira',
+                                                                        query: {
+                                                                            jiraNo: item.jiraNo
+                                                                        }
+
+
+                                                                    }}>Edit</Link>
+                                                                </div>
+
 
                                                                 <h3>{item.jiraNo}</h3>
                                                                 <p> {item.content}</p>

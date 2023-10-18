@@ -12,6 +12,16 @@ export async function updateJiraStatusAPI(data) {
     return await httpAxios.post("/api/jira/updateJiraStatus", data).then((response) => response.data);
 }
 
+export async function getJiraByJiraNoAPI(data) {
+    return await httpAxios.post(`/api/jira/getJiraByJiraNo`, data).then((response) => response.data);
+}
+
+export async function updateJiraTaskAPI(data) {
+    return await httpAxios.post("/api/jira/updatJiraTask", data).then((response) => response.data);
+}
+
+
+
 
 
 

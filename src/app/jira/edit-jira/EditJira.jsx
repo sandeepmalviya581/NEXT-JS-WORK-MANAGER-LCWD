@@ -8,11 +8,16 @@ import React, { useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from "next/navigation";
 import { getJiraByJiraNoAPI, updateJiraStatusAPI, updateJiraTaskAPI } from '@/services/jiraService';
 // import { getTaskById } from '@/services/userService'
+import { toast } from 'react-toastify';
+import Accordion from './Accordion';
+import JiraTasks from '../JiraTasks';
+import SubTaskTemplate from '../SubTaskTemplate';
 
 
 const EditJira = () => {
     const searchparam = useSearchParams();
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
     async function getTask() {
         try {
@@ -97,143 +102,108 @@ const EditJira = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Handle the form submission or validation here
+        setLoading(true); // Set loading state
         task.fieldName = 'summary';
         console.log('Submitted value: ' + task.summary);
         try {
             const result = await updateJiraTaskAPI(task);
             console.log(result);
+            toast.success('Jira summary updated.')
+            setLoading(false); // Reset loading state
         } catch (error) {
             console.log(error);
+            toast.success('Failed to update Jira summary.')
+            setLoading(false); // Reset loading state
         }
     };
 
 
+    const items = [
+        {
+            title: 'Section 1',
+            content: 'Content for Section 1 goes here.',
+            color: 'bg-blue-100',
+        },
+        {
+            title: 'Section 2',
+            content: 'Content for Section 2 goes here.',
+            color: 'bg-green-100',
+        },
+        {
+            title: 'Section 3',
+            content: 'Content for Section 3 goes here.',
+            color: 'bg-yellow-100',
+        },
+    ];
+
+    const createSubTask = () => {
+        const parentTaskId = task._id;
+        console.log(parentTaskId);
+        <JiraTasks parentTaskId={parentTaskId} />
+
+    }
+
+
     return (
-        <div className="bg-white p-4 rounded shadow">
-            <form onSubmit={handleSubmit} className="flex items-center space-x-2">
-                <input
-                    type="text"
-                    name="task_summary"
-                    onChange={(event) => {
-                        setTask({
-                            ...task,
-                            summary: event.target.value
-                        });
-                    }}
-                    value={task.summary}
-                    placeholder="Enter text..."
-                    className="flex-1 p-2 border-b-2 border-blue-500 focus:outline-none focus:border-blue-700"
-                />
-                <button
+        <div>
+            <div className="bg-white p-4 rounded shadow">
+                <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+                    <input
+                        type="text"
+                        name="task_summary"
+                        onChange={(event) => {
+                            setTask({
+                                ...task,
+                                summary: event.target.value
+                            });
+                        }}
+                        value={task.summary}
+                        placeholder="Enter text..."
+                        className="flex-1 p-2 border-b-2 border-blue-500 focus:outline-none focus:border-blue-700"
+                    />
+                    {/* <button
                     type="submit"
                     className="bg-blue-500 text-white rounded-md p-2 hover:bg-blue-700"
                 >
                     Submit
-                </button>
-            </form>
+                </button> */}
+
+                    <button
+                        type="submit"
+                        className={`${loading
+                            ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                            : 'bg-blue-500 text-white hover:bg-blue-700'
+                            } py-2 px-4 rounded-md`}
+                        disabled={loading}
+                    >
+                        {loading ? 'Submit...' : 'Submit'}
+                    </button>
+                </form>
+
+
+
+                <div className="container mx-auto p-4">
+                    <h1 className="text-3xl font-semibold mb-4">Accordion Example</h1>
+                    {items.map((item, index) =>
+                        <Accordion key={index} title={item.title} content={item.content} color={item.color} />
+                    )}
+                </div>
+
+            </div>
+
+
+
+            <div>
+
+                <JiraTasks parentTaskId={task._id} />
+                <SubTaskTemplate parentTaskId={task._id}  />
+
+            </div>
+
         </div>
     );
 
-    // return (
-    //     <div className='grid grid-cols-12 justify-center'>
-    //         <p>Testing jria edit</p>
-    //     </div>
-    // <div className='grid grid-cols-12 justify-center'>
-    //     <div className='col-span-6 col-start-4 p-3 shadow-sm'>
-    //         <div className=' flex justify-center'>
-    //             <Image
-    //                 alt='login_svg'
-    //                 src={loginSvg} style={{
-    //                     width: '30%'
-    //                 }} />
-    //         </div>
-    //         <h1 className='text-2xl text-center' >Add your task here</h1>
-    //         <form action='#!' onSubmit={handleAddTask}>
-    //             <div >
-    //                 <lable htmlFor='task_title' className="block text-sm font-medium mb-2">Title</lable>
-    //                 <input type="text" id='task_title'
 
-    //                     name="task_title"
-    //                     onChange={(event) => {
-    //                         setTask({
-    //                             ...task,
-    //                             title: event.target.value
-    //                         });
-    //                     }}
-    //                     value={task.title}
-    //                     className='w-full p-3 rounded-3xl bg-gray-100 focus:ring-gray-400 border-gray-800'
-    //                 />
-    //             </div>
-    //             <div className='mt-4'>
-
-    //                 <lable htmlFor='task_content' className="block text-sm font-medium mb-2">Content</lable>
-    //                 <textarea id='task_content' rows={2}
-    //                     name="task_content"
-    //                     onChange={(event) => {
-    //                         setTask({
-    //                             ...task,
-    //                             content: event.target.value
-    //                         });
-    //                     }}
-    //                     value={task.content}
-    //                     className='w-full p-3 rounded-3xl bg-gray-100 focus:ring-gray-400 border-gray-800'
-    //                 />
-
-    //             </div>
-
-    //             <div className='mt-4'>
-    //                 <lable htmlFor='task_checkbox' className="block text-sm font-medium mb-2">Fill content</lable>
-    //                 <input
-    //                     type="checkbox"
-    //                     className="form-checkbox h-4 w-4 text-indigo-600"
-    //                     checked={contextCheck}
-    //                     name="contextCheck"
-    //                     onChange={(e) => onClickCheckBox(e)}
-    //                 />
-    //             </div>
-
-
-
-    //             <div className='mt-4'>
-
-    //                 <lable htmlFor='task_content' className="block text-sm font-medium mb-2">Status</lable>
-    //                 <select id='task_status'
-    //                     name="task_status"
-    //                     onChange={(event) => {
-    //                         setTask({
-    //                             ...task,
-    //                             status: event.target.value
-    //                         });
-    //                     }}
-    //                     value={task.status}
-    //                     className='w-full p-3 rounded-3xl bg-gray-100 focus:ring-gray-400 border-gray-800'
-    //                 >
-
-    //                     <option value="" >
-    //                         --Please select--
-    //                     </option>
-    //                     <option value="pending">
-    //                         Pending
-    //                     </option>
-
-    //                     <option value="completed">
-    //                         Completed
-    //                     </option>
-    //                 </select>
-
-    //             </div>
-
-    //             <div className='mt-4 flex justify-center'>
-    //                 <button type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>{searchparam && searchparam.toString() ? 'Update Task' : 'Add Task'}</button>
-    //                 <button type='reset' onClick={onClickClear} className='bg-red-600 py-2 px-3 rounded-lg hover:bg-red-800 text-white ms-3'>Clear</button>
-
-    //             </div>
-
-    //         </form>
-    //     </div>
-
-    // </div>
-    // )
 }
 
 export default EditJira

@@ -35,6 +35,10 @@ const JiraSchema = new Schema({
         type: mongoose.ObjectId,
         required: true
     },
+    taskId: {
+        type: mongoose.ObjectId,
+        required: false
+    },
     assigneeId: {
         type: mongoose.ObjectId,
         required: false

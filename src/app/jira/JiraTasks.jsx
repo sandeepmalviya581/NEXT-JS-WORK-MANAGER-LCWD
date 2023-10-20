@@ -23,7 +23,7 @@ const Modal = ({ isOpen, onClose, children }) => {
 
 
 
-const JiraTasks = ({ isJiraCreated }) => {
+const JiraTasks = ({ isJiraCreated, parentTaskId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [users, setUsers] = useState([{}]);
@@ -68,7 +68,7 @@ const JiraTasks = ({ isJiraCreated }) => {
   const [formData, setFormData] = useState({
     summary: '',
     description: '',
-    status: 'backlog', // Default priority
+    status: 'backlog' // Default priority
   });
   const [validationErrors, setValidationErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -108,12 +108,19 @@ const JiraTasks = ({ isJiraCreated }) => {
       setIsLoading(true);
 
       try {
+        if (parentTaskId !== null && parentTaskId !== undefined && parentTaskId.trim() !== "") {
+          formData.taskId = parentTaskId;
+          formData.type = 'subTask';
+        } 
         const result = await createJiraTask(formData);
         console.log(result);
         toast.success(`Task '${formData.summary}' created.`);
         closeModal();
-        isJiraCreated();
+        if(isJiraCreated){
+          isJiraCreated();
+        }
       } catch (error) {
+        console.log(error);
         toast.error(`Failed to create JIRA task.`)
       }
       setIsLoading(false);

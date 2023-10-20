@@ -21,6 +21,10 @@ export async function updateJiraTaskAPI(data) {
 }
 
 
+export async function createMultipleSubTaskAPI(data) {
+    return await httpAxios.post("/api/jira/createMultipleSubTask", data).then((response) => response.data);
+}
+
 
 
 

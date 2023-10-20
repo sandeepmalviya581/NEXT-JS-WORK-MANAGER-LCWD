@@ -195,6 +195,77 @@ export async function POST(request, { params }) {
             }
         }
 
+        else if (methodName === 'createMultipleSubTask') {
+
+            let inputData = await request.json();
+            console.log('Will send this data.');
+            console.log(inputData);
+
+            const joseToken = request.cookies.get('joseToken')?.value;
+            // const data = jwt.verify(joseToken, 'workmanager');
+            const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
+            const data = payload;
+
+            const userId = data._doc._id;
+
+
+
+            try {
+
+                const emailList = inputData.map((item) => item.assigneeEmail);
+
+                const userList = await User.find({ "email": { "$in": emailList } });
+
+                inputData.forEach((item) => {
+                    // console.log('maited',userList.includes(item.assigneeEmail));
+                    console.log('maited', item.assigneeEmail);
+                    if (!emailList.includes(item.assigneeEmail)) {
+                        throw `Invalid email ${item.assigneeEmail}`;
+                    }
+                });
+
+                const lastResult = await Jira.findOne().sort('-_id');
+                const jNo = lastResult.jiraNo;
+                const no = jNo.split("-")[1];
+                let x = Number(no) + 1;
+
+                inputData.map((item) => {
+                    userList.forEach((f) => {
+                        if (item.assigneeEmail === f.email) {
+                            item.assigneeId = f._id;
+                        }
+                    });
+                    item.userId = userId;
+                    item.description = ' ';
+                    x = x + 1;
+                    item.jiraNo = 'JIRA-' + x;
+                    return item;
+                });
+
+                const resultDb = await Jira.insertMany(inputData);
+                console.log(resultDb);
+
+                return NextResponse.json(
+                    resultDb, {
+                    status: 201
+                });
+
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to create jira task.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                }
+
+                );
+
+            }
+        }
+
+
 
         else if (methodName === 'backuptable') {
             console.log('healthchartbackup api called');
@@ -326,7 +397,7 @@ export async function POST(request, { params }) {
 
         else if (methodName === 'updatJiraTask') {
             let inputData = await request.json();
-            console.log('my input',inputData);
+            console.log('my input', inputData);
             try {
                 let res = '';
                 if (inputData.fieldName === 'summary') {
@@ -462,8 +533,15 @@ export async function GET(request, { params }) {
                                 const obj = {
                                     id: element._id,
                                     content: element.summary,
-                                    jiraNo: element.jiraNo
+                                    jiraNo: element.jiraNo,
+                                    element
                                 };
+                                // let obj = element;
+                                // obj = {
+                                //     id: element._id,
+                                //     content: element.summary
+                                // }
+
                                 if (key === "backlog") {
                                     taskStatus.backlog.items.push(obj);
                                 } else if (key === "blocked") {

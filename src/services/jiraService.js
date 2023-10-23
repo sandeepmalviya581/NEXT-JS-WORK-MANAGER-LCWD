@@ -25,6 +25,11 @@ export async function createMultipleSubTaskAPI(data) {
     return await httpAxios.post("/api/jira/createMultipleSubTask", data).then((response) => response.data);
 }
 
+export async function deleteJiraTaskAPI(data) {
+    return await httpAxios.post("/api/jira/deleteJiraTask", data).then((response) => response.data);
+}
+
+
 
 
 

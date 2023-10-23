@@ -37,22 +37,22 @@ const JiraTasks = ({ isJiraCreated, parentTaskId }) => {
 
 
   const statusList = [{
-    value: 'backlog', title: 'Backlog'
+    value: 'backlog', title: 'Backlog',key:1
   },
   {
-    value: 'testing', title: 'Testing'
+    value: 'testing', title: 'Testing',key:2
   },
   {
-    value: 'inProgress', title: 'In-progress'
+    value: 'inProgress', title: 'In-progress',key:3
   },
   {
-    value: 'blocked', title: 'Blocked'
+    value: 'blocked', title: 'Blocked',key:4
   },
   {
-    value: 'codeReview', title: 'Code Review'
+    value: 'codeReview', title: 'Code Review',key:5
   },
   {
-    value: 'done', title: 'Done'
+    value: 'done', title: 'Done',key:6
   }
   ];
 

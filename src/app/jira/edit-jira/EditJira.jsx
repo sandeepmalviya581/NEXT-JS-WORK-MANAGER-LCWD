@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react'
 // import { toast } from 'react-toastify';
 // import { checkEmpty, toastWarn } from '@/helper/utility'
 import { useSearchParams, useRouter } from "next/navigation";
-import { getJiraByJiraNoAPI, updateJiraStatusAPI, updateJiraTaskAPI } from '@/services/jiraService';
+import { deleteJiraTaskAPI, getJiraByJiraNoAPI, updateJiraStatusAPI, updateJiraTaskAPI } from '@/services/jiraService';
 // import { getTaskById } from '@/services/userService'
 import { toast } from 'react-toastify';
 import Accordion from './Accordion';
@@ -27,8 +27,11 @@ const EditJira = () => {
             }
             const result = await getJiraByJiraNoAPI(obj);
             console.log(taskSpilt[1].toString());
-            console.log(result);
-            setTask(result);
+            // console.log(result);
+            let obj1 = result.jiraTask;
+            obj1.subTask = result.jiraSubTask;
+            // console.log(obj1);
+            setTask(obj1);
         } catch (error) {
             console.log(error);
         }
@@ -42,7 +45,8 @@ const EditJira = () => {
 
 
     const [task, setTask] = useState({
-        summary: ""
+        summary: "",
+        subTask: []
     });
 
 
@@ -125,7 +129,7 @@ const EditJira = () => {
             color: 'bg-blue-100',
         },
         {
-            title: 'Section 2',
+            title: 'Sub Tasks',
             content: 'Content for Section 2 goes here.',
             color: 'bg-green-100',
         },
@@ -141,6 +145,20 @@ const EditJira = () => {
         console.log(parentTaskId);
         <JiraTasks parentTaskId={parentTaskId} />
 
+    }
+
+    const deleteRow = (id) => {
+        // console.log(id);
+
+        try {
+            const deletedTask = deleteJiraTaskAPI({ _id: id });
+            console.log(deletedTask);
+            toast.success('Task deletd.')
+            getTask();
+        } catch (error) {
+            console.log(error);
+            toast.success('Failed to delete task.')
+        }
     }
 
 
@@ -183,9 +201,9 @@ const EditJira = () => {
 
 
                 <div className="container mx-auto p-4">
-                    <h1 className="text-3xl font-semibold mb-4">Accordion Example</h1>
+                    <h1 className="text-3xl font-semibold mb-4">Task Description</h1>
                     {items.map((item, index) =>
-                        <Accordion key={index} title={item.title} content={item.content} color={item.color} />
+                        <Accordion key={index} deleteRow={deleteRow} title={item.title} data={task.subTask} color={item.color} />
                     )}
                 </div>
 
@@ -193,11 +211,16 @@ const EditJira = () => {
 
 
 
-            <div>
+            {/* <div className='flex flex-row space-evenly mb-1'>
 
                 <JiraTasks parentTaskId={task._id} />
-                <SubTaskTemplate parentTaskId={task._id}  />
+                <SubTaskTemplate parentTaskId={task._id} />
 
+            </div> */}
+
+            <div class="flex justify-center">
+                <button class=" text-white py-2 px-4 rounded-md"> <JiraTasks parentTaskId={task._id} /></button>
+                <button class=" text-white py-2 px-4 rounded-md"> <SubTaskTemplate parentTaskId={task._id} /></button>
             </div>
 
         </div>

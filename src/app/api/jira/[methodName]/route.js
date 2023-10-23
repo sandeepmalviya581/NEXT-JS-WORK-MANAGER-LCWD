@@ -375,12 +375,33 @@ export async function POST(request, { params }) {
             console.log('getJiraByJiraNo api called.');
             let inputData = await request.json();
             try {
-                const jiraResp = await Jira.findOne({
+                let jiraResp = await Jira.findOne({
                     jiraNo: inputData.jiraNo
+                });
+
+                let jiraSubTask = await Jira.find({
+                    taskId: jiraResp._id
                 })
-                console.log(jiraResp);
+
+                // jiraResp.subTasks=[];
+                // let finalResult = jiraResp;
+                // jiraResp.subTasks = [];
+
+                // let obj = { ...jiraResp, 'subTasks': jiraResp };
+
+                // Object.assign(finalResult, {subTasks: jiraSubTask});
+
+                // console.log('with subtask ------', jiraSubTask);
+                // console.log('main task', jiraResp);
+                // console.log('my sub task', jiraSubTask);
+
+                let result = {
+                    jiraTask: jiraResp,
+                    jiraSubTask: jiraSubTask
+                };
+
                 return NextResponse.json(
-                    jiraResp, {
+                    result, {
                     status: 200
                 });
             } catch (error) {
@@ -420,6 +441,28 @@ export async function POST(request, { params }) {
             }
         }
 
+        else if (methodName === 'deleteJiraTask') {
+            let inputData = await request.json();
+            console.log('my input', inputData);
+            try {
+               let res = await Jira.deleteOne({ _id: inputData._id });
+                console.log(res);
+                return NextResponse.json(
+                    res, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to delete jira task.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                });
+            }
+        }
+
 
 
 
@@ -434,25 +477,6 @@ export async function POST(request, { params }) {
 
 }
 
-
-
-
-// if (methodName === 'getAllUser') {
-//     const { pageSize, pageNumber } = await request.json();
-//     console.log(pageSize, pageNumber);
-//     let users = [];
-//     try {
-//         users = await User.find().select('-password');
-//         console.log(users);
-//         return NextResponse.json(users);
-//     } catch (error) {
-//         return NextResponse.json({
-//             message: "failed to fetch records."
-//         });
-//     }
-
-
-// }
 
 
 
@@ -566,7 +590,7 @@ export async function GET(request, { params }) {
 
                 }
 
-                console.log(taskStatus);
+                // console.log(taskStatus);
 
                 return NextResponse.json(
                     taskStatus, {

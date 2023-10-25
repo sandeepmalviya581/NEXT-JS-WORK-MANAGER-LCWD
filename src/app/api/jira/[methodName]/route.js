@@ -418,14 +418,18 @@ export async function POST(request, { params }) {
 
         else if (methodName === 'updatJiraTask') {
             let inputData = await request.json();
-            console.log('my input', inputData);
+            console.log('update jira input================>>>>>>>>>>>', inputData);
             try {
-                let res = '';
-                if (inputData.fieldName === 'summary') {
-                    res = await Jira.updateOne({ _id: inputData._id }, { summary: inputData.summary, updatedDate: Date.now() });
-                } else if (inputData.fieldName === 'desciption') {
-                    res = await Jira.updateOne({ _id: inputData._id }, { desciption: inputData.desciption, updatedDate: Date.now() });
-                }
+                // let res = '';
+                // if (inputData.fieldName === 'summary') {
+                //     res = await Jira.updateOne({ _id: inputData._id }, { summary: inputData.summary, updatedDate: Date.now() });
+                // } else if (inputData.fieldName === 'desciption') {
+                //     res = await Jira.updateOne({ _id: inputData._id }, { desciption: inputData.desciption, updatedDate: Date.now() });
+                // }
+
+                let res = await Jira.updateOne({ _id: inputData._id }, { description: inputData.description, summary: inputData.summary, updatedDate: Date.now() });
+
+
                 // console.log(res);
                 return NextResponse.json(
                     res, {

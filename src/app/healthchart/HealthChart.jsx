@@ -115,7 +115,7 @@ const HealthChart = () => {
 
     const addRow = () => {
         const newRow = {
-            anulomVilom: false,running: false, kapalBhati: false, exercise: false, hotWater: false, morningWalk: false,
+            amritvela: false, anulomVilom: false, running: false, kapalBhati: false, exercise: false, hotWater: false, morningWalk: false,
             eveningWalk: false, nightWalk: false, chartDate: '', weight: '', anulomVilom: false
         }
         setData([...data, newRow]);

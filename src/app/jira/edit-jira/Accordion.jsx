@@ -37,7 +37,7 @@ const Accordion = ({ title, data, color, deleteRow }) => {
             <thead>
               <tr>
                 <th className="border px-4 py-2">JIRA No.</th>
-                <th className="border px-4 py-2">ID</th>
+                {/* <th className="border px-4 py-2">ID</th> */}
                 <th className="border px-4 py-2">Summary</th>
                 <th className="border px-4 py-2">Status</th>
                 <th className="border px-4 py-2">Create Date</th>
@@ -60,7 +60,7 @@ const Accordion = ({ title, data, color, deleteRow }) => {
 
                       }}> {item.jiraNo}</Link>
                   </td>
-                  <td className="border px-4 py-2">{item._id}</td>
+                  {/* <td className="border px-4 py-2">{item._id}</td> */}
                   <td className="border px-4 py-2">{item.summary}</td>
                   <td className="border px-4 py-2">{item.status}</td>
                   <td className="border px-4 py-2">{item.addedDate}</td>

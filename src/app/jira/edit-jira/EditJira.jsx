@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import Accordion from './Accordion';
 import JiraTasks from '../JiraTasks';
 import SubTaskTemplate from '../SubTaskTemplate';
+import DiscriptionAccordion from './DiscriptionAccordion';
 
 
 const EditJira = () => {
@@ -202,9 +203,16 @@ const EditJira = () => {
 
                 <div className="container mx-auto p-4">
                     <h1 className="text-3xl font-semibold mb-4">Task Description</h1>
-                    {items.map((item, index) =>
+
+
+                    {/* {items.map((item, index) =>
                         <Accordion key={index} deleteRow={deleteRow} title={item.title} data={task.subTask} color={item.color} />
-                    )}
+                    )} */}
+
+                    <Accordion key={1} deleteRow={deleteRow} title={'Sub Tasks'} data={task.subTask} color={'bg-green-100'} />
+                    <DiscriptionAccordion key={2} deleteRow={deleteRow} title={'Description'} data={task.subTask} description={task.description} color={'bg-blue-100'} />
+
+
                 </div>
 
             </div>

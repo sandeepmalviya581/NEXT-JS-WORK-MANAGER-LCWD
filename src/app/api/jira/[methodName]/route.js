@@ -423,6 +423,8 @@ export async function POST(request, { params }) {
                 let res = '';
                 if (inputData.fieldName === 'summary') {
                     res = await Jira.updateOne({ _id: inputData._id }, { summary: inputData.summary, updatedDate: Date.now() });
+                } else if (inputData.fieldName === 'desciption') {
+                    res = await Jira.updateOne({ _id: inputData._id }, { desciption: inputData.desciption, updatedDate: Date.now() });
                 }
                 // console.log(res);
                 return NextResponse.json(
@@ -445,7 +447,7 @@ export async function POST(request, { params }) {
             let inputData = await request.json();
             console.log('my input', inputData);
             try {
-               let res = await Jira.deleteOne({ _id: inputData._id });
+                let res = await Jira.deleteOne({ _id: inputData._id });
                 console.log(res);
                 return NextResponse.json(
                     res, {

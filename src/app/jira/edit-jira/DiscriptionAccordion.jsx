@@ -34,6 +34,7 @@ const DiscriptionAccordion = ({ title, data, color, deleteRow, description }) =>
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('event print now',e.target.name);
     // Handle the form submission or validation here
     setLoading(true); // Set loading state
     task.fieldName = 'description';

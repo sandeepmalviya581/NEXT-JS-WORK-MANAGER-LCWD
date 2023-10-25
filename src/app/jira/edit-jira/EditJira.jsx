@@ -47,6 +47,7 @@ const EditJira = () => {
 
     const [task, setTask] = useState({
         summary: "",
+        description: "",
         subTask: []
     });
 
@@ -106,10 +107,22 @@ const EditJira = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // console.log(e);
+
+
+        console.log(task);;
+        // if (e.target.0.includes("task_summary")) {
+        //     task.fieldName = 'summary';
+        //     console.log('summary');
+        // } else if (e.target[0].includes("desciption")){
+        //     task.fieldName = 'desciption';
+        //     console.log('desciption');
+
+        // }
+
         // Handle the form submission or validation here
         setLoading(true); // Set loading state
-        task.fieldName = 'summary';
-        console.log('Submitted value: ' + task.summary);
+        // console.log('Submitted value: ' + task.summary);
         try {
             const result = await updateJiraTaskAPI(task);
             console.log(result);
@@ -162,12 +175,21 @@ const EditJira = () => {
         }
     }
 
+    const accordionClasses = `border rounded-lg overflow-hidden mb-4 bg-blue-100`;
+
+    const toggleAccordion = () => {
+        setIsExpanded(!isExpanded);
+    };
+
+    const [isExpanded, setIsExpanded] = useState(false);
+
 
     return (
         <div>
             <div className="bg-white p-4 rounded shadow">
                 <form onSubmit={handleSubmit} className="flex items-center space-x-2">
                     <input
+                        id="task_summary"
                         type="text"
                         name="task_summary"
                         onChange={(event) => {
@@ -210,7 +232,78 @@ const EditJira = () => {
                     )} */}
 
                     <Accordion key={1} deleteRow={deleteRow} title={'Sub Tasks'} data={task.subTask} color={'bg-green-100'} />
-                    <DiscriptionAccordion key={2} deleteRow={deleteRow} title={'Description'} data={task.subTask} description={task.description} color={'bg-blue-100'} />
+                    {/* <DiscriptionAccordion key={2} deleteRow={deleteRow} title={'Description'} data={task.subTask} description={task.description} color={'bg-blue-100'} /> */}
+
+
+
+                    <div className={accordionClasses}>
+                        <button
+                            className="w-full text-left py-3 px-4 font-semibold flex justify-between items-center"
+                            onClick={toggleAccordion}
+                        >
+                            Sub Tasks
+                            <span className="text-blue-500">
+                                {isExpanded ? '-' : '+'}
+                            </span>
+                        </button>
+                        {isExpanded && (
+                            <div className="p-4 border-t">
+
+                                <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+
+
+                                    <div className="mb-4">
+
+                                        <textarea
+
+
+
+                                            onChange={(event) => {
+                                                setTask({
+                                                    ...task,
+                                                    description: event.target.value
+                                                });
+                                            }}
+                                            value={task.description}
+                                            placeholder="Enter text..."
+
+
+                                            id="description"
+                                            name="description"
+                                            rows="10"
+
+                                            // className='w-full px-3 py-2 border rounded-lg text-gray-700 focus-outline-none'
+
+                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+
+                                        // className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        ></textarea>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        className={`${loading
+                                            ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                                            : 'bg-blue-500 text-white hover:bg-blue-700'
+                                            } py-2 px-4 rounded-md`}
+                                        disabled={loading}
+                                    >
+                                        {loading ? 'Submit...' : 'Submit'}
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        )}
+                    </div>
+
+
+
+
+
+
+
+
 
 
                 </div>
@@ -226,9 +319,9 @@ const EditJira = () => {
 
             </div> */}
 
-            <div class="flex justify-center">
-                <button class=" text-white py-2 px-4 rounded-md"> <JiraTasks parentTaskId={task._id} /></button>
-                <button class=" text-white py-2 px-4 rounded-md"> <SubTaskTemplate parentTaskId={task._id} /></button>
+            <div className="flex justify-center">
+                <button className=" text-white py-2 px-4 rounded-md"> <JiraTasks parentTaskId={task._id} /></button>
+                <button className=" text-white py-2 px-4 rounded-md"> <SubTaskTemplate parentTaskId={task._id} /></button>
             </div>
 
         </div>

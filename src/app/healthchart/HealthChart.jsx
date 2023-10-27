@@ -10,8 +10,49 @@ const HealthChart = () => {
     const context = useContext(UserContext);
 
     const [isLoading, setIsLoading] = useState(true);
-    const [resultDashboard, setResultDashboard] = useState({});
 
+    let defDash = {
+        kapalBhati: {
+            yes: 0,
+            no: 0
+        },
+        anulomVilom: {
+            yes: 0,
+            no: 0
+        },
+        hotWater: {
+            yes: 0,
+            no: 0
+        },
+        exercise: {
+            yes: 0,
+            no: 0
+        },
+        morningWalk: {
+            yes: 0,
+            no: 0
+        },
+        eveningWalk: {
+            yes: 0,
+            no: 0
+        },
+        nightWalk: {
+            yes: 0,
+            no: 0
+        },
+        amritvela: {
+            yes: 0,
+            no: 0
+        },
+        running: {
+            yes: 0,
+            no: 0
+        }
+
+    };
+    const [resultDashboard, setResultDashboard] = useState(defDash);
+
+    const [totalCount, setTotalCount] = useState(0);
 
 
 
@@ -23,6 +64,72 @@ const HealthChart = () => {
         try {
             const userTask = await getChartByUserId(obj);
             setData([...userTask]);
+            setTotalCount(userTask.length);
+
+            // setResultDashboard({...defDash});
+
+
+            userTask.forEach(item => {
+                if (item.kapalBhati) {
+                    resultDashboard.kapalBhati.yes = resultDashboard.kapalBhati.yes + 1
+                } else {
+                    resultDashboard.kapalBhati.no = resultDashboard.kapalBhati.no + 1
+                }
+
+                if (item.anulomVilom) {
+                    resultDashboard.anulomVilom.yes = resultDashboard.anulomVilom.yes + 1
+                } else {
+                    resultDashboard.anulomVilom.no = resultDashboard.anulomVilom.no + 1
+                }
+
+                if (item.hotWater) {
+                    resultDashboard.hotWater.yes = resultDashboard.hotWater.yes + 1
+                } else {
+                    resultDashboard.hotWater.no = resultDashboard.hotWater.no + 1
+                }
+
+                if (item.exercise) {
+                    resultDashboard.exercise.yes = resultDashboard.exercise.yes + 1
+                } else {
+                    resultDashboard.exercise.no = resultDashboard.exercise.no + 1
+                }
+
+                if (item.morningWalk) {
+                    resultDashboard.morningWalk.yes = resultDashboard.morningWalk.yes + 1
+                } else {
+                    resultDashboard.morningWalk.no = resultDashboard.morningWalk.no + 1
+                }
+
+
+
+                if (item.eveningWalk) {
+                    resultDashboard.eveningWalk.yes = resultDashboard.eveningWalk.yes + 1
+                } else {
+                    resultDashboard.eveningWalk.no = resultDashboard.eveningWalk.no + 1
+                }
+
+                if (item.nightWalk) {
+                    resultDashboard.nightWalk.yes = resultDashboard.nightWalk.yes + 1
+                } else {
+                    resultDashboard.nightWalk.no = resultDashboard.nightWalk.no + 1
+                }
+
+
+                if (item.amritvela) {
+                    resultDashboard.amritvela.yes = resultDashboard.amritvela.yes + 1
+                } else {
+                    resultDashboard.amritvela.no = resultDashboard.amritvela.no + 1
+                }
+
+                if (item.running) {
+                    resultDashboard.running.yes = resultDashboard.running.yes + 1
+                } else {
+                    resultDashboard.running.no = resultDashboard.running.no + 1
+                }
+
+            });
+
+            setResultDashboard(resultObj);
         } catch (error) {
             console.log(error);
         }
@@ -189,175 +296,222 @@ const HealthChart = () => {
                     </thead>
                     <tbody className="bg-white">
                         {data.map((item, index) => (
-                            <tr key={item._id}>
+                            <>
+                                <tr key={item._id}>
 
 
 
 
 
-                                <td className="px-6 py-4 whitespace-no-wrap border-b" >
-                                    [{index + 1}]{item?._id && item._id.substring(0, 5)}
-                                </td>
+                                    <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                        [{index + 1}]{item?._id && item._id.substring(0, 5)}
+                                    </td>
 
 
-                                <td className='text-sm'>
+                                    <td className='text-sm'>
 
-                                    {
-                                        item.chartDate && new Date(item.chartDate).toLocaleDateString('en-GB')
-                                    }
-                                    <input
-                                        type="date"
-                                        id="date"
-                                        name="chartDate"
-                                        value={item.chartDate}
-                                        // value={selectedDate}
-
-
-
-                                        // onChange={handleDateChange}
-                                        className="form-checkbox  h-4 w-4  text-indigo-600"
-                                        onChange={(e) => onClickOnItem(e, item, index)}
-
-                                    // className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-300 ease-in-out focus:outline-none focus:border-indigo-600"
-
-                                    // className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    />
-                                </td>
-
-                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.amritvela ? 'bg-green-300' : 'bg-orange-400'}  `}>
-                                    <input
-                                        type="checkbox"
-                                        className="form-checkbox h-4 w-4 text-indigo-600"
-
-
-                                        checked={item.amritvela}
-
-                                        name="amritvela"
-                                        onChange={(e) => onClickOnItem(e, item, index)}
-
-                                    />
-                                </td>
-
-                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.running ? 'bg-green-300' : 'bg-orange-400'}  `}>
-                                    <input
-                                        type="checkbox"
-                                        className="form-checkbox h-4 w-4 text-indigo-600"
-                                        checked={item.running}
-
-                                        name="running"
-                                        onChange={(e) => onClickOnItem(e, item, index)}
-                                    />
-                                </td>
-
-                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.anulomVilom ? 'bg-green-300' : 'bg-orange-400'}  `}>
-                                    <input
-                                        type="checkbox"
-                                        className="form-checkbox h-4 w-4 text-indigo-600"
-
-
-                                        checked={item.anulomVilom}
-
-                                        name="anulomVilom"
-                                        onChange={(e) => onClickOnItem(e, item, index)}
-
-                                    />
-                                </td>
-                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.kapalBhati ? 'bg-green-300' : 'bg-orange-400'}  `}>
-                                    <input
-                                        type="checkbox"
-                                        className="form-checkbox h-4 w-4 text-indigo-600"
-
-                                        checked={item.kapalBhati}
-
-                                        name="kapalBhati"
-                                        onChange={(e) => onClickOnItem(e, item, index)}
-
-                                    />
-                                </td>
-                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.exercise ? 'bg-green-300' : 'bg-orange-400'}  `}>
-                                    <input
-                                        type="checkbox"
-                                        className="form-checkbox h-4 w-4 text-indigo-600"
-
-                                        checked={item.exercise}
-
-                                        name="exercise"
-                                        onChange={(e) => onClickOnItem(e, item, index)}
-
-                                    />
-                                </td>
-                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.hotWater ? 'bg-green-300' : 'bg-orange-400'}  `}>
-                                    <input
-                                        type="checkbox"
-                                        className="form-checkbox h-4 w-4 text-indigo-600"
-
-                                        checked={item.hotWater}
-
-                                        name="hotWater"
-                                        onChange={(e) => onClickOnItem(e, item, index)}
-
-                                    />
-                                </td>
-                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.morningWalk ? 'bg-green-300' : 'bg-orange-400'}  `}>
-                                    <input
-                                        type="checkbox"
-                                        className="form-checkbox h-4 w-4 text-indigo-600"
-
-                                        checked={item.morningWalk}
-
-                                        name="morningWalk"
-                                        onChange={(e) => onClickOnItem(e, item, index)}
-
-                                    />
-                                </td>
-                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.eveningWalk ? 'bg-green-300' : 'bg-orange-400'}  `}>
-                                    <input
-                                        type="checkbox"
-                                        className="form-checkbox h-4 w-4 text-indigo-600"
-
-                                        checked={item.eveningWalk}
-
-                                        name="eveningWalk"
-                                        onChange={(e) => onClickOnItem(e, item, index)}
-
-                                    />
-                                </td>
-                                <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.nightWalk ? 'bg-green-300' : 'bg-orange-400'}  `}>
-                                    <input
-                                        type="checkbox"
-                                        className="form-checkbox h-4 w-4 text-indigo-600"
-
-                                        checked={item.nightWalk}
-
-                                        name="nightWalk"
-                                        onChange={(e) => onClickOnItem(e, item, index)}
-                                    />
-                                </td>
+                                        {
+                                            item.chartDate && new Date(item.chartDate).toLocaleDateString('en-GB')
+                                        }
+                                        <input
+                                            type="date"
+                                            id="date"
+                                            name="chartDate"
+                                            value={item.chartDate}
+                                            // value={selectedDate}
 
 
 
+                                            // onChange={handleDateChange}
+                                            className="form-checkbox  h-4 w-4  text-indigo-600"
+                                            onChange={(e) => onClickOnItem(e, item, index)}
+
+                                        // className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-300 ease-in-out focus:outline-none focus:border-indigo-600"
+
+                                        // className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        />
+                                    </td>
+
+                                    <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.amritvela ? 'bg-green-300' : 'bg-orange-400'}  `}>
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox h-4 w-4 text-indigo-600"
+
+
+                                            checked={item.amritvela}
+
+                                            name="amritvela"
+                                            onChange={(e) => onClickOnItem(e, item, index)}
+
+                                        />
+                                    </td>
+
+                                    <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.running ? 'bg-green-300' : 'bg-orange-400'}  `}>
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox h-4 w-4 text-indigo-600"
+                                            checked={item.running}
+
+                                            name="running"
+                                            onChange={(e) => onClickOnItem(e, item, index)}
+                                        />
+                                    </td>
+
+                                    <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.anulomVilom ? 'bg-green-300' : 'bg-orange-400'}  `}>
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox h-4 w-4 text-indigo-600"
+
+
+                                            checked={item.anulomVilom}
+
+                                            name="anulomVilom"
+                                            onChange={(e) => onClickOnItem(e, item, index)}
+
+                                        />
+                                    </td>
+                                    <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.kapalBhati ? 'bg-green-300' : 'bg-orange-400'}  `}>
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox h-4 w-4 text-indigo-600"
+
+                                            checked={item.kapalBhati}
+
+                                            name="kapalBhati"
+                                            onChange={(e) => onClickOnItem(e, item, index)}
+
+                                        />
+                                    </td>
+                                    <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.exercise ? 'bg-green-300' : 'bg-orange-400'}  `}>
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox h-4 w-4 text-indigo-600"
+
+                                            checked={item.exercise}
+
+                                            name="exercise"
+                                            onChange={(e) => onClickOnItem(e, item, index)}
+
+                                        />
+                                    </td>
+                                    <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.hotWater ? 'bg-green-300' : 'bg-orange-400'}  `}>
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox h-4 w-4 text-indigo-600"
+
+                                            checked={item.hotWater}
+
+                                            name="hotWater"
+                                            onChange={(e) => onClickOnItem(e, item, index)}
+
+                                        />
+                                    </td>
+                                    <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.morningWalk ? 'bg-green-300' : 'bg-orange-400'}  `}>
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox h-4 w-4 text-indigo-600"
+
+                                            checked={item.morningWalk}
+
+                                            name="morningWalk"
+                                            onChange={(e) => onClickOnItem(e, item, index)}
+
+                                        />
+                                    </td>
+                                    <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.eveningWalk ? 'bg-green-300' : 'bg-orange-400'}  `}>
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox h-4 w-4 text-indigo-600"
+
+                                            checked={item.eveningWalk}
+
+                                            name="eveningWalk"
+                                            onChange={(e) => onClickOnItem(e, item, index)}
+
+                                        />
+                                    </td>
+                                    <td className={`px-6 py-4 whitespace-no-wrap border-b ${item.nightWalk ? 'bg-green-300' : 'bg-orange-400'}  `}>
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox h-4 w-4 text-indigo-600"
+
+                                            checked={item.nightWalk}
+
+                                            name="nightWalk"
+                                            onChange={(e) => onClickOnItem(e, item, index)}
+                                        />
+                                    </td>
 
 
 
-                                <td className="px-6 py-4 whitespace-no-wrap border-b">
-                                    <button type='button' onClick={() => deleteRow(index)} className='bg-red-400 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Delete</button>
-                                </td>
 
 
 
-                                <td className='px-1 whitespace-no-wrap border-b'>
-                                    <input type="text" id='weight'
-                                        name="weight"
-                                        value={item.weight}
-                                        onChange={(e) => onClickOnItem(e, item, index)}
-                                        className='w-16 p-1  bg-gray-100 focus:ring-gray-400 border-gray-800'
-                                    />
-                                </td>
+                                    <td className="px-6 py-4 whitespace-no-wrap border-b">
+                                        <button type='button' onClick={() => deleteRow(index)} className='bg-red-400 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Delete</button>
+                                    </td>
 
-                            </tr>
+
+
+                                    <td className='px-1 whitespace-no-wrap border-b'>
+                                        <input type="text" id='weight'
+                                            name="weight"
+                                            value={item.weight}
+                                            onChange={(e) => onClickOnItem(e, item, index)}
+                                            className='w-16 p-1  bg-gray-100 focus:ring-gray-400 border-gray-800'
+                                        />
+                                    </td>
+
+                                </tr>
+
+
+                            </>
+
+
+
                         ))}
                     </tbody>
+                    <tbody>
+                        <tr >
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+
+                            </td>
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+
+                            </td>
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                {resultDashboard.amritvela.yes}/{totalCount}
+                            </td>
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                {resultDashboard.running.yes}/{totalCount}
+                            </td>
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                {resultDashboard.anulomVilom.yes}/{totalCount}
+                            </td>
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                {resultDashboard.kapalBhati.yes}/{totalCount}
+                            </td>
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                {resultDashboard.exercise.yes}/{totalCount}
+                            </td>
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                {resultDashboard.hotWater.yes}/{totalCount}
+                            </td>
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                {resultDashboard.morningWalk.yes}/{totalCount}
+                            </td>
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                {resultDashboard.eveningWalk.yes}/{totalCount}
+                            </td>
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+                                {resultDashboard.nightWalk.yes}/{totalCount}
+                            </td>
+
+                        </tr>
+                    </tbody>
                 </table>
+
+
                 <div className='mt-4 flex justify-evenly space-x-3 mb-2'>
                     <button type='button' onClick={() => getUserChart(context.user._id)} className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Refresh</button>
                     <button type='submit' className='bg-blue-600 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Submit</button>

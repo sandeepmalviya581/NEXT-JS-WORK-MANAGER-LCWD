@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Link from 'next/link'
 
 const Accordion = ({ title, data, color, deleteRow }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [users, setUsers] = useState([]);
 
   const [isLoading, setLoading] = useState(false);
 
@@ -12,6 +13,19 @@ const Accordion = ({ title, data, color, deleteRow }) => {
   };
 
   const accordionClasses = `border rounded-lg overflow-hidden mb-4 ${color}`;
+
+  const getUsers = async () => {
+    const users = await getUserInfo();
+    console.log('users->', users);
+    setUsers(users);
+  };
+
+  useEffect(() => {
+    if (users.length === 0) {
+      getUsers();
+    }
+  }, []);
+
 
   // const data = [
   //   { field1: 'Data 1-1', field2: 'Data 1-2', field3: 'Data 1-3' },

@@ -10,6 +10,8 @@ const HealthChart = () => {
     const context = useContext(UserContext);
 
     const [isLoading, setIsLoading] = useState(true);
+    const [resultDashboard, setResultDashboard] = useState({});
+
 
 
 

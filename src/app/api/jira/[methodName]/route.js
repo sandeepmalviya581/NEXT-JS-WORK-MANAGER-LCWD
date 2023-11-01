@@ -381,6 +381,10 @@ export async function POST(request, { params }) {
 
                 let jiraSubTask = await Jira.find({
                     taskId: jiraResp._id
+                });
+
+                let jiraComment = await JiraComment.find({
+                    taskId: jiraResp._id
                 })
 
                 // jiraResp.subTasks=[];
@@ -397,7 +401,8 @@ export async function POST(request, { params }) {
 
                 let result = {
                     jiraTask: jiraResp,
-                    jiraSubTask: jiraSubTask
+                    jiraSubTask: jiraSubTask,
+                    jiraComment: jiraComment
                 };
 
                 return NextResponse.json(
@@ -461,6 +466,72 @@ export async function POST(request, { params }) {
                 console.log(error)
                 return NextResponse.json({
                     message: "Failed to delete jira task.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                });
+            }
+        }
+
+        else if (methodName === 'updateJiraComment') {
+            let inputData = await request.json();
+            console.log('my input=================>>>>>>>>>>>>>', inputData);
+            try {
+
+                let res = await JiraComment.updateOne({ _id: inputData.commentId }, { description: inputData.description, updatedDate: Date.now() });
+                console.log(res);
+                return NextResponse.json(
+                    res, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to delete jira comment.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                });
+            }
+        }
+
+        else if (methodName === 'deleteAllJiraComment') {
+            let inputData = await request.json();
+            console.log('my input', inputData);
+            try {
+                let res = await JiraComment.deleteMany({ taskId: inputData._id });
+                console.log(res);
+                return NextResponse.json(
+                    res, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to delete jira comment.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                });
+            }
+        }
+
+        else if (methodName === 'updateJiraComment') {
+            let inputData = await request.json();
+            try {
+                let res = await JiraComment.updateOne({ taskId: inputData._id });
+                console.log(res);
+                return NextResponse.json(
+                    res, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to delete jira comment.",
                     success: false,
                     error
                 }, {

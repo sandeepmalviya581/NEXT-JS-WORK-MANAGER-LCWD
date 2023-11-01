@@ -6,13 +6,14 @@ import React, { useState, useEffect } from 'react'
 // import { toast } from 'react-toastify';
 // import { checkEmpty, toastWarn } from '@/helper/utility'
 import { useSearchParams, useRouter } from "next/navigation";
-import { deleteJiraTaskAPI, getJiraByJiraNoAPI, updateJiraStatusAPI, updateJiraTaskAPI } from '@/services/jiraService';
+import { deleteAllJiraCommentAPI, deleteJiraCommentAPI, deleteJiraTaskAPI, getJiraByJiraNoAPI, updateJiraStatusAPI, updateJiraTaskAPI } from '@/services/jiraService';
 // import { getTaskById } from '@/services/userService'
 import { toast } from 'react-toastify';
 import Accordion from './Accordion';
 import JiraTasks from '../JiraTasks';
 import SubTaskTemplate from '../SubTaskTemplate';
 import DiscriptionAccordion from './DiscriptionAccordion';
+import CommentAccordion from './CommentAccordion';
 
 
 const EditJira = () => {
@@ -31,6 +32,8 @@ const EditJira = () => {
             // console.log(result);
             let obj1 = result.jiraTask;
             obj1.subTask = result.jiraSubTask;
+            obj1.jiraComment = result.jiraComment;
+
             // console.log(obj1);
             setTask(obj1);
         } catch (error) {
@@ -52,58 +55,13 @@ const EditJira = () => {
     });
 
 
-    // const handleAddTask = async (event) => {
-    //     event.preventDefault();
-    //     try {
-    //         if (checkEmpty(task.title)) {
-    //             toastWarn("Title can not be empty.");
-    //             return;
-    //         } else if (checkEmpty(task.content)) {
-    //             toastWarn("Content can not be empty.");
-    //             return;
-    //         }
-    //         else if (checkEmpty(task.status)) {
-    //             toastWarn("Status can not be empty.");
-    //             return;
-    //         }
-    //         if (searchparam && searchparam.toString()) {
-    //             const result = await editTask(task);
-    //             toastSuccess(`Task "${result.title}" edited successfully.`);
-    //             router.push('/show-tasks');
-    //         } else {
-    //             const result = await addTask(task);
-    //             toastSuccess(`Task "${result.title}" added successfully.`);
-    //             router.push('/show-tasks');
-    //         }
-    //         setTask({
-    //             title: "",
-    //             content: "",
-    //             status: ""
-    //         })
+   
+    // const [inputValue, setInputValue] = useState('');
 
-    //     } catch (error) {
-    //         console.log(error);
-    //         toastError(error.response.data.error.message);
-    //     }
-
-    // }
-
-    // const onClickClear = () => {
-    //     setTask({
-    //         title: "",
-    //         content: "",
-    //         status: "",
-    //         userId: "64b911e367bff02e4bb0463d"
-
-    //     })
-    // }
-
-    const [inputValue, setInputValue] = useState('');
-
-    const handleInputChange = (e) => {
-        setInputValue(e.target.value);
-        setTask({ ...task, summary: e.target.value });
-    };
+    // const handleInputChange = (e) => {
+    //     setInputValue(e.target.value);
+    //     setTask({ ...task, summary: e.target.value });
+    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -136,30 +94,14 @@ const EditJira = () => {
     };
 
 
-    const items = [
-        {
-            title: 'Section 1',
-            content: 'Content for Section 1 goes here.',
-            color: 'bg-blue-100',
-        },
-        {
-            title: 'Sub Tasks',
-            content: 'Content for Section 2 goes here.',
-            color: 'bg-green-100',
-        },
-        {
-            title: 'Section 3',
-            content: 'Content for Section 3 goes here.',
-            color: 'bg-yellow-100',
-        },
-    ];
 
-    const createSubTask = () => {
-        const parentTaskId = task._id;
-        console.log(parentTaskId);
-        <JiraTasks parentTaskId={parentTaskId} />
 
-    }
+    // const createSubTask = () => {
+    //     const parentTaskId = task._id;
+    //     console.log(parentTaskId);
+    //     <JiraTasks parentTaskId={parentTaskId} />
+
+    // }
 
     const deleteRow = (id) => {
         // console.log(id);
@@ -174,6 +116,34 @@ const EditJira = () => {
             toast.success('Failed to delete task.')
         }
     }
+
+    const deleteJiraComment = (id) => {
+        console.log(id);
+        try {
+            const deletedComment = deleteJiraCommentAPI({ _id: id });
+            console.log(deletedComment);
+            toast.success('Jira comment deletd.')
+            getTask();
+        } catch (error) {
+            console.log(error);
+            toast.success('Failed to delete comment.')
+        }
+    }
+
+    const deleteAllComment = (id) => {
+        try {
+            const deletedComment = deleteAllJiraCommentAPI({ _id: id });
+            console.log(deletedComment);
+            toast.success('Jira comment deletd.')
+            getTask();
+        } catch (error) {
+            console.log(error);
+            toast.success('Failed to delete comment.')
+        }
+    }
+
+
+
 
     const accordionClasses = `border rounded-lg overflow-hidden mb-4 bg-blue-100`;
 
@@ -225,6 +195,8 @@ const EditJira = () => {
 
                 <div className="container mx-auto p-4">
                     <h1 className="text-3xl font-semibold mb-4">Task Description</h1>
+
+                    <button onClick={getTask}> Refresh</button>
 
 
                     {/* {items.map((item, index) =>
@@ -300,6 +272,7 @@ const EditJira = () => {
 
 
 
+                    <CommentAccordion getTask={getTask} deleteAllComment={deleteAllComment} deleteJiraComment={deleteJiraComment} parentTaskId={task._id} deleteRow={deleteRow} data={task.jiraComment} />
 
 
 
@@ -322,6 +295,7 @@ const EditJira = () => {
             <div className="flex justify-center">
                 <button className=" text-white py-2 px-4 rounded-md"> <JiraTasks parentTaskId={task._id} /></button>
                 <button className=" text-white py-2 px-4 rounded-md"> <SubTaskTemplate parentTaskId={task._id} /></button>
+
             </div>
 
         </div>

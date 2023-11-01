@@ -29,6 +29,22 @@ export async function deleteJiraTaskAPI(data) {
     return await httpAxios.post("/api/jira/deleteJiraTask", data).then((response) => response.data);
 }
 
+export async function createJiraCommentAPI(data) {
+    return await httpAxios.post("/api/jira/createJiraComment", data).then((response) => response.data);
+}
+
+
+export async function deleteJiraCommentAPI(data) {
+    return await httpAxios.post("/api/jira/deleteJiraComment", data).then((response) => response.data);
+}
+
+export async function deleteAllJiraCommentAPI(data) {
+    return await httpAxios.post("/api/jira/deleteAllJiraComment", data).then((response) => response.data);
+}
+
+export async function updateJiraCommentAPI(data) {
+    return await httpAxios.post("/api/jira/updateJiraComment", data).then((response) => response.data);
+}
 
 
 

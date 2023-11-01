@@ -1,9 +1,13 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
+import Select from 'react-select';
+import { getUserInfo } from '@/services/userService';
 
 const Accordion = ({ title, data, color, deleteRow }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [users, setUsers] = useState([]);
+  const [userValue, setUserValue] = useState('');
+
 
   const [isLoading, setLoading] = useState(false);
 
@@ -17,13 +21,23 @@ const Accordion = ({ title, data, color, deleteRow }) => {
   const getUsers = async () => {
     const users = await getUserInfo();
     console.log('users->', users);
-    setUsers(users);
+
+    let list = [];
+    users.forEach(element => {
+
+      let obj = {
+        value: element._id, label: element.name
+      }
+      list.push(obj);
+    });
+    console.log(list);
+    setUsers(list);
   };
 
   useEffect(() => {
-    if (users.length === 0) {
-      getUsers();
-    }
+    // if (users.length === 0) {
+    getUsers();
+    // }
   }, []);
 
 
@@ -32,6 +46,43 @@ const Accordion = ({ title, data, color, deleteRow }) => {
   //   { field1: 'Data 2-1', field2: 'Data 2-2', field3: 'Data 2-3' },
   //   // Add more data as needed
   // ];
+
+  // const onChangeUser = (e) => {
+  //   console.log(e.target.value);
+  // }
+
+
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [editValue, setEditValue] = useState('');
+
+  const handleChange = (selected) => {
+    setSelectedOptions(selected);
+  };
+
+  const handleEdit = () => {
+    if (selectedOptions.length === 1) {
+      setEditValue(selectedOptions[0].label);
+    }
+  };
+
+  const handleSave = () => {
+    if (editValue !== '') {
+      const updatedOptions = selectedOptions.map((option) => {
+        if (option.value === editValue) {
+          return { ...option, label: editValue };
+        }
+        return option;
+      });
+      setSelectedOptions(updatedOptions);
+    }
+  };
+
+  const [selectedOption, setSelectedOption] = useState(null);
+
+
+  const handleTypeSelect = e => {
+    setSelectedOption(e.value);
+  };
 
 
   return (
@@ -55,6 +106,7 @@ const Accordion = ({ title, data, color, deleteRow }) => {
                 <th className="border px-4 py-2">Summary</th>
                 <th className="border px-4 py-2">Status</th>
                 <th className="border px-4 py-2">Create Date</th>
+                <th className="border px-4 py-2">Assignee</th>
                 <th className="border px-4 py-2">Delete</th>
               </tr>
             </thead>
@@ -78,6 +130,27 @@ const Accordion = ({ title, data, color, deleteRow }) => {
                   <td className="border px-4 py-2">{item.summary}</td>
                   <td className="border px-4 py-2">{item.status}</td>
                   <td className="border px-4 py-2">{item.addedDate}</td>
+                  <td className="border px-4 py-2"> <Select
+                    options={users}
+                    value={users.find(obj => {
+                      return obj.value === item.userId
+                    })}
+                    label="Single select"
+                    onChange={handleTypeSelect}
+                    name={item._id}
+                  /></td>
+
+                  {/* <td className="border px-4 py-2"> <Select
+                    key={item.jiraNo}
+                    value={selectedOptions}
+                    onChange={handleChange}
+                    options={users}
+                    name={item.jiraNo}
+                  // isMulti
+                  /></td> */}
+                  {/* <button onClick={handleEdit}>Edit Selected</button> */}
+
+
                   <td className="border px-4 py-2">
                     <button onClick={() => deleteRow(item._id)} className='bg-red-400 py-2 px-3 rounded-lg hover:bg-blue-800 text-white'>Delete</button>
                   </td>

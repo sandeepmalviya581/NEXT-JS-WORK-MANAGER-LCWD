@@ -168,18 +168,21 @@ const CommentAccordion = ({ data, deleteJiraComment, parentTaskId, deleteAllComm
         </div>
       )}
       <div className="container mx-auto mt-8">
-        <button
-          onClick={openModal}
-          className="bg-blue-500 text-white py-2 px-4 rounded-lg hover-bg-blue-600 transition duration-300"
-        >
-          Add
-        </button>
-        <button
-          onClick={() => deleteAllComment(parentTaskId)}
-          className="bg-blue-500 text-white py-2 px-4 rounded-lg hover-bg-blue-600 transition duration-300"
-        >
-          Delete all comment
-        </button>
+
+        <div className="flex space-around">
+          <button
+            onClick={openModal}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover-bg-blue-600 transition duration-300"
+          >
+            Add
+          </button>
+          <button
+            onClick={() => deleteAllComment(parentTaskId)}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover-bg-blue-600 transition duration-300"
+          >
+            Delete all comment
+          </button>
+        </div>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           <div className="p-6">
             {/* <h1 className="text-2xl font-semibold mb-4">Jira Tasks</h1> */}

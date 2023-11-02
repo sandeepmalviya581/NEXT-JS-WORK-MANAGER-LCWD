@@ -474,6 +474,28 @@ export async function POST(request, { params }) {
             }
         }
 
+        else if (methodName === 'deleteJiraComment') {
+            let inputData = await request.json();
+            console.log('my input', inputData);
+            try {
+                let res = await JiraComment.deleteOne({ _id: inputData._id });
+                console.log(res);
+                return NextResponse.json(
+                    res, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to delete jira comment.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                });
+            }
+        }
+
         else if (methodName === 'updateJiraComment') {
             let inputData = await request.json();
             console.log('my input=================>>>>>>>>>>>>>', inputData);

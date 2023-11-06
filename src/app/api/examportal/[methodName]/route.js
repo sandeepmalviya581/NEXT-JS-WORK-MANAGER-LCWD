@@ -28,8 +28,13 @@ export async function POST(request, { params }) {
             inputData.userId = uId;
             inputData.createdBy = uId;
             inputData.updatedBy = uId;
+
+            const questionPaper = new QuestionPaper(
+                inputData
+            );
+
             try {
-                let questionRes = await QuestionPaper.save(inputData);
+                let questionRes = await questionPaper.save();
                 return NextResponse.json(
                     questionRes, {
                     status: 201

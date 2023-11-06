@@ -5,7 +5,7 @@ export async function getAllQuestionAPI() {
 }
 
 export async function createQuestionAPI(data) {
-    return await httpAxios.get("/api/examportal/createQuestion", data).then((response) => response.data);
+    return await httpAxios.post("/api/examportal/createQuestion", data).then((response) => response.data);
 }
 
 

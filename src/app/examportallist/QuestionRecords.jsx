@@ -1,7 +1,9 @@
 // pages/questionRecords.js
 "use client"
 import { createQuestionAPI, getAllQuestionAPI } from '@/services/examportalService';
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import Select from 'react-select';
+import { toast } from 'react-toastify';
 
 
 const Modal = ({ isOpen, onClose, children }) => {
@@ -86,15 +88,39 @@ const QuestionRecords = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!questionDesc) {
+    if (!question.questionDesc) {
       newErrors.questionDesc = 'Question description is required';
     }
 
-    for (const option in options) {
-      if (!options[option]) {
-        newErrors[option] = `${option} is required`;
-      }
+    if (!question.optionA) {
+      newErrors.optionA = 'Question A is required';
     }
+
+    if (!question.optionB) {
+      newErrors.optionB = 'Question B is required';
+    }
+
+    if (!question.optionC) {
+      newErrors.optionC = 'Question C is required';
+    }
+
+    if (!question.optionD) {
+      newErrors.optionD = 'Question D is required';
+    }
+
+    if (!question.number) {
+      newErrors.number = 'Number is required';
+    }
+
+    if (!question.answer) {
+      newErrors.answer = 'Answer is required';
+    }
+
+    // for (const option in options) {
+    //   if (!options[option]) {
+    //     newErrors[option] = `${option} is required`;
+    //   }
+    // }
 
     setErrors(newErrors);
 
@@ -109,9 +135,12 @@ const QuestionRecords = () => {
         const result = await createQuestionAPI(question);
         console.log(result);
         setIsLoading(false);
+        closeModal();
+        toast.success('Question created sucessfully.');
       } catch (error) {
         console.log(error);
         setIsLoading(false);
+        toast.error('Failed to create questtion')
 
       }
     }
@@ -147,6 +176,35 @@ const QuestionRecords = () => {
   // Define an array of background colors
   const backgroundColors = ['bg-red-200', 'bg-blue-200', 'bg-green-200', 'bg-yellow-200'];
 
+  const answerList = [
+    {
+      value: 'A', label: 'A'
+
+    },
+    {
+      value: 'B', label: 'B'
+
+    },
+    {
+      value: 'C', label: 'C'
+
+    }, {
+      value: 'D', label: 'D'
+
+    }
+
+  ];
+
+  const handleTypeSelect = (e) => {
+    console.log(e.value);
+
+    setQuestion({
+      ...question,
+      answer: e.value
+    });
+
+  }
+
   return (
     <div className="min-h-screen p-6">
       <div className="flex justify-between items-center mb-4">
@@ -173,12 +231,18 @@ const QuestionRecords = () => {
                 name="questionDesc"
                 rows="4"
                 placeholder="Enter your question description here"
-                value={questionDesc}
-                onChange={(e) => setQuestionDesc(e.target.value)}
+                value={question.questionDesc}
+                // onChange={(e) => setQuestionDesc(e.target.value)}
+                onChange={(event) => {
+                  setQuestion({
+                    ...question,
+                    questionDesc: event.target.value
+                  });
+                }}
               ></textarea>
               {errors.questionDesc && <p className="text-red-500 text-xs mt-1">{errors.questionDesc}</p>}
             </div>
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <label className="block text-gray-700 text-sm font-bold mb-2">
                 Options (A, B, C, D)
               </label>
@@ -197,7 +261,122 @@ const QuestionRecords = () => {
                   {errors[option] && <p className="text-red-500 text-xs mt-1">{errors[option]}</p>}
                 </div>
               ))}
+            </div> */}
+
+
+
+
+
+            <div className="mb-6">
+              <div className="mb-2">
+                <label className="text-gray-700">A:</label>
+                <input
+                  type="text"
+                  className={`w-full px-3 py-2 border rounded text-gray-700 ${errors.optionA ? 'border-red-500' : ''
+                    }`}
+                  placeholder={`Option A`}
+                  name={'optionA'}
+                  value={question.optionA}
+                  // onChange={handleInputChange}
+
+                  onChange={(event) => {
+                    setQuestion({
+                      ...question,
+                      optionA: event.target.value
+                    });
+                  }}
+                />
+                {errors.optionA && <p className="text-red-500 text-xs mt-1">{errors.optionA}</p>}
+              </div>
+
             </div>
+
+
+
+
+            <div className="mb-6">
+              <div className="mb-2">
+                <label className="text-gray-700">B:</label>
+                <input
+                  type="text"
+                  className={`w-full px-3 py-2 border rounded text-gray-700 ${errors.optionB ? 'border-red-500' : ''
+                    }`}
+                  placeholder={`Option B`}
+                  name={'optionB'}
+                  value={question.optionB}
+                  // onChange={handleInputChange}
+
+                  onChange={(event) => {
+                    setQuestion({
+                      ...question,
+                      optionB: event.target.value
+                    });
+                  }}
+                />
+                {errors.optionB && <p className="text-red-500 text-xs mt-1">{errors.optionB}</p>}
+              </div>
+
+            </div>
+
+
+
+
+
+            <div className="mb-6">
+              <div className="mb-2">
+                <label className="text-gray-700">C:</label>
+                <input
+                  type="text"
+                  className={`w-full px-3 py-2 border rounded text-gray-700 ${errors.optionC ? 'border-red-500' : ''
+                    }`}
+                  placeholder={`Option C`}
+                  name={'optionC'}
+                  value={question.optionC}
+                  // onChange={handleInputChange}
+
+                  onChange={(event) => {
+                    setQuestion({
+                      ...question,
+                      optionC: event.target.value
+                    });
+                  }}
+                />
+                {errors.optionC && <p className="text-red-500 text-xs mt-1">{errors.optionC}</p>}
+              </div>
+
+            </div>
+
+
+
+
+
+            <div className="mb-6">
+              <div className="mb-2">
+                <label className="text-gray-700">D:</label>
+                <input
+                  type="text"
+                  className={`w-full px-3 py-2 border rounded text-gray-700 ${errors.optionD ? 'border-red-500' : ''
+                    }`}
+                  placeholder={`Option D`}
+                  name={'optionD'}
+                  value={question.optionD}
+                  // onChange={handleInputChange}
+
+                  onChange={(event) => {
+                    setQuestion({
+                      ...question,
+                      optionD: event.target.value
+                    });
+                  }}
+                />
+                {errors.optionD && <p className="text-red-500 text-xs mt-1">{errors.optionD}</p>}
+              </div>
+
+            </div>
+
+
+
+
 
 
             <div className="mb-6">
@@ -205,16 +384,48 @@ const QuestionRecords = () => {
                 Number
               </label>
               <input
-                className={`w-full px-3 py-2 border rounded text-gray-700 ${errors.questionDesc ? 'border-red-500' : ''}`}
-                id="questionDesc"
-                name="questionDesc"
+                className={`w-full px-3 py-2 border rounded text-gray-700 ${errors.number ? 'border-red-500' : ''}`}
+                id="number"
+                name="number"
                 rows="4"
                 placeholder="Enter your question description here"
-                value={questionDesc}
-                onChange={(e) => setQuestionDesc(e.target.value)}
+                value={question.number}
+                onChange={(event) => {
+                  setQuestion({
+                    ...question,
+                    number: event.target.value
+                  });
+                }}
               />
-              {errors.questionDesc && <p className="text-red-500 text-xs mt-1">{errors.questionDesc}</p>}
+              {errors.number && <p className="text-red-500 text-xs mt-1">{errors.number}</p>}
             </div>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="questionNumber">
+                Answer
+              </label>
+              <Select
+                className={`w-full px-3 py-2 border rounded text-gray-700 ${errors.answer ? 'border-red-500' : ''}`}
+
+                options={answerList}
+                value={question.answer}
+                label="Single select"
+                onChange={handleTypeSelect}
+                name={'answer'}
+              // onChange={(event) => {
+              //   setQuestion({
+              //     ...question,
+              //     answer: event.value
+              //   });
+              // }}
+
+              />
+              {errors.answer && <p className="text-red-500 text-xs mt-1">{errors.answer}</p>}
+            </div>
+
+
+
+
 
 
 

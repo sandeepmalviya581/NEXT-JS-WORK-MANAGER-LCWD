@@ -28,6 +28,7 @@ const QuestionRecords = () => {
   const [answer, setAnswer] = useState(null); // Add state for the selected answer
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [records, setRecords] = useState([]);
 
 
   const [question, setQuestion] = useState({
@@ -59,6 +60,7 @@ const QuestionRecords = () => {
   const getAllQuestion = async () => {
     try {
       const result = await getAllQuestionAPI();
+      setRecords(result);
       console.log(result);
     } catch (error) {
       console.log(error);
@@ -136,6 +138,7 @@ const QuestionRecords = () => {
         console.log(result);
         setIsLoading(false);
         closeModal();
+        getAllQuestion();
         toast.success('Question created sucessfully.');
       } catch (error) {
         console.log(error);
@@ -149,29 +152,7 @@ const QuestionRecords = () => {
 
 
 
-  // Dummy data (replace with your actual data)
-  const records = [
-    {
-      id: 1,
-      questionDesc: 'Sample Question 1',
-      options: {
-        A: 'Option A 1',
-        B: 'Option B 1',
-        C: 'Option C 1',
-        D: 'Option D 1',
-      },
-    },
-    {
-      id: 2,
-      questionDesc: 'Sample Question 2',
-      options: {
-        A: 'Option A 2',
-        B: 'Option B 2',
-        C: 'Option C 2',
-        D: 'Option D 2',
-      },
-    },
-  ];
+ 
 
   // Define an array of background colors
   const backgroundColors = ['bg-red-200', 'bg-blue-200', 'bg-green-200', 'bg-yellow-200'];
@@ -211,7 +192,7 @@ const QuestionRecords = () => {
         <h1 className="text-2xl font-semibold">Question Records</h1>
         <div className="flex space-x-4">
           <button onClick={openModal} className="px-4 py-2 bg-green-500 text-white rounded">Add</button>
-          <button className="px-4 py-2 bg-blue-500 text-white rounded">Refresh</button>
+          <button onClick={getAllQuestion} className="px-4 py-2 bg-blue-500 text-white rounded">Refresh</button>
         </div>
       </div>
 
@@ -468,24 +449,30 @@ const QuestionRecords = () => {
 
       {records.map((record, index) => (
         <div
-          key={record.id}
+          key={record._id}
           className={`relative rounded-lg shadow-md p-4 mb-4 ${backgroundColors[index % backgroundColors.length]}`}
         >
-          <h2 className="text-xl font-semibold mb-4">{record.questionDesc}</h2>
-          <div className="grid grid-cols-2 gap-2">
+          <h2 className="text-xl font-semibold mb-4">Question-{index + 1}: {record.questionDesc}</h2>
+          <div className="grid grid-cols-2 gap-2 mb-4" >
             <div>
-              <strong>Option A:</strong> {record.options.A}
+              <strong>Option A:</strong> {record.optionA}
             </div>
             <div>
-              <strong>Option B:</strong> {record.options.B}
+              <strong>Option B:</strong> {record.optionB}
             </div>
             <div>
-              <strong>Option C:</strong> {record.options.C}
+              <strong>Option C:</strong> {record.optionC}
             </div>
             <div>
-              <strong>Option D:</strong> {record.options.D}
+              <strong>Option D:</strong> {record.optionD}
             </div>
           </div>
+          <h2 className="text-xl font-semibold mb-4">Number: {record.number}</h2>
+          <h2 className="text-xl font-semibold mb-4">Answer: {record.answer}</h2>
+
+          <h2 className="text-xl font-semibold mb-4">Created Date: {record.addedDate}</h2>
+          <h2 className="text-xl font-semibold mb-4">Updated Date: {record.updatedDate}</h2>
+
           <div className="absolute top-4 right-4">
             <button className="px-2 py-1 bg-blue-500 text-white rounded mr-2">Edit</button>
             <button className="px-2 py-1 bg-red-500 text-white rounded">Delete</button>

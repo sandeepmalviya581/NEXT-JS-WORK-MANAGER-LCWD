@@ -546,8 +546,32 @@ export async function GET(request, { params }) {
 
         if (methodName === 'getAllQuestion') {
             try {
-                const questionRes = await QuestionPaper.find();
-                console.log(questionRes);
+                // const questionRes = await QuestionPaper.find();
+
+
+                const questionRes = await QuestionPaper.aggregate([
+                    {
+                        $lookup: {
+                            from: 'users', // The name of the other collection (case-sensitive)
+                            localField: 'createdBy',
+                            foreignField: '_id',
+                            as: 'userInfo' // The field where the joined user data will be stored
+                        }
+                    },
+
+                    // {
+                    //     $project: {
+
+                    //     //   '_id':1
+                    //       // Exclude the _id field if you want
+                    //       '_id': 0,
+                    //       // Exclude the entire 'authorInfo' array if you want
+                    //       'userInfo': 1
+                    //     }
+                    //   },
+                ]);
+
+                console.log('quest->>>>>>>>>>>', questionRes);
                 return NextResponse.json(
                     questionRes, {
                     status: 200

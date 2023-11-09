@@ -11,6 +11,7 @@ import { TaskBackup } from "@/model/task_backup";
 import { Jira } from "@/model/jira";
 import { JiraComment } from "@/model/jira_comments";
 import { QuestionPaper } from "@/model/question_paper";
+import { UserAnswer } from "@/model/user_answer";
 
 connectDb();
 
@@ -53,7 +54,45 @@ export async function POST(request, { params }) {
             }
 
 
-        } else if (methodName === 'createJiraComment') {
+        }
+
+
+        if (methodName === 'saveAnswer') {
+            let inputData = await request.json();
+            const joseToken = request.cookies.get('joseToken')?.value;
+            const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
+            const uId = payload._doc._id;
+
+            const reqData = inputData.map(element => {
+                element.userId = uId;
+                return element;
+            });
+            // const userAnswer = new UserAnswer(
+            //     inputData
+            // );
+            try {
+                let ansRes = await UserAnswer.insertMany(reqData);
+                return NextResponse.json(
+                    ansRes, {
+                    status: 201
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to create question.",
+                    success: false,
+                    error
+                }, {
+                    status: 400
+                }
+                );
+
+            }
+
+
+        }
+
+        else if (methodName === 'createJiraComment') {
 
             let dataa = await request.json();
             console.log('Will send this data.');
@@ -570,6 +609,74 @@ export async function GET(request, { params }) {
                     //     }
                     //   },
                 ]);
+
+                console.log('quest->>>>>>>>>>>', questionRes);
+                return NextResponse.json(
+                    questionRes, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to fetch jira task.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                }
+
+                );
+
+            }
+        }
+
+
+        else if (methodName === 'getUserResult') {
+            try {
+                // const questionRes = await QuestionPaper.find();
+                // const questionRes = await UserAnswer.aggregate([
+                //     {
+                //         $lookup: {
+                //             from: 'question_papers', // The name of the other collection (case-sensitive)
+                //             localField: 'questionId',
+                //             foreignField: '_id',
+                //             as: 'userResult' // The field where the joined user data will be stored
+                //         }
+                //     },
+
+                //     {
+                //         $project: {
+                //             // Include all fields from the projects collection with aliases     
+                //             'userAnswer': '$$ROOT',       // Include specific fields from the users collection with aliases      'userFields._id': '$users._id',       'userFields.username': '$users.username',       // Include specific fields from the tasks collection with aliases     
+                //             'questionId': '$userResult._id',
+                //             'answer': '$userResult.answer',
+                //         }
+
+                //     }
+                // ]);
+
+                const questionRes = await QuestionPaper.aggregate([
+                    {
+                        $lookup: {
+                            from: 'useranswers', // The name of the other collection (case-sensitive)
+                            localField: '_id',
+                            foreignField: 'questionId',
+                            as: 'userResult' // The field where the joined user data will be stored
+                        }
+                    },
+                ]);
+
+                let obtainedMarks = 0;
+                let totalMarks = 0;
+
+                questionRes.forEach(element => {
+                    if (element.answer === element.userResult[0].answer) {
+                        obtainedMarks = obtainedMarks + element.number;
+                    }
+                    totalMarks = totalMarks + element.number;
+                });
+                console.log('totalCount', totalMarks);
+                console.log('obtainedMarks', obtainedMarks);
 
                 console.log('quest->>>>>>>>>>>', questionRes);
                 return NextResponse.json(

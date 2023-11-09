@@ -1,7 +1,7 @@
 // pages/exam.js
 "use client"
 
-import { getAllQuestionAPI } from '@/services/examportalService';
+import { getAllQuestionAPI, getUserResultAPI, saveAnswerAPI } from '@/services/examportalService';
 import React, { useState, useEffect } from 'react';
 
 // const questions = [
@@ -39,6 +39,7 @@ const Exam = () => {
 
   useEffect(() => {
     getAllQuestion();
+    getAllResult();
   }, [])
 
 
@@ -50,6 +51,16 @@ const Exam = () => {
         return element;
       });
       setQuestions(result1);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  const getAllResult = async () => {
+    try {
+      const result = await getUserResultAPI();
+      console.log(result);
     } catch (error) {
       console.log(error);
     }
@@ -98,6 +109,26 @@ const Exam = () => {
     const seconds = timeInSeconds % 60;
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
+
+  const saveAnswer = async () => {
+
+    let list = [];
+
+    questions.forEach(element => {
+      let obj = {
+        questionId: element._id,
+        answer: element.answer
+      }
+      list.push(obj);
+    });
+
+    try {
+      const result = await saveAnswerAPI(list);
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className="p-4">
@@ -198,7 +229,7 @@ const Exam = () => {
         </div>
       ))}
       <div className="text-center">
-        <button
+        <button onClick={saveAnswer}
           className="bg-blue-500 text-white px-4 py-2 rounded mt-4 hover-bg-blue-600 transition-colors text-xl"
         >
           Submit

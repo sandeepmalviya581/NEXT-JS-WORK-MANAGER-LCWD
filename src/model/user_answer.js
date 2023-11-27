@@ -15,7 +15,7 @@ const UserAnswerSchema = new Schema({
     },
     answer: {
         type: String,
-        enum: ['A', 'B', 'C', 'D']
+        enum: ['', 'A', 'B', 'C', 'D']
     },
 
     userId: {

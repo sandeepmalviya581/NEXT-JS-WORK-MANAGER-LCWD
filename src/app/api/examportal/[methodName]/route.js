@@ -698,6 +698,110 @@ export async function GET(request, { params }) {
             }
         }
 
+
+        else if (methodName === 'getAllStudentResult') {
+            try {
+                // const questionRes = await QuestionPaper.aggregate([
+                //     {
+                //         $lookup: {
+                //             from: 'useranswers', // The name of the other collection (case-sensitive)
+                //             localField: '_id',
+                //             foreignField: 'questionId',
+                //             as: 'userResult' // The field where the joined user data will be stored
+                //         }
+                //     },
+                // ]);
+
+                const questionRes = await UserAnswer.aggregate([
+                    {
+                        $lookup: {
+                            from: 'question_papers', // The name of the other collection (case-sensitive)
+                            localField: 'questionId',
+                            foreignField: '_id',
+                            as: 'questionPaper' // The field where the joined user data will be stored
+                        },
+
+                        // $lookup: {
+                        //     from: 'users', // The name of the other collection (case-sensitive)
+                        //     localField: 'userId',
+                        //     foreignField: '_id',
+                        //     as: 'userInfo' // The field where the joined user data will be stored
+                        // },
+
+                    },
+                ]);
+
+                const groupByUserId = questionRes.reduce((group, product) => {
+                    const { userId } = product;
+                    group[userId] = group[userId] ?? [];
+                    group[userId].push(product);
+                    return group;
+                }, {});
+
+                const minusMarking = false;
+                let finalUserResult = {
+                    userId: '',
+                    userMarks: ''
+                };
+                let list = [];
+                for (let key in groupByUserId) {
+                    // console.log(key, groupByUserId[key]);
+                    const userAnsObj = groupByUserId[key];
+                    console.log('uuu number', userAnsObj);
+                    let obtainedMarks = 0;
+                    for (let uKey in userAnsObj) {
+                        // console.log('inside user',);
+                        const insideUser = userAnsObj[uKey];
+                        if (insideUser.answer !== "") {
+                            if (!minusMarking) {
+                                if (insideUser.answer === insideUser.questionPaper[0].answer) {
+                                    obtainedMarks += obtainedMarks + insideUser.questionPaper[0].number;
+                                }
+                            } else {
+                                if (insideUser.answer === insideUser.questionPaper[0].answer) {
+                                    obtainedMarks = + obtainedMarks + insideUser.questionPaper[0].number;
+                                } else {
+                                    const negativedMarks = (insideUser.questionPaper[0].number) / 4;
+                                    obtainedMarks = obtainedMarks - negativedMarks;
+                                }
+                            }
+                        }
+                    }
+                    finalUserResult.userId = key;
+                    finalUserResult.userMarks = obtainedMarks;
+                    list.push(finalUserResult);
+                }
+                console.log('final result', list);
+
+                // questionRes.forEach(element => {
+                //     if (element.answer === element.userResult[0].answer) {
+                //         obtainedMarks = obtainedMarks + element.number;
+                //     }
+                //     totalMarks = totalMarks + element.number;
+                // });
+                // console.log('totalCount', totalMarks);
+                // console.log('obtainedMarks', obtainedMarks);
+
+                // console.log('quest->>>>>>>>>>>', questionRes);
+                return NextResponse.json(
+                    groupByUserId, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to fetch jira task.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                }
+
+                );
+
+            }
+        }
+
     }
     return NextResponse.json({
         message: "Not found"

@@ -63,7 +63,9 @@ const CustomNavbar = () => {
             <li>
               <Link href={'/examportal/exam'} className='hover:text-blue-200'>Exam Paper</Link>
             </li>
-
+            <li>
+              <Link href={'/examportal/result'} className='hover:text-blue-200'>Exam Result</Link>
+            </li>
 
           </ul>
         </div>)

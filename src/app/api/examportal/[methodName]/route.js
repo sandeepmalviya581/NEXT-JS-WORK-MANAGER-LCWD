@@ -738,53 +738,64 @@ export async function GET(request, { params }) {
                     return group;
                 }, {});
 
-                const minusMarking = false;
-                let finalUserResult = {
-                    userId: '',
-                    userMarks: ''
-                };
+                const minusMarking = true;
+
                 let list = [];
                 for (let key in groupByUserId) {
-                    // console.log(key, groupByUserId[key]);
                     const userAnsObj = groupByUserId[key];
-                    console.log('uuu number', userAnsObj);
                     let obtainedMarks = 0;
+                    let attemptQuestion = 0;
+                    let totalNegativeMarks = 0;
+                    let totalQuestion = 0;
+                    let totalPositiveMarks = 0;
+                    let totalCorrectAnswer = 0;
+                    let totalWrongtAnswer = 0;
                     for (let uKey in userAnsObj) {
-                        // console.log('inside user',);
                         const insideUser = userAnsObj[uKey];
                         if (insideUser.answer !== "") {
                             if (!minusMarking) {
                                 if (insideUser.answer === insideUser.questionPaper[0].answer) {
-                                    obtainedMarks += obtainedMarks + insideUser.questionPaper[0].number;
+                                    totalCorrectAnswer++;
+                                    totalPositiveMarks = totalPositiveMarks + insideUser.questionPaper[0].number;
+                                    obtainedMarks = obtainedMarks + insideUser.questionPaper[0].number;
+                                } else {
+                                    totalWrongtAnswer++;
                                 }
                             } else {
                                 if (insideUser.answer === insideUser.questionPaper[0].answer) {
-                                    obtainedMarks = + obtainedMarks + insideUser.questionPaper[0].number;
+                                    totalCorrectAnswer++;
+                                    totalPositiveMarks = totalPositiveMarks + insideUser.questionPaper[0].number;
+                                    obtainedMarks = obtainedMarks + insideUser.questionPaper[0].number;
                                 } else {
                                     const negativedMarks = (insideUser.questionPaper[0].number) / 4;
+                                    totalWrongtAnswer++;
+                                    totalNegativeMarks = totalNegativeMarks - negativedMarks;
                                     obtainedMarks = obtainedMarks - negativedMarks;
                                 }
                             }
+                            attemptQuestion++;
                         }
+                        totalQuestion++;
                     }
+                    let finalUserResult = {
+                        userId: '',
+                        userMarks: '',
+                        attemptQuestion,
+                        notAttemptQuestion: (totalQuestion - attemptQuestion),
+                        totalQuestion,
+                        totalNegativeMarks,
+                        totalPositiveMarks,
+                        totalCorrectAnswer,
+                        totalWrongtAnswer
+                    };
                     finalUserResult.userId = key;
                     finalUserResult.userMarks = obtainedMarks;
                     list.push(finalUserResult);
                 }
                 console.log('final result', list);
-
-                // questionRes.forEach(element => {
-                //     if (element.answer === element.userResult[0].answer) {
-                //         obtainedMarks = obtainedMarks + element.number;
-                //     }
-                //     totalMarks = totalMarks + element.number;
-                // });
-                // console.log('totalCount', totalMarks);
-                // console.log('obtainedMarks', obtainedMarks);
-
-                // console.log('quest->>>>>>>>>>>', questionRes);
+                list = list.sort(function (a, b) {  return b.userMarks - a.userMarks || b.totalPositiveMarks - a.totalPositiveMarks});
                 return NextResponse.json(
-                    groupByUserId, {
+                    list, {
                     status: 200
                 });
             } catch (error) {

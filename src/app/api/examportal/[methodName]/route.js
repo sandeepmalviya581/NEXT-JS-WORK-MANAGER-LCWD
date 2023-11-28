@@ -699,18 +699,9 @@ export async function GET(request, { params }) {
         }
 
 
-        else if (methodName === 'getAllStudentResult') {
+        else if (methodName === 'joinTest') {
             try {
-                // const questionRes = await QuestionPaper.aggregate([
-                //     {
-                //         $lookup: {
-                //             from: 'useranswers', // The name of the other collection (case-sensitive)
-                //             localField: '_id',
-                //             foreignField: 'questionId',
-                //             as: 'userResult' // The field where the joined user data will be stored
-                //         }
-                //     },
-                // ]);
+
 
                 const questionRes = await UserAnswer.aggregate([
                     {
@@ -720,16 +711,92 @@ export async function GET(request, { params }) {
                             foreignField: '_id',
                             as: 'questionPaper' // The field where the joined user data will be stored
                         },
+                    },
 
-                        // $lookup: {
-                        //     from: 'users', // The name of the other collection (case-sensitive)
-                        //     localField: 'userId',
-                        //     foreignField: '_id',
-                        //     as: 'userInfo' // The field where the joined user data will be stored
-                        // },
+                    {
+                        $unwind: '$questionPaper'
+                    },
 
+                    {
+                        $lookup: {
+                            from: 'users', // The name of the other collection (case-sensitive)
+                            localField: 'userId',
+                            foreignField: '_id',
+                            as: 'userInfo' // The field where the joined user data will be stored
+
+                        }
+                    }
+
+                    , {
+                        $unwind: '$userInfo'
                     },
                 ]);
+                return NextResponse.json(
+                    questionRes, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to fetch jira task.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                }
+
+                );
+
+            }
+        }
+
+
+
+        else if (methodName === 'getAllStudentResult') {
+            try {
+
+                // const questionRes = await UserAnswer.aggregate([
+                //     {
+                //         $lookup: {
+                //             from: 'question_papers', // The name of the other collection (case-sensitive)
+                //             localField: 'questionId',
+                //             foreignField: '_id',
+                //             as: 'questionPaper' // The field where the joined user data will be stored
+                //         },
+                //     },
+                // ]);
+
+
+                const questionRes = await UserAnswer.aggregate([
+                    {
+                        $lookup: {
+                            from: 'question_papers', // The name of the other collection (case-sensitive)
+                            localField: 'questionId',
+                            foreignField: '_id',
+                            as: 'questionPaper' // The field where the joined user data will be stored
+                        },
+                    },
+
+                    {
+                        $unwind: '$questionPaper'
+                    },
+
+                    {
+                        $lookup: {
+                            from: 'users', // The name of the other collection (case-sensitive)
+                            localField: 'userId',
+                            foreignField: '_id',
+                            as: 'userInfo' // The field where the joined user data will be stored
+
+                        }
+                    }
+
+                    , {
+                        $unwind: '$userInfo'
+                    },
+                ]);
+
+                // console.log(questionRes);
 
                 const groupByUserId = questionRes.reduce((group, product) => {
                     const { userId } = product;
@@ -743,6 +810,7 @@ export async function GET(request, { params }) {
                 let list = [];
                 for (let key in groupByUserId) {
                     const userAnsObj = groupByUserId[key];
+                    console.log('userojb->>>>>>>', userAnsObj);
                     let obtainedMarks = 0;
                     let attemptQuestion = 0;
                     let totalNegativeMarks = 0;
@@ -750,24 +818,31 @@ export async function GET(request, { params }) {
                     let totalPositiveMarks = 0;
                     let totalCorrectAnswer = 0;
                     let totalWrongtAnswer = 0;
+                    let fullName = '';
+                    let email = '';
+
                     for (let uKey in userAnsObj) {
                         const insideUser = userAnsObj[uKey];
+                        console.log('inside user->>>>>>>', insideUser);
+
                         if (insideUser.answer !== "") {
                             if (!minusMarking) {
-                                if (insideUser.answer === insideUser.questionPaper[0].answer) {
+                                const questionAnws = insideUser.questionPaper.answer;
+                                if (insideUser.answer === questionAnws) {
                                     totalCorrectAnswer++;
-                                    totalPositiveMarks = totalPositiveMarks + insideUser.questionPaper[0].number;
-                                    obtainedMarks = obtainedMarks + insideUser.questionPaper[0].number;
+                                    totalPositiveMarks = totalPositiveMarks + insideUser.questionPaper.number;
+                                    obtainedMarks = obtainedMarks + insideUser.questionPaper.number;
                                 } else {
                                     totalWrongtAnswer++;
                                 }
                             } else {
-                                if (insideUser.answer === insideUser.questionPaper[0].answer) {
+                                const questionAnws = insideUser.questionPaper.answer;
+                                if (insideUser.answer === questionAnws) {
                                     totalCorrectAnswer++;
-                                    totalPositiveMarks = totalPositiveMarks + insideUser.questionPaper[0].number;
-                                    obtainedMarks = obtainedMarks + insideUser.questionPaper[0].number;
+                                    totalPositiveMarks = totalPositiveMarks + insideUser.questionPaper.number;
+                                    obtainedMarks = obtainedMarks + insideUser.questionPaper.number;
                                 } else {
-                                    const negativedMarks = (insideUser.questionPaper[0].number) / 4;
+                                    const negativedMarks = (insideUser.questionPaper.number) / 4;
                                     totalWrongtAnswer++;
                                     totalNegativeMarks = totalNegativeMarks - negativedMarks;
                                     obtainedMarks = obtainedMarks - negativedMarks;
@@ -776,8 +851,11 @@ export async function GET(request, { params }) {
                             attemptQuestion++;
                         }
                         totalQuestion++;
+                        fullName = insideUser.userInfo.name;
+                        email = insideUser.userInfo.email;
                     }
                     let finalUserResult = {
+                        fullName, email,
                         userId: '',
                         userMarks: '',
                         attemptQuestion,
@@ -793,7 +871,7 @@ export async function GET(request, { params }) {
                     list.push(finalUserResult);
                 }
                 console.log('final result', list);
-                list = list.sort(function (a, b) {  return b.userMarks - a.userMarks || b.totalPositiveMarks - a.totalPositiveMarks});
+                list = list.sort(function (a, b) { return b.userMarks - a.userMarks || b.totalPositiveMarks - a.totalPositiveMarks });
                 return NextResponse.json(
                     list, {
                     status: 200

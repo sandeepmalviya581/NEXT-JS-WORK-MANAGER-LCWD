@@ -3,20 +3,9 @@
 
 import { getAllQuestionAPI, getUserResultAPI, saveAnswerAPI } from '@/services/examportalService';
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
-// const questions = [
-//   {
-//     marks: 5,
-//     question: 'What is 2 + 2?',
-//     options: ['a', 'b', 'c', 'd'],
-//   },
-//   {
-//     marks: 10,
-//     question: 'What is 3 * 4?',
-//     options: ['a', 'b', 'c', 'd'],
-//   },
-//   // Add more questions here to have a total of 10 questions
-// ];
+
 
 const Exam = () => {
   const [answers, setAnswers] = useState({});
@@ -104,6 +93,20 @@ const Exam = () => {
     setSelectedCard(null);
   };
 
+  const clearSelection1 = (questionId) => {
+    console.log(questionId);
+    const clearedQues = questions.map((item) => {
+      if (item._id === questionId) {
+        item.answer = '';
+      }
+      return item;
+    })
+
+    setQuestions(clearedQues);
+    // Clear the selected card's background color
+    setSelectedCard(null);
+  };
+
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
@@ -124,8 +127,10 @@ const Exam = () => {
 
     try {
       const result = await saveAnswerAPI(list);
+      toast.success('Exam submitted successfully.')
       console.log(result);
     } catch (error) {
+      toast.error('User has already given exam.');
       console.log(error);
     }
   }
@@ -146,77 +151,65 @@ const Exam = () => {
         >
           <button
             className="bg-red-500 text-white px-2 py-1 rounded absolute top-2 right-2 hover-bg-red-600 transition-colors"
-            onClick={() => clearSelection(index)}
+            onClick={() => clearSelection1(question._id)}
           >
-            Clear
+            Clear Option
           </button>
           <p className="text-lg font-semibold">
-            {question.questionDesc}
+            Question: ({index + 1}) {question.questionDesc}
           </p>
-          {/* <div className="mt-4 grid grid-cols-2 gap-4">
-            {question.options.map((option) => (
-              <label key={option} className="flex items-center">
-                <input
-                  type="radio"
-                  name={`question-${index}`}
-                  value={option}
-                  checked={answers[index] === option}
-                  onChange={() => handleOptionChange(index, option)}
-                  className="mr-2 cursor-pointer"
-                />
-                <span className="text-base">{option}</span>
-              </label>
-            ))}
-          </div> */}
-
 
           <div className="mt-4 grid grid-cols-2 gap-4">
             <label key={question._id + '1'} className="flex items-center">
               <input
                 type="radio"
-                name={`optionA`}
+                id={question._id + '1'}
+                name={question._id}
                 value={question.optionA}
                 checked={'A' === question.answer}
                 onChange={() => handleOptionChange(question._id, 'A')}
                 className="mr-2 cursor-pointer"
               />
-              <span className="text-base">{question.optionA}</span>
+              <span className="text-base">(A) {question.optionA}</span>
             </label>
 
             <label key={question._id + '2'} className="flex items-center">
               <input
                 type="radio"
-                name={`optionB`}
+                id={question._id + '2'}
+                name={question._id}
                 value={question.optionB}
                 checked={'B' === question.answer}
                 onChange={() => handleOptionChange(question._id, 'B')}
                 className="mr-2 cursor-pointer"
               />
-              <span className="text-base">{question.optionB}</span>
+              <span className="text-base">(B) {question.optionB}</span>
             </label>
 
             <label key={question._id + '3'} className="flex items-center">
               <input
                 type="radio"
-                name={`optionC`}
+                name={question._id}
+                id={question._id + '3'}
                 value={question.optionC}
                 checked={'C' === question.answer}
                 onChange={() => handleOptionChange(question._id, 'C')}
                 className="mr-2 cursor-pointer"
               />
-              <span className="text-base">{question.optionC}</span>
+              <span className="text-base">(C) {question.optionC}</span>
             </label>
 
             <label key={question._id + '4'} className="flex items-center">
               <input
                 type="radio"
-                name={`optionD`}
+                id={question._id + '4'}
+                name={question._id}
                 value={question.optionD}
                 checked={'D' === question.answer}
                 onChange={() => handleOptionChange(question._id, 'D')}
                 className="mr-2 cursor-pointer"
               />
-              <span className="text-base">{question.optionD}</span>
+              <span className="text-base">(D) {question.optionD}</span>
             </label>
           </div>
 

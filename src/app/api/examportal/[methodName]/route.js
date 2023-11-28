@@ -63,6 +63,12 @@ export async function POST(request, { params }) {
             const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
             const uId = payload._doc._id;
 
+            const userAlreadyGaveExam = await UserAnswer.exists({ userId: uId });
+            if (userAlreadyGaveExam !== null) {
+                throw "User alreay has given exam.";
+            }
+
+            console.log('userAlreadyGaveExam->>>>>>>>>', userAlreadyGaveExam);
             const reqData = inputData.map(element => {
                 element.userId = uId;
                 return element;
@@ -83,7 +89,7 @@ export async function POST(request, { params }) {
                     success: false,
                     error
                 }, {
-                    status: 400
+                    status: 500
                 }
                 );
 

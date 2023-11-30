@@ -508,6 +508,43 @@ const HealthChart = () => {
                             </td>
 
                         </tr>
+
+                        <tr >
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+
+                            </td>
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            AMRITVELA
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            MORNING RUNNING	
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            ANULOM VILOM
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            KAPALBHATI
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            EXCERSICE
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            HOT WATER
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            WALK AFTER MORNING MEAL	
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            EVENING WALK
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            WALK AFTER NIGHT MEAL
+                            </td>
+
+                        </tr>
                     </tbody>
                 </table>
 

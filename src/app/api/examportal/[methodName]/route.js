@@ -35,7 +35,13 @@ export async function POST(request, { params }) {
             );
 
             try {
-                let questionRes = await questionPaper.save();
+                let questionRes = '';
+                if (inputData._id === null) {
+                    questionRes = await questionPaper.save();
+                } else {
+                    console.log(inputData._id, questionPaper);
+                    questionRes = await QuestionPaper.updateOne({ _id: inputData._id }, inputData);
+                }
                 return NextResponse.json(
                     questionRes, {
                     status: 201
@@ -97,6 +103,32 @@ export async function POST(request, { params }) {
 
 
         }
+        else if (methodName === 'deleteQuestion') {
+            let inputData = await request.json();
+            try {
+
+                const userAlreadyGaveExam = await UserAnswer.exists({ questionId: inputData.questionId });
+                if (userAlreadyGaveExam !== null) {
+                    throw "You can not delete Question.";
+                }
+                let res = await QuestionPaper.deleteOne({ _id: inputData.questionId });
+                console.log(res);
+                return NextResponse.json(
+                    res, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to delete question.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                });
+            }
+        }
+
 
         else if (methodName === 'createJiraComment') {
 
@@ -452,6 +484,7 @@ export async function POST(request, { params }) {
         }
 
         else if (methodName === 'deleteJiraTask') {
+            deleteQuestion
             let inputData = await request.json();
             console.log('my input', inputData);
             try {
@@ -616,7 +649,7 @@ export async function GET(request, { params }) {
                     //   },
                 ]);
 
-                console.log('quest->>>>>>>>>>>', questionRes);
+                // console.log('quest->>>>>>>>>>>', questionRes);
                 return NextResponse.json(
                     questionRes, {
                     status: 200

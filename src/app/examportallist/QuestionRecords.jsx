@@ -1,6 +1,6 @@
 // pages/questionRecords.js
 "use client"
-import { createQuestionAPI, getAllQuestionAPI } from '@/services/examportalService';
+import { createQuestionAPI, deleteQuestionAPI, getAllQuestionAPI } from '@/services/examportalService';
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -28,7 +28,11 @@ const QuestionRecords = () => {
   const [answer, setAnswer] = useState(null); // Add state for the selected answer
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [records, setRecords] = useState([]);
+  const [deleteQuesDesc, setDeleteQuesDesc] = useState('');
+  const [deleteQuesId, setDeleteQuesId] = useState('');
+  const [editMode, setEditMode] = useState(false);
 
 
   const [question, setQuestion] = useState({
@@ -69,16 +73,42 @@ const QuestionRecords = () => {
 
 
 
+  const onClickEdit = (record) => {
+    setIsModalOpen(true);
+    setQuestion(record);
+    setEditMode(true);
+  };
+
   const openModal = () => {
-    // setIsEditMode(false);
-    // resetData();
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    // resetData();
+    setQuestion({
+      questionDesc: '',
+      optionA: '',
+      optionB: '',
+      optionC: '',
+      optionD: '',
+      number: null,
+      answer: ''
+
+    });
     setIsModalOpen(false);
   };
+
+  const openDeleteModal = (questDesc, questionId) => {
+    setDeleteQuesDesc(questDesc);
+    setDeleteQuesId(questionId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteQuesDesc('');
+    setDeleteQuesId('');
+    setIsDeleteModalOpen(false);
+  };
+
 
   const answerOptions = [
     { value: 'A', label: 'A' },
@@ -86,6 +116,22 @@ const QuestionRecords = () => {
     { value: 'C', label: 'C' },
     { value: 'D', label: 'D' },
   ];
+
+  const deleteQuestion = async () => {
+    if (deleteQuesId === '') {
+      toast.error('Question ID is empty.');
+      return;
+    }
+    try {
+      const resp = await deleteQuestionAPI({ questionId: deleteQuesId });
+      toast.success('Question deleted.');
+      getAllQuestion();
+      closeDeleteModal();
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.error(error);
+    }
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -117,15 +163,15 @@ const QuestionRecords = () => {
     if (!question.answer) {
       newErrors.answer = 'Answer is required';
     }
-
-    // for (const option in options) {
-    //   if (!options[option]) {
-    //     newErrors[option] = `${option} is required`;
-    //   }
-    // }
-
+    let count = 0;
+    records.forEach(element => {
+      count = count + element.number;
+    });
+    console.log('toal',count);
+    if (count > 100) {
+      newErrors.number = 'Total number can not be greater than 100';
+    }
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
@@ -134,6 +180,7 @@ const QuestionRecords = () => {
     if (validateForm()) {
       setIsLoading(true);
       try {
+        console.log('sandee qe', question);
         const result = await createQuestionAPI(question);
         console.log(result);
         setIsLoading(false);
@@ -152,7 +199,7 @@ const QuestionRecords = () => {
 
 
 
- 
+
 
   // Define an array of background colors
   const backgroundColors = ['bg-red-200', 'bg-blue-200', 'bg-green-200', 'bg-yellow-200'];
@@ -437,6 +484,29 @@ const QuestionRecords = () => {
         </div>
       </Modal >
 
+      <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal}>
+        <div className="h-60 min-h-full flex items-center justify-center">
+          <div className="text-center">
+            <h3>Do you want to delete the question ?</h3>
+            <p>{deleteQuesDesc}</p>
+            <button
+              onClick={() => deleteQuestion()}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full ml-2"
+              type="reset"
+            >
+              Delete
+            </button>
+            <button
+              onClick={closeDeleteModal}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-2"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </Modal >
+
+
 
 
 
@@ -474,8 +544,8 @@ const QuestionRecords = () => {
           <h2 className="text-xl font-semibold mb-4">Updated Date: {record.updatedDate}</h2>
 
           <div className="absolute top-4 right-4">
-            <button className="px-2 py-1 bg-blue-500 text-white rounded mr-2">Edit</button>
-            <button className="px-2 py-1 bg-red-500 text-white rounded">Delete</button>
+            <button onClick={() => onClickEdit(record)} className="px-2 py-1 bg-blue-500 text-white rounded mr-2">Edit</button>
+            <button onClick={() => openDeleteModal(`Question-${index + 1}: ${record.questionDesc}`, record._id)} className="px-2 py-1 bg-red-500 text-white rounded">Delete</button>
           </div>
         </div>
       ))}

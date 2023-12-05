@@ -163,14 +163,14 @@ const QuestionRecords = () => {
     if (!question.answer) {
       newErrors.answer = 'Answer is required';
     }
-    let count = 0;
-    records.forEach(element => {
-      count = count + element.number;
-    });
-    console.log('toal',count);
-    if (count > 100) {
-      newErrors.number = 'Total number can not be greater than 100';
-    }
+    // let count = 0;
+    // records.forEach(element => {
+    //   count = count + element.number;
+    // });
+    // console.log('toal',count);
+    // if (count > 100) {
+    //   newErrors.number = 'Total number can not be greater than 100';
+    // }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };

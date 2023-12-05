@@ -29,7 +29,7 @@ const ExamSchema = new Schema({
 
     },
 
-    Subject: {
+    subject: {
         type: String,
         required: true,
 

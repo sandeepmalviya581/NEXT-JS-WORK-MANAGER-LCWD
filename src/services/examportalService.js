@@ -25,6 +25,13 @@ export async function deleteQuestionAPI(data) {
     return await httpAxios.post("/api/examportal/deleteQuestion", data).then((response) => response.data);
 }
 
+export async function createTimeTableAPI(data) {
+    return await httpAxios.post("/api/examportal/createTimeTable", data).then((response) => response.data);
+}
+
+export async function getTimeTableAPI() {
+    return await httpAxios.get("/api/examportal/getTimeTable").then((response) => response.data);
+}
 
 
 

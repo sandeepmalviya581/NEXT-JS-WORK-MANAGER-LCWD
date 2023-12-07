@@ -12,6 +12,7 @@ import { Jira } from "@/model/jira";
 import { JiraComment } from "@/model/jira_comments";
 import { QuestionPaper } from "@/model/question_paper";
 import { UserAnswer } from "@/model/user_answer";
+import { TimeTable } from "@/model/timetable";
 
 connectDb();
 
@@ -62,8 +63,52 @@ export async function POST(request, { params }) {
 
         }
 
+        else if (methodName === 'createTimeTable') {
+            let inputData = await request.json();
+            const joseToken = request.cookies.get('joseToken')?.value;
+            const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
+            const uId = payload._doc._id
+            inputData.userId = uId;
+            inputData.createdBy = uId;
+            inputData.updatedBy = uId;
+            const timetable = new TimeTable(
+                inputData
+            );
+            console.log('inputData', inputData);
+            try {
+                let timeTableRes = '';
+                if (inputData._id === null || inputData._id === undefined || inputData._id === '') {
+                    timeTableRes = await timetable.save();
+                    console.log(timeTableRes);
+                }
+                else {
+                    timeTableRes = await TimeTable.updateOne({ _id: inputData._id }, inputData);
+                }
+                return NextResponse.json(
+                    timeTableRes, {
+                    status: 201
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to create time table.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                }
+                );
 
-        if (methodName === 'saveAnswer') {
+            }
+
+
+        }
+
+
+
+
+
+        else if (methodName === 'saveAnswer') {
             let inputData = await request.json();
             const joseToken = request.cookies.get('joseToken')?.value;
             const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
@@ -652,6 +697,26 @@ export async function GET(request, { params }) {
                 // console.log('quest->>>>>>>>>>>', questionRes);
                 return NextResponse.json(
                     questionRes, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to fetch jira task.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                }
+
+                );
+
+            }
+        } else if (methodName === 'getTimeTable') {
+            try {
+                const timeTableResp = await TimeTable.find();
+                return NextResponse.json(
+                    timeTableResp, {
                     status: 200
                 });
             } catch (error) {

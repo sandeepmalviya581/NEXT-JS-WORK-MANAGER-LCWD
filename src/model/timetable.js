@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const ExamSchema = new Schema({
+const TimeTableSchema = new Schema({
     addedDate: {
         type: Date,
         required: true,
@@ -45,4 +45,4 @@ const ExamSchema = new Schema({
     }
 })
 
-export const Exam = mongoose.models.exam || mongoose.model("exam", ExamSchema)
+export const TimeTable = mongoose.models.timetable || mongoose.model("timetable", TimeTableSchema)

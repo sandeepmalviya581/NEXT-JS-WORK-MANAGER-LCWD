@@ -12,6 +12,8 @@ import { Jira } from "@/model/jira";
 import { JiraComment } from "@/model/jira_comments";
 import { QuestionPaper } from "@/model/question_paper";
 import { UserAnswer } from "@/model/user_answer";
+import mongoose from "mongoose";
+const ObjectId = mongoose.Types.ObjectId;
 import { TimeTable } from "@/model/timetable";
 
 connectDb();
@@ -37,7 +39,7 @@ export async function POST(request, { params }) {
 
             try {
                 let questionRes = '';
-                if (inputData._id === null) {
+                if (inputData._id === undefined || inputData._id === null || inputData._id === '') {
                     questionRes = await questionPaper.save();
                 } else {
                     console.log(inputData._id, questionPaper);
@@ -61,6 +63,52 @@ export async function POST(request, { params }) {
             }
 
 
+        }
+
+
+        if (methodName === 'getAllQuestion') {
+            let inputData = await request.json();
+            console.log(inputData);
+
+            
+            try {
+                // const questionRes = await QuestionPaper.find();
+
+
+                const questionRes = await QuestionPaper.aggregate([
+
+                    {
+                        $match: { timeTableId: new ObjectId(inputData.timeTableId.value)}
+                    },
+
+                    {
+                        $lookup: {
+                            from: 'users', // The name of the other collection (case-sensitive)
+                            localField: 'createdBy',
+                            foreignField: '_id',
+                            as: 'userInfo' // The field where the joined user data will be stored
+                        }
+                    },
+                ]);
+
+                // console.log('quest->>>>>>>>>>>', questionRes);
+                return NextResponse.json(
+                    questionRes, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to fetch jira task.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                }
+
+                );
+
+            }
         }
 
         else if (methodName === 'createTimeTable') {
@@ -666,53 +714,7 @@ export async function GET(request, { params }) {
 
 
 
-
-        if (methodName === 'getAllQuestion') {
-            try {
-                // const questionRes = await QuestionPaper.find();
-
-
-                const questionRes = await QuestionPaper.aggregate([
-                    {
-                        $lookup: {
-                            from: 'users', // The name of the other collection (case-sensitive)
-                            localField: 'createdBy',
-                            foreignField: '_id',
-                            as: 'userInfo' // The field where the joined user data will be stored
-                        }
-                    },
-
-                    // {
-                    //     $project: {
-
-                    //     //   '_id':1
-                    //       // Exclude the _id field if you want
-                    //       '_id': 0,
-                    //       // Exclude the entire 'authorInfo' array if you want
-                    //       'userInfo': 1
-                    //     }
-                    //   },
-                ]);
-
-                // console.log('quest->>>>>>>>>>>', questionRes);
-                return NextResponse.json(
-                    questionRes, {
-                    status: 200
-                });
-            } catch (error) {
-                console.log(error)
-                return NextResponse.json({
-                    message: "Failed to fetch jira task.",
-                    success: false,
-                    error
-                }, {
-                    status: 500
-                }
-
-                );
-
-            }
-        } else if (methodName === 'getTimeTable') {
+        if (methodName === 'getTimeTable') {
             try {
                 const timeTableResp = await TimeTable.find();
                 return NextResponse.json(

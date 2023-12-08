@@ -26,6 +26,10 @@ const UserAnswerSchema = new Schema({
     questionId: {
         type: mongoose.ObjectId,
         required: true
+    },
+    timeTableId: {
+        type: mongoose.ObjectId,
+        required: true
     }
 })
 

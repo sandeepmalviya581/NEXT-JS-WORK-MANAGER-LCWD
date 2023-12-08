@@ -47,6 +47,10 @@ const QuestionPaperSchema = new Schema({
     updatedBy: {
         type: mongoose.ObjectId,
         required: true
+    },
+    timeTableId: {
+        type: mongoose.ObjectId,
+        required: true
     }
 
 

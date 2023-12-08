@@ -1,6 +1,6 @@
 // pages/questionRecords.js
 "use client"
-import { createQuestionAPI, deleteQuestionAPI, getAllQuestionAPI } from '@/services/examportalService';
+import { createQuestionAPI, deleteQuestionAPI, getAllQuestionAPI, getTimeTableAPI } from '@/services/examportalService';
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -33,6 +33,10 @@ const QuestionRecords = () => {
   const [deleteQuesDesc, setDeleteQuesDesc] = useState('');
   const [deleteQuesId, setDeleteQuesId] = useState('');
   const [editMode, setEditMode] = useState(false);
+  const [timeTableList, setTimeTableList] = useState([]);
+  const [timeTableId, setTimeTableId] = useState({});
+
+
 
 
   const [question, setQuestion] = useState({
@@ -42,7 +46,8 @@ const QuestionRecords = () => {
     optionC: '',
     optionD: '',
     number: null,
-    answer: ''
+    answer: '',
+    timeTableId: ''
 
   });
 
@@ -57,19 +62,41 @@ const QuestionRecords = () => {
 
 
   useEffect(() => {
-    getAllQuestion();
+    getTimeTable();
+    // getAllQuestion();
   }, [])
 
 
-  const getAllQuestion = async () => {
+  const getAllQuestion = async (ttId) => {
     try {
-      const result = await getAllQuestionAPI();
+      const result = await getAllQuestionAPI({timeTableId:ttId});
       setRecords(result);
-      console.log(result);
+      if(result.length===0){
+        toast.warn('No record found.');
+      }
     } catch (error) {
       console.log(error);
     }
   };
+
+  const getTimeTable = async () => {
+    try {
+      let result = await getTimeTableAPI();
+      console.log('my ees', result);
+      result=result.sort(function(a, b){return a.subject-b.subject});
+      let list = [];
+      result.forEach(element => {
+        const str = element.type + '_' + element.className + '_' + element.subject + '_' + element.examDate;
+        const options = { value: element._id, label: str };
+        list.push(options);
+      });
+      setTimeTableList(list);
+      console.log(list);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
 
 
@@ -109,6 +136,11 @@ const QuestionRecords = () => {
     setIsDeleteModalOpen(false);
   };
 
+  const changeDropdown = (ttId) => {
+    setTimeTableId(ttId);
+    getAllQuestion(ttId);
+  };
+
 
   const answerOptions = [
     { value: 'A', label: 'A' },
@@ -125,7 +157,7 @@ const QuestionRecords = () => {
     try {
       const resp = await deleteQuestionAPI({ questionId: deleteQuesId });
       toast.success('Question deleted.');
-      getAllQuestion();
+      // getAllQuestion();
       closeDeleteModal();
     } catch (error) {
       toast.error(error.response.data.error);
@@ -171,6 +203,9 @@ const QuestionRecords = () => {
     // if (count > 100) {
     //   newErrors.number = 'Total number can not be greater than 100';
     // }
+
+    question.timeTableId = timeTableId.value;
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -180,7 +215,11 @@ const QuestionRecords = () => {
     if (validateForm()) {
       setIsLoading(true);
       try {
-        console.log('sandee qe', question);
+        // console.log('sandee qe', question);
+        // const updatedQuestion= question.map(item=> {
+        //   item.timeTableId=timeTableId;
+        //   return item;
+        // })
         const result = await createQuestionAPI(question);
         console.log(result);
         setIsLoading(false);
@@ -237,6 +276,22 @@ const QuestionRecords = () => {
     <div className="min-h-screen p-6">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-semibold">Question Records</h1>
+
+        <div className="mb-4">
+          <label htmlFor="select" className="block text-gray-700 font-bold mb-2">
+            Select Exam
+          </label>
+          <Select
+            className={`w - full px - 3 py - 2 border rounded text - gray - 700`}
+            id="select"
+            options={timeTableList}
+            placeholder="Select an option"
+            value={timeTableId}
+            onChange={(event) => changeDropdown(event)}
+          />
+        </div>
+
+
         <div className="flex space-x-4">
           <button onClick={openModal} className="px-4 py-2 bg-green-500 text-white rounded">Add</button>
           <button onClick={getAllQuestion} className="px-4 py-2 bg-blue-500 text-white rounded">Refresh</button>

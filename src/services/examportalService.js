@@ -17,8 +17,8 @@ export async function getUserResultAPI() {
     return await httpAxios.get("/api/examportal/getUserResult").then((response) => response.data);
 }
 
-export async function getAllStudentResultAPI() {
-    return await httpAxios.get("/api/examportal/getAllStudentResult").then((response) => response.data);
+export async function getAllStudentResultAPI(data) {
+    return await httpAxios.post("/api/examportal/getAllStudentResult",data).then((response) => response.data);
 }
 
 export async function deleteQuestionAPI(data) {

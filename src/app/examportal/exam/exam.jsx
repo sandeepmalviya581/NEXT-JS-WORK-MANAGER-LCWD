@@ -1,9 +1,10 @@
 // pages/exam.js
 "use client"
 
-import { getAllQuestionAPI, getUserResultAPI, saveAnswerAPI } from '@/services/examportalService';
+import { getAllQuestionAPI, getTimeTableAPI, getUserResultAPI, saveAnswerAPI } from '@/services/examportalService';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import Select from 'react-select';
 
 
 
@@ -12,6 +13,8 @@ const Exam = () => {
   const [selectedCard, setSelectedCard] = useState(null);
   const [remainingTime, setRemainingTime] = useState(60 * 60); // 60 minutes in seconds
   const [questions, setQuestions] = useState([]);
+  const [timeTableList, setTimeTableList] = useState([]);
+  const [timeTableId, setTimeTableId] = useState({});
 
   // const [examAnswers, setExamAnswers] = useState([]);
 
@@ -27,14 +30,15 @@ const Exam = () => {
   }, [remainingTime]);
 
   useEffect(() => {
-    getAllQuestion();
-    getAllResult();
+    getTimeTable();
+    // getAllQuestion();
+    // getAllResult();
   }, [])
 
 
-  const getAllQuestion = async () => {
+  const getAllQuestion = async (ttid) => {
     try {
-      const result = await getAllQuestionAPI();
+      const result = await getAllQuestionAPI({ timeTableId: ttid });
       const result1 = result.map(element => {
         element.answer = '';
         return element;
@@ -44,6 +48,29 @@ const Exam = () => {
       console.log(error);
     }
   };
+
+  const changeDropdown = (ttId) => {
+    setTimeTableId(ttId);
+    getAllQuestion(ttId);
+  };
+
+  const getTimeTable = async () => {
+    try {
+      let result = await getTimeTableAPI();
+      console.log('my ees', result);
+      result = result.sort(function (a, b) { return a.subject - b.subject });
+      let list = [];
+      result.forEach(element => {
+        const str = element.type + '_' + element.className + '_' + element.subject + '_' + element.examDate;
+        const options = { value: element._id, label: str };
+        list.push(options);
+      });
+      setTimeTableList(list);
+      console.log(list);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
   const getAllResult = async () => {
@@ -120,7 +147,8 @@ const Exam = () => {
     questions.forEach(element => {
       let obj = {
         questionId: element._id,
-        answer: element.answer
+        answer: element.answer,
+        timeTableId: timeTableId.value
       }
       list.push(obj);
     });
@@ -143,6 +171,21 @@ const Exam = () => {
           Time Remaining: <span className="font-bold">{formatTime(remainingTime)}</span>
         </p>
       </div>
+
+      <div className="mb-4">
+        <label htmlFor="select" className="block text-gray-700 font-bold mb-2">
+          Select Exam
+        </label>
+        <Select
+          className={`w - full px - 3 py - 2 border rounded text - gray - 700`}
+          id="select"
+          options={timeTableList}
+          placeholder="Select an option"
+          value={timeTableId}
+          onChange={(event) => changeDropdown(event)}
+        />
+      </div>
+
       {questions.map((question, index) => (
         <div
           key={index}

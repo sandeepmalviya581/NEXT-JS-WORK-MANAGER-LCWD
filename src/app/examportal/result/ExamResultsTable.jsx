@@ -1,18 +1,25 @@
 // components/ExamResultsTable.js
 "use client"
-import { getAllStudentResultAPI } from '@/services/examportalService';
+import { getAllStudentResultAPI, getTimeTableAPI } from '@/services/examportalService';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import Select from 'react-select';
 
 const ExamResultsTable = () => {
 
     const [results, setResults] = useState([])
+    const [timeTableList, setTimeTableList] = useState([]);
+    const [timeTableId, setTimeTableId] = useState({});
 
-    const getAllStudentResult = async () => {
+    const getAllStudentResult = async (ttId) => {
         try {
-            const res = await getAllStudentResultAPI();
+            const res = await getAllStudentResultAPI({ timeTableId: ttId.value });
             setResults(res);
-            toast.success("Result fetched successfully.")
+            if(res.length===0){
+                toast.warn("No record found.")
+            }else{
+                toast.success("Result fetched successfully.")
+            }
         } catch (error) {
             toast.success("Failed to fetch result.")
             console.log(error);
@@ -20,20 +27,61 @@ const ExamResultsTable = () => {
     }
 
     useEffect(() => {
-        getAllStudentResult();
+        // getAllStudentResult();
+        getTimeTable();
+
     }, [])
+
+    const changeDropdown = (ttId) => {
+        setTimeTableId(ttId);
+        // getAllQuestion(ttId);
+        getAllStudentResult(ttId);
+
+    };
+
+    const getTimeTable = async () => {
+        try {
+            let result = await getTimeTableAPI();
+            console.log('my ees', result);
+            result = result.sort(function (a, b) { return a.subject - b.subject });
+            let list = [];
+            result.forEach(element => {
+                const str = element.type + '_' + element.className + '_' + element.subject + '_' + element.examDate;
+                const options = { value: element._id, label: str };
+                list.push(options);
+            });
+            setTimeTableList(list);
+            console.log(list);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
 
         <div className="mx-auto mt-8 p-4">
             <h1 className="text-3xl font-bold mb-4">Exam Results</h1>
 
-            <button
+            <div className="mb-4">
+                <label htmlFor="select" className="block text-gray-700 font-bold mb-2">
+                    Select Exam
+                </label>
+                <Select
+                    className={`w - full px - 3 py - 2 border rounded text - gray - 700`}
+                    id="select"
+                    options={timeTableList}
+                    placeholder="Select an option"
+                    value={timeTableId}
+                    onChange={(event) => changeDropdown(event)}
+                />
+            </div>
+
+            {/* <button
                 onClick={() => getAllStudentResult()}
                 className={`bg-blue-500 hover:bg-blue-70 mt-2 text-white font-bold py-2 px-4 rounded-full`}
             >
                 Refresh
-            </button>
+            </button> */}
 
 
             <div className="overflow-hidden border border-gray-200 rounded-lg">

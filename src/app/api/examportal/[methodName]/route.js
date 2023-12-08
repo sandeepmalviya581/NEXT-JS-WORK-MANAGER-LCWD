@@ -111,6 +111,140 @@ export async function POST(request, { params }) {
             }
         }
 
+
+        else if (methodName === 'getAllStudentResult') {
+            let inputData = await request.json();
+            try {
+
+                const questionRes = await UserAnswer.aggregate([
+
+                    {
+                        $match: { timeTableId: new ObjectId(inputData.timeTableId)}
+                    },
+
+                    {
+                        $lookup: {
+                            from: 'question_papers', // The name of the other collection (case-sensitive)
+                            localField: 'questionId',
+                            foreignField: '_id',
+                            as: 'questionPaper' // The field where the joined user data will be stored
+                        },
+                    },
+
+                    {
+                        $unwind: '$questionPaper'
+                    },
+
+                    {
+                        $lookup: {
+                            from: 'users', // The name of the other collection (case-sensitive)
+                            localField: 'userId',
+                            foreignField: '_id',
+                            as: 'userInfo' // The field where the joined user data will be stored
+
+                        }
+                    }
+
+                    , {
+                        $unwind: '$userInfo'
+                    },
+                ]);
+
+                // console.log(questionRes);
+
+                const groupByUserId = questionRes.reduce((group, product) => {
+                    const { userId } = product;
+                    group[userId] = group[userId] ?? [];
+                    group[userId].push(product);
+                    return group;
+                }, {});
+
+                const minusMarking = true;
+
+                let list = [];
+                for (let key in groupByUserId) {
+                    const userAnsObj = groupByUserId[key];
+                    console.log('userojb->>>>>>>', userAnsObj);
+                    let obtainedMarks = 0;
+                    let attemptQuestion = 0;
+                    let totalNegativeMarks = 0;
+                    let totalQuestion = 0;
+                    let totalPositiveMarks = 0;
+                    let totalCorrectAnswer = 0;
+                    let totalWrongtAnswer = 0;
+                    let fullName = '';
+                    let email = '';
+
+                    for (let uKey in userAnsObj) {
+                        const insideUser = userAnsObj[uKey];
+                        console.log('inside user->>>>>>>', insideUser);
+
+                        if (insideUser.answer !== "") {
+                            if (!minusMarking) {
+                                const questionAnws = insideUser.questionPaper.answer;
+                                if (insideUser.answer === questionAnws) {
+                                    totalCorrectAnswer++;
+                                    totalPositiveMarks = totalPositiveMarks + insideUser.questionPaper.number;
+                                    obtainedMarks = obtainedMarks + insideUser.questionPaper.number;
+                                } else {
+                                    totalWrongtAnswer++;
+                                }
+                            } else {
+                                const questionAnws = insideUser.questionPaper.answer;
+                                if (insideUser.answer === questionAnws) {
+                                    totalCorrectAnswer++;
+                                    totalPositiveMarks = totalPositiveMarks + insideUser.questionPaper.number;
+                                    obtainedMarks = obtainedMarks + insideUser.questionPaper.number;
+                                } else {
+                                    const negativedMarks = (insideUser.questionPaper.number) / 4;
+                                    totalWrongtAnswer++;
+                                    totalNegativeMarks = totalNegativeMarks - negativedMarks;
+                                    obtainedMarks = obtainedMarks - negativedMarks;
+                                }
+                            }
+                            attemptQuestion++;
+                        }
+                        totalQuestion++;
+                        fullName = insideUser.userInfo.name;
+                        email = insideUser.userInfo.email;
+                    }
+                    let finalUserResult = {
+                        fullName, email,
+                        userId: '',
+                        userMarks: '',
+                        attemptQuestion,
+                        notAttemptQuestion: (totalQuestion - attemptQuestion),
+                        totalQuestion,
+                        totalNegativeMarks,
+                        totalPositiveMarks,
+                        totalCorrectAnswer,
+                        totalWrongtAnswer
+                    };
+                    finalUserResult.userId = key;
+                    finalUserResult.userMarks = obtainedMarks;
+                    list.push(finalUserResult);
+                }
+                console.log('final result', list);
+                list = list.sort(function (a, b) { return b.userMarks - a.userMarks || b.totalPositiveMarks - a.totalPositiveMarks });
+                return NextResponse.json(
+                    list, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to fetch jira task.",
+                    success: false,
+                    error
+                }, {
+                    status: 500
+                }
+
+                );
+
+            }
+        }
+
         else if (methodName === 'createTimeTable') {
             let inputData = await request.json();
             const joseToken = request.cookies.get('joseToken')?.value;
@@ -162,7 +296,7 @@ export async function POST(request, { params }) {
             const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
             const uId = payload._doc._id;
 
-            const userAlreadyGaveExam = await UserAnswer.exists({ userId: uId });
+            const userAlreadyGaveExam = await UserAnswer.exists({ userId: uId,timeTableId: inputData[0].timeTableId});
             if (userAlreadyGaveExam !== null) {
                 throw "User alreay has given exam.";
             }
@@ -858,144 +992,7 @@ export async function GET(request, { params }) {
 
 
 
-        else if (methodName === 'getAllStudentResult') {
-            try {
 
-                // const questionRes = await UserAnswer.aggregate([
-                //     {
-                //         $lookup: {
-                //             from: 'question_papers', // The name of the other collection (case-sensitive)
-                //             localField: 'questionId',
-                //             foreignField: '_id',
-                //             as: 'questionPaper' // The field where the joined user data will be stored
-                //         },
-                //     },
-                // ]);
-
-
-                const questionRes = await UserAnswer.aggregate([
-                    {
-                        $lookup: {
-                            from: 'question_papers', // The name of the other collection (case-sensitive)
-                            localField: 'questionId',
-                            foreignField: '_id',
-                            as: 'questionPaper' // The field where the joined user data will be stored
-                        },
-                    },
-
-                    {
-                        $unwind: '$questionPaper'
-                    },
-
-                    {
-                        $lookup: {
-                            from: 'users', // The name of the other collection (case-sensitive)
-                            localField: 'userId',
-                            foreignField: '_id',
-                            as: 'userInfo' // The field where the joined user data will be stored
-
-                        }
-                    }
-
-                    , {
-                        $unwind: '$userInfo'
-                    },
-                ]);
-
-                // console.log(questionRes);
-
-                const groupByUserId = questionRes.reduce((group, product) => {
-                    const { userId } = product;
-                    group[userId] = group[userId] ?? [];
-                    group[userId].push(product);
-                    return group;
-                }, {});
-
-                const minusMarking = true;
-
-                let list = [];
-                for (let key in groupByUserId) {
-                    const userAnsObj = groupByUserId[key];
-                    console.log('userojb->>>>>>>', userAnsObj);
-                    let obtainedMarks = 0;
-                    let attemptQuestion = 0;
-                    let totalNegativeMarks = 0;
-                    let totalQuestion = 0;
-                    let totalPositiveMarks = 0;
-                    let totalCorrectAnswer = 0;
-                    let totalWrongtAnswer = 0;
-                    let fullName = '';
-                    let email = '';
-
-                    for (let uKey in userAnsObj) {
-                        const insideUser = userAnsObj[uKey];
-                        console.log('inside user->>>>>>>', insideUser);
-
-                        if (insideUser.answer !== "") {
-                            if (!minusMarking) {
-                                const questionAnws = insideUser.questionPaper.answer;
-                                if (insideUser.answer === questionAnws) {
-                                    totalCorrectAnswer++;
-                                    totalPositiveMarks = totalPositiveMarks + insideUser.questionPaper.number;
-                                    obtainedMarks = obtainedMarks + insideUser.questionPaper.number;
-                                } else {
-                                    totalWrongtAnswer++;
-                                }
-                            } else {
-                                const questionAnws = insideUser.questionPaper.answer;
-                                if (insideUser.answer === questionAnws) {
-                                    totalCorrectAnswer++;
-                                    totalPositiveMarks = totalPositiveMarks + insideUser.questionPaper.number;
-                                    obtainedMarks = obtainedMarks + insideUser.questionPaper.number;
-                                } else {
-                                    const negativedMarks = (insideUser.questionPaper.number) / 4;
-                                    totalWrongtAnswer++;
-                                    totalNegativeMarks = totalNegativeMarks - negativedMarks;
-                                    obtainedMarks = obtainedMarks - negativedMarks;
-                                }
-                            }
-                            attemptQuestion++;
-                        }
-                        totalQuestion++;
-                        fullName = insideUser.userInfo.name;
-                        email = insideUser.userInfo.email;
-                    }
-                    let finalUserResult = {
-                        fullName, email,
-                        userId: '',
-                        userMarks: '',
-                        attemptQuestion,
-                        notAttemptQuestion: (totalQuestion - attemptQuestion),
-                        totalQuestion,
-                        totalNegativeMarks,
-                        totalPositiveMarks,
-                        totalCorrectAnswer,
-                        totalWrongtAnswer
-                    };
-                    finalUserResult.userId = key;
-                    finalUserResult.userMarks = obtainedMarks;
-                    list.push(finalUserResult);
-                }
-                console.log('final result', list);
-                list = list.sort(function (a, b) { return b.userMarks - a.userMarks || b.totalPositiveMarks - a.totalPositiveMarks });
-                return NextResponse.json(
-                    list, {
-                    status: 200
-                });
-            } catch (error) {
-                console.log(error)
-                return NextResponse.json({
-                    message: "Failed to fetch jira task.",
-                    success: false,
-                    error
-                }, {
-                    status: 500
-                }
-
-                );
-
-            }
-        }
 
     }
     return NextResponse.json({

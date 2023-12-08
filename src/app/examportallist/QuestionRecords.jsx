@@ -69,9 +69,9 @@ const QuestionRecords = () => {
 
   const getAllQuestion = async (ttId) => {
     try {
-      const result = await getAllQuestionAPI({timeTableId:ttId});
+      const result = await getAllQuestionAPI({ timeTableId: ttId });
       setRecords(result);
-      if(result.length===0){
+      if (result.length === 0) {
         toast.warn('No record found.');
       }
     } catch (error) {
@@ -83,7 +83,7 @@ const QuestionRecords = () => {
     try {
       let result = await getTimeTableAPI();
       console.log('my ees', result);
-      result=result.sort(function(a, b){return a.subject-b.subject});
+      result = result.sort(function (a, b) { return a.subject - b.subject });
       let list = [];
       result.forEach(element => {
         const str = element.type + '_' + element.className + '_' + element.subject + '_' + element.examDate;
@@ -157,7 +157,7 @@ const QuestionRecords = () => {
     try {
       const resp = await deleteQuestionAPI({ questionId: deleteQuesId });
       toast.success('Question deleted.');
-      // getAllQuestion();
+      getAllQuestion(timeTableId);
       closeDeleteModal();
     } catch (error) {
       toast.error(error.response.data.error);
@@ -224,7 +224,7 @@ const QuestionRecords = () => {
         console.log(result);
         setIsLoading(false);
         closeModal();
-        getAllQuestion();
+        getAllQuestion(getAllQuestion(timeTableId));
         toast.success('Question created sucessfully.');
       } catch (error) {
         console.log(error);

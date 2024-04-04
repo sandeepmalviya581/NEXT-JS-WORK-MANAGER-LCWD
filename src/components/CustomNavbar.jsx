@@ -71,6 +71,10 @@ const CustomNavbar = () => {
               <Link href={'/examportal/timetable'} className='hover:text-blue-200'>Time Table</Link>
             </li>
 
+            <li>
+              <Link href={'/show-hierarchy'} className='hover:text-blue-200'>Show Hierarchy</Link>
+            </li>
+
           </ul>
         </div>)
       }

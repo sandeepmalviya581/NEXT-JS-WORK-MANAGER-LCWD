@@ -11,6 +11,18 @@ const HealthChart = () => {
 
     const [isLoading, setIsLoading] = useState(true);
 
+    let notActiveCounts = {
+        kapalBhati: 0,
+        anulomVilom: 0,
+        hotWater: 0,
+        exercise: 0,
+        morningWalk: 0,
+        eveningWalk: 0,
+        nightWalk: 0,
+        amritvela: 0,
+        running: 0
+    };
+
     let defDash = {
         kapalBhati: {
             yes: 0,
@@ -50,9 +62,11 @@ const HealthChart = () => {
         }
 
     };
+
     const [resultDashboard, setResultDashboard] = useState(defDash);
 
     const [totalCount, setTotalCount] = useState(0);
+    const [notActivity, setNotActivity] = useState(notActiveCounts);
 
 
 
@@ -66,9 +80,86 @@ const HealthChart = () => {
             setData([...userTask]);
             setTotalCount(userTask.length);
 
-            // setResultDashboard({...defDash});
+            // let cloneHealthChart = userTask;
+            // cloneHealthChart=  cloneHealthChart.sort((a, b) => a.createdDate - b.createdDate);
+            // console.log('cloneHealthChart reverse',cloneHealthChart);
+
+            let hMap = {
+                kapalBhati: false,
+                anulomVilom: false,
+                hotWater: false,
+                exercise: false,
+                morningWalk: false,
+                eveningWalk: false,
+                nightWalk: false,
+                amritvela: false,
+                running: false
+            };
+
+            for (let index = userTask.length - 1; index > 0; index--) {
+                // console.log('for loop',userTask[index]);
+                const hObj = userTask[index];
+
+                if (!hObj.kapalBhati && !hMap.kapalBhati) {
+                    notActiveCounts.kapalBhati = notActiveCounts.kapalBhati + 1;
+                } else {
+                    hMap.kapalBhati = true;
+                }
+
+                if (!hObj.anulomVilom && !hMap.anulomVilom) {
+                    notActiveCounts.anulomVilom = notActiveCounts.anulomVilom + 1;
+                } else {
+                    hMap.anulomVilom = true;
+                }
+
+                if (!hObj.amritvela && !hMap.amritvela) {
+                    notActiveCounts.amritvela = notActiveCounts.amritvela + 1;
+                } else {
+                    hMap.amritvela = true;
+                }
+
+                if (!hObj.running && !hMap.running) {
+                    notActiveCounts.running = notActiveCounts.running + 1;
+                } else {
+                    hMap.running = true;
+                }
 
 
+                if (!hObj.exercise && !hMap.exercise) {
+                    notActiveCounts.exercise = notActiveCounts.exercise + 1;
+                } else {
+                    hMap.exercise = true;
+                }
+
+
+                if (!hObj.hotWater && !hMap.hotWater) {
+                    notActiveCounts.hotWater = notActiveCounts.hotWater + 1;
+                } else {
+                    hMap.hotWater = true;
+                }
+
+                if (!hObj.morningWalk && !hMap.morningWalk) {
+                    notActiveCounts.morningWalk = notActiveCounts.morningWalk + 1;
+                } else {
+                    hMap.morningWalk = true;
+                }
+
+                if (!hObj.eveningWalk && !hMap.eveningWalk) {
+                    notActiveCounts.eveningWalk = notActiveCounts.eveningWalk + 1;
+                } else {
+                    hMap.eveningWalk = true;
+                }
+
+                if (!hObj.nightWalk && !hMap.nightWalk) {
+                    notActiveCounts.nightWalk = notActiveCounts.nightWalk + 1;
+                } else {
+                    hMap.nightWalk = true;
+                }
+
+            };
+            console.log('my in acive',notActiveCounts);
+
+            setNotActivity(notActiveCounts);
             userTask.forEach(item => {
                 if (item.kapalBhati) {
                     resultDashboard.kapalBhati.yes = resultDashboard.kapalBhati.yes + 1
@@ -129,7 +220,7 @@ const HealthChart = () => {
 
             });
 
-            setResultDashboard(resultObj);
+            // setResultDashboard(resultObj);
         } catch (error) {
             console.log(error);
         }
@@ -517,31 +608,68 @@ const HealthChart = () => {
 
                             </td>
                             <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
-                            AMRITVELA
+                                AMRITVELA
                             </td>
                             <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
-                            MORNING RUNNING	
+                                MORNING RUNNING
                             </td>
                             <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
-                            ANULOM VILOM
+                                ANULOM VILOM
                             </td>
                             <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
-                            KAPALBHATI
+                                KAPALBHATI
                             </td>
                             <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
-                            EXCERSICE
+                                EXCERSICE
                             </td>
                             <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
-                            HOT WATER
+                                HOT WATER
                             </td>
                             <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
-                            WALK AFTER MORNING MEAL	
+                                WALK AFTER MORNING MEAL
                             </td>
                             <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
-                            EVENING WALK
+                                EVENING WALK
                             </td>
                             <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
-                            WALK AFTER NIGHT MEAL
+                                WALK AFTER NIGHT MEAL
+                            </td>
+
+                        </tr>
+
+                        <tr >
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+
+                            </td>
+                            <td className="px-6 py-4 whitespace-no-wrap border-b" >
+
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                               {notActivity.amritvela}
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            {notActivity.morningWalk}
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            {notActivity.anulomVilom}
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            {notActivity.kapalBhati}
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            {notActivity.exercise}
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            {notActivity.hotWater}
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            {notActivity.morningWalk}
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            {notActivity.eveningWalk}
+                            </td>
+                            <td className="font-extrabold px-6 py-4 whitespace-no-wrap border-b" >
+                            {notActivity.nightWalk}
                             </td>
 
                         </tr>

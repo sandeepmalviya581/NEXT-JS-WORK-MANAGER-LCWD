@@ -1,12 +1,18 @@
-import { toast } from 'react-toastify';
+import { jwtVerify } from 'jose';
 
 
 export const checkEmpty = (value) => {
-    if (value == null || value.trim() == '') {
-        return true;
-    }
-    return false;
+    return value == null || value.trim() == '';
 }
+
+
+export const getUserIdFromToken = async (request) => {
+    const joseToken = request.cookies.get('joseToken')?.value;
+    const { payload } = await jwtVerify(joseToken, new TextEncoder().encode('workmanager'));
+    const userId = payload._doc._id
+    return userId;
+}
+
 
 
 

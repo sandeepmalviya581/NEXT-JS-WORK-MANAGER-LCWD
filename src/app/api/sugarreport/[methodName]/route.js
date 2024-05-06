@@ -81,6 +81,49 @@ export async function POST(request, { params }) {
                 );
             }
         }
+
+        else if (methodName === 'getSugarReportId') {
+            let requestModel = await request.json();
+            try {
+                const responseDB = await SugarReport.findById(requestModel._id);
+                console.log(responseDB);
+                return NextResponse.json(
+                    responseDB, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to get.",
+                    error
+                }, {
+                    status: 500
+                }
+                );
+            }
+        }
+
+        else if (methodName === 'deleteSugarReportId') {
+            let requestModel = await request.json();
+            try {
+
+                const responseDB = await SugarReport.deleteOne({ '_id': requestModel._id });
+                console.log(responseDB);
+                return NextResponse.json(
+                    responseDB, {
+                    status: 200
+                });
+            } catch (error) {
+                console.log(error)
+                return NextResponse.json({
+                    message: "Failed to get.",
+                    error
+                }, {
+                    status: 500
+                }
+                );
+            }
+        }
     }
     return NextResponse.json({
         message: "Not found"

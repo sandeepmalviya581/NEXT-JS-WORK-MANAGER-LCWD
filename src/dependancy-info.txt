@@ -1,2 +1,11 @@
 30-10-2023
 npm i --save react-select
+
+16-4-2024
+
+Deployment steps 
+
+PS C:\sandeep\practice\lcwd\NextJS\work-manager> vercel
+Vercel CLI 32.1.0
+🔍  Inspect: https://vercel.com/sandeepmalviya581gmailcoms-projects/work-manager-hloh/EZf1hioLAeGwWJs5Y7CiZBC58Qm5 [4s]
+- Building

@@ -75,6 +75,10 @@ const CustomNavbar = () => {
               <Link href={'/show-hierarchy'} className='hover:text-blue-200'>Show Hierarchy</Link>
             </li>
 
+            <li>
+              <Link href={'/sugarreport'} className='hover:text-blue-200'>Sugar Report</Link>
+            </li>
+
           </ul>
         </div>)
       }

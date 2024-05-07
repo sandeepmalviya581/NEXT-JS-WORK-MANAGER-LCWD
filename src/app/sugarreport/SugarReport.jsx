@@ -5,6 +5,7 @@ import { deleteSugarReportId, deleteSuparReportId, getSuparReport } from '@/serv
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
+import formatDate from '../utility/dateutility';
 
 const SugarReport = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -90,8 +91,8 @@ const SugarReport = () => {
                         {sugarData.map((entry, index) => (
                             <tr key={index}>
                                 <td className="border border-gray-800 px-4 py-2">{entry.name}</td>
-                                <td className="border border-gray-800 px-4 py-2">{entry.createdDate}</td>
-                                <td className="border border-gray-800 px-4 py-2">{entry.updatedDate}</td>
+                                <td className="border border-gray-800 px-4 py-2">{formatDate(entry.createdDate)}</td>
+                                <td className="border border-gray-800 px-4 py-2">{formatDate(entry.updatedDate)}</td>
                                 <td className="border border-gray-800 px-4 py-2">{entry.level}</td>
                                 <td className="border border-gray-800 px-4 py-2">{entry.stage}</td>
                                 <td className="border border-gray-800 px-4 py-2">
@@ -141,7 +142,7 @@ const SugarReport = () => {
                                             {/* <p className="text-sm text-gray-500">{deleteInfo?.name (deleteInfo?.level)}</p> */}
                                             <p className="text-sm text-gray-500">{`${deleteName} (${deleteLevel})`}</p>
 
-                                            
+
 
                                         </div>
                                     </div>

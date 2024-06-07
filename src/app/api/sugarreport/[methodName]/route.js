@@ -62,9 +62,9 @@ export async function POST(request, { params }) {
             try {
                 let responseDB = [];
                 if (checkEmpty(requestModel.search)) {
-                    responseDB = await SugarReport.find().sort({ updatedDate: -1 });
+                    responseDB = await SugarReport.find().sort({ _id: -1 });
                 } else {
-                    responseDB = await SugarReport.find({ name: requestModel.search }).sort({ updatedDate: -1 });
+                    responseDB = await SugarReport.find({ name: requestModel.search }).sort({ _id: -1 });
                 }
                 return NextResponse.json(
                     responseDB, {

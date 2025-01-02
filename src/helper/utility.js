@@ -13,6 +13,11 @@ export const getUserIdFromToken = async (request) => {
     return userId;
 }
 
+export const notNullAndNotUndefined = (value) => {
+    return value != undefined && value != null;
+}
+
+
 
 
 

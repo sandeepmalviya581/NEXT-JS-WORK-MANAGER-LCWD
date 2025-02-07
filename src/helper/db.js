@@ -2,6 +2,11 @@ import mongoose from "mongoose"
 
 export const connectDb = async () => {
 
+    if (mongoose.connection.readyState === 1) {
+        console.log('Already connected to db.');
+        return;
+    }
+
 
     try {
         // const { connection } = await mongoose.connect('mongodb://127.0.0.1:27017/workmanager');

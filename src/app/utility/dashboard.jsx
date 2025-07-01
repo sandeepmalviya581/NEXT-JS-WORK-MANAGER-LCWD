@@ -7,7 +7,8 @@ const data = [
     { id: 5, name: 'Gira', link: '/jira', type: 'link', count: 0 },
     { id: 6, name: 'All Task Status', link: '', type: 'other', count: 0 },
     { id: 7, name: 'Take Backup', link: '', type: 'button', count: 0 },
-    { id: 8, name: 'Borrower Details', link: '/borrowerdetails', type: 'link', count: 0 }
+    { id: 8, name: 'Borrower Details', link: '/borrowerdetails', type: 'link', count: 0 },
+    { id: 9, name: 'Upload Expenditure', link: '/expenditure-details', type: 'link', count: 0 },
 
 ];
 

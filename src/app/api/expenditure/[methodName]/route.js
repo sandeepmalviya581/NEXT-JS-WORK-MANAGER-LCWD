@@ -47,6 +47,67 @@ export async function POST(request, { params }) {
                 );
             }
         }
+
+
+        
+ if (methodName === 'addMultipleExpenditure') {
+            let requestModel = await request.json();
+            console.log('sandeep req model okay',requestModel);
+            try {
+                // Validation
+
+                if(requestModel == null || requestModel == undefined|| (typeof requestModel === 'object' && Object.keys(requestModel).length === 0)){
+                        throw `Empty request`;
+                }else if (requestModel.expditureList && requestModel.expditureList.length===0){
+                    throw `Exp list can not be empty.`;
+                }
+
+              const userId = await getUserIdFromToken(request);
+
+              const todayDate  = Date.now();
+
+                let updatedReq = requestModel.expditureList.map((item,index) => {
+                     index = index+1;
+                    item.created_by = userId
+                    item.category = 'Other'
+                    item.updatedDate = todayDate
+                    console.log('ui data',item.expenditure_date);
+
+                    if (item.expenditure_date == null || item.expenditure_date == undefined  || item.expenditure_date == '') {
+                        item.expenditure_date = todayDate
+                    }
+                    if (checkEmpty(item.description)) {
+                        // throw `Description can not be empty at index ${index}`;
+                        throw new Error(`Description can not be empty at index ${index}`);
+                    }
+                    if (item.amount == null || item.amount === '') {
+                        throw new Error(`Amount can not be empty at index ${index}`);
+                    }
+                    if (typeof item.amount !== 'number' || isNaN(item.amount) || item.amount < 0) {
+                        throw new Error(`Amount must be a valid number and can not be zero at index ${index}`);
+                    }
+                    return item;
+                });
+
+                console.log('update req sandeep',updatedReq);
+                let respManyExpd = await Expenditure.insertMany(updatedReq);
+                console.log(respManyExpd);
+
+                return NextResponse.json(
+                    respManyExpd, {
+                    status: 201
+                });
+            } catch (error) {
+                return NextResponse.json({
+                    message: "Failed to create multiple expenditures.",
+                    error: error.message,
+                    errorStacktrace: error.stack
+                }, {
+                    status: 500
+                }
+                );
+            }
+        }
         else if (methodName === 'getCalculatedExpenditure') {
             let requestModel = await request.json();
             let month = requestModel.month; // Example: null or undefined if not provided

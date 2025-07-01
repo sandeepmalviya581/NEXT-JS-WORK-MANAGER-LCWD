@@ -129,7 +129,7 @@ export default function Home() {
                 <td className="px-6 py-4 whitespace-nowrap">{item.id}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {item.type === 'link' ? <Link href={item.link} className='hover:text-blue-200' >{item.name}</Link>
+                  {item.type === 'link' ? <Link href={item.link} className="text-blue-500 hover:text-blue-200 underline" >{item.name}</Link>
                     : item.type === 'button' ?
                       <button type="button" onClick={() => takeBackupFunc()} className='ml-2 bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' >Take Bacup</button>
 
